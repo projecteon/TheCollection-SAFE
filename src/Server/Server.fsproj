@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.fsproj" />
+    <ProjectReference Include="..\Infrastructure.MsSql\Infrastructure.MsSql.fsproj" />
+    <ProjectReference Include="..\Services\Services.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Repository\Brands.fs" />
+    <Compile Include="Repository\Bagtype.fs" />
+    <Compile Include="Repository\Country.fs" />
+    <Compile Include="Repository\Teabag.fs" />
+    <Compile Include="API\Generic.fs" />
+    <Compile Include="API\Teabag.fs" />
+    <Compile Include="Server.fs" />
+  </ItemGroup>
+  <Import Project="fsc.props" />
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

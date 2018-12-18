@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="..\..\paket-files\client\CompositionalIT\fshelpers\src\FsHelpers\Elmish.Debounce\Elmish.Debounce.fs" Link="Elmish.Debounce.fs" />
+        <Compile Include="../Domain/Types.fs" />
+        <Compile Include="../Services/Dtos.fs" />
+        <Compile Include="FileUrlHandler.fs" />
+        <Compile Include="Navigation.fs" />
+        <Compile Include="Components/ComboBox/Types.fs" />
+        <Compile Include="Components/ComboBox/State.fs" />
+        <Compile Include="Components/ComboBox/View.fs" />
+        <Compile Include="Components/Navbar.fs" />
+        <Compile Include="Dashboard\View.fs" />
+        <Compile Include="Teabags\Types.fs" />
+        <Compile Include="Teabags\State.fs" />
+        <Compile Include="Teabags\View.fs" />
+        <Compile Include="Teabag\Types.fs" />
+        <Compile Include="Teabag\State.fs" />
+        <Compile Include="Teabag\View.fs" />
+        <Compile Include="ClientTypes.fs" />
+        <Compile Include="State.fs" />
+        <Compile Include="App.fs" />
+    </ItemGroup>
+    <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

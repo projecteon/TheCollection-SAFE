@@ -1,0 +1,81 @@
+﻿<!doctype html>
+<html class="has-navbar-fixed-top">
+<head>
+    <title>Tea Collection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#688a08">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="/Images/tea_favicon.png"/>
+    <style>
+        #close:hover {
+            color: red
+        }
+
+        .comboChoices {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            padding-bottom: calc(.375em - 1px);
+            padding-left: calc(.625em - 1px);
+            padding-right: calc(.625em - 1px);
+            padding-top: calc(.375em - 1px);
+            z-index: 2;
+            height: 100%;
+            background-color: #fff;
+        }
+
+        .isDisplayed {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+        }
+
+        .isDisplayed .dropdown-menu {
+            display: block;
+            width: 100%;
+        }
+
+        .modal {
+          z-index: 100
+        }
+
+        .modal-content {
+          display: flex;
+          justify-content: center;
+        }
+
+        .modal-content img {
+          max-width: 90vw;
+          max-height: calc(100vh - 60px);
+        }
+
+    </style>
+</head>
+<body>
+  <div id="elmish-app"></div>
+  <script src="./js/vendors.js"></script>
+  <script src="./js/app.js"></script>
+  <script>
+    if (navigator.serviceWorker.controller) {
+      console.log('[PWA Builder] active service worker found, no need to register')
+    } else {
+      //Register the ServiceWorker
+      navigator.serviceWorker.register('./ServiceWorker.js', {
+        scope: './'
+      }).then(function(reg) {
+        console.log('Service worker has been registered for scope:'+ reg.scope);
+      });
+    }
+  </script>
+  <noscript>
+    <h1>You don’t have javascript enabled.</h1>
+    <p>Please enable it to get the full experience.</p>
+  </noscript>
+</body>
+</html>

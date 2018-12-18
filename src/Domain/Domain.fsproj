@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="ReflectionUtil.fs" />
+        <Compile Include="Searchable.fs" />
+        <Compile Include="SearchStringGenerator.fs" />
+        <Compile Include="Types.fs" />
+        <Compile Include="Tea.fs" />
+    </ItemGroup>
+    <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>
