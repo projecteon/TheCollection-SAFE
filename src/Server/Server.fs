@@ -27,6 +27,12 @@ let handleGetCounter =
 
 let searchAllTeabags = TeabagRepository.searchAll DbContext.ConnectionString
 let getByIdTeabags = TeabagRepository.getById DbContext.ConnectionString
+let getByIdBrands = BrandRepository.getById DbContext.ConnectionString
+let getAllBrands = BrandRepository.getAll DbContext.ConnectionString
+let getByIdBagtypes = BagtypeRepository.getById DbContext.ConnectionString
+let getAllBagtypes = BagtypeRepository.getAll DbContext.ConnectionString
+let getByIdCountries = CountryRepository.getById DbContext.ConnectionString
+let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
 
 // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
@@ -50,11 +56,12 @@ let webApp =
           routef "/thumbnails/%i" thumbnailHandler
           route "/counter" >=> handleGetCounter
           route "/teabags" >=> (API.Generic.handleGetAll3 searchAllTeabags)
-          // route "/teabags" >=> (API.Generic.handleGetAll Repository.Teabags.getAll)
           routef "/teabags/%i" (API.Generic.handleGet2 getByIdTeabags)
-          route "/brands" >=> (API.Generic.handleGetAll Repository.Brands.getAll)
-          route "/bagtypes" >=> (API.Generic.handleGetAll Repository.Bagtype.getAll)
-          route "/country" >=> (API.Generic.handleGetAll Repository.Country.getAll)
+          route "/teabags/countby/brands" >=> (API.Generic.handleGetNoParam (TeabagRepository.brandCount DbContext.ConnectionString))
+          route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetNoParam (TeabagRepository.bagtypeCount DbContext.ConnectionString))
+          route "/brands" >=> (API.Generic.handleGetAll getAllBrands)
+          route "/bagtypes" >=> (API.Generic.handleGetAll getAllBagtypes)
+          route "/country" >=> (API.Generic.handleGetAll getAllCountries)
         ]
       ])
     setStatusCode 404 >=> text "Not Found"

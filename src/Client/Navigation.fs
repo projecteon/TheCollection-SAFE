@@ -5,13 +5,13 @@ open Elmish.Browser.UrlParser
 /// The different pages of the application. If you add a new page, then add an entry here.
 [<RequireQualifiedAccess>]
 type Page =
-  | Home
+  | Dashboard
   | Teabags
   | Teabag of string
 
 let toPath =
   function
-  | Page.Home -> "/"
+  | Page.Dashboard -> "/"
   | Page.Teabags -> "/teabags"
   | Page.Teabag id -> "/teabags/" + id
 
@@ -22,7 +22,7 @@ let toPath =
 let pageParser : Parser<Page -> Page,_> =
   oneOf
     [
-      map Page.Home (s "")
+      map Page.Dashboard (s "")
       map Page.Teabags (s "teabags")
       map Page.Teabag (s "teabags" </> str)
     ]

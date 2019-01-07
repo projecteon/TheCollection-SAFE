@@ -1,10 +1,13 @@
 namespace TeaCollection.Infrastructure.MsSql
 
+open System.Threading.Tasks
+open FSharp.Control.Tasks.V2
 open FSharp.Data
 open NodaTime
 
 open DbContext
 open Domain.Tea
+open Domain.Types
 open Search
 open Util
 open Mapping
@@ -42,7 +45,6 @@ module TeabagRepository =
       |> function
         | Some x -> x |> mapByIdData |> Some
         | _ -> None
-
 
     // https://docs.microsoft.com/en-us/previous-versions/sql/compact/sql-server-compact-4.0/gg699618(v=sql.110)
     // https://sqlperformance.com/2015/01/t-sql-queries/pagination-with-offset-fetch
@@ -103,7 +105,6 @@ module TeabagRepository =
       let result = cmd.Execute((searchFilter |> extractSearchTerm3), pageSize * page, pageSize)
       (result |> Seq.map mapData |> Seq.toList, result |> Seq.tryHead |> mapTotalCount)
 
-
     [<Literal>]
     let  SQLBrandCountQry = "
         SELECT
@@ -116,6 +117,18 @@ module TeabagRepository =
 
     type BrandCountQry = SqlCommandProvider<SQLBrandCountQry, ConnectionString>
 
+    let brandCount (connectiongString: string) : Task<CountBy<string> list> =
+      task {
+        let cmd = new BrandCountQry(connectiongString)
+        return cmd.Execute()
+        |> List.ofSeq
+        |> Seq.map (fun x -> {
+            count = mapOptionalIntValue(x.i_count)
+            description = mapOptionalStringValue(x.t_ro_brand)
+          })
+        |> Seq.toList
+      }
+
     [<Literal>]
     let  SQLBagtypeCountQry = "
         SELECT
@@ -127,3 +140,15 @@ module TeabagRepository =
     "
 
     type BagtypeCountQry = SqlCommandProvider<SQLBagtypeCountQry, ConnectionString>
+
+    let bagtypeCount (connectiongString: string) : Task<CountBy<string> list> =
+      task {
+        let cmd = new BagtypeCountQry(connectiongString)
+        return cmd.Execute()
+        |> List.ofSeq
+        |> Seq.map (fun x -> {
+            count = mapOptionalIntValue(x.i_count)
+            description = mapOptionalStringValue(x.t_ro_bagtype)
+          })
+        |> Seq.toList
+      }

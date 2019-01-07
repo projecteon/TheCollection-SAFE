@@ -57,7 +57,7 @@ let navMenu =
       Class "navbar-menu"
     ] [
       div [ Class "navbar-end" ] [
-        yield viewLink Page.Home "Dashboard"
+        yield viewLink Page.Dashboard "Dashboard"
         yield viewLink Page.Teabags "Teabags"
       ]
     ]

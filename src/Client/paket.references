@@ -3,6 +3,7 @@ group Client
     Fable.Elmish.Browser
     Fable.Elmish.Debugger
     Fable.Elmish.React
+    Fable.Recharts
     Fable.Elmish.HMR
     Fable.Core
     dotnet-fable

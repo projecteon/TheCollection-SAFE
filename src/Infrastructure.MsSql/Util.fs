@@ -32,6 +32,14 @@ module Util =
                     |> String.concat "\",\""
                     |> sprintf "[\"%s\"]"
 
+    let mapOptionalStringValue (optionalValue) =
+      match optionalValue with
+      | Some x -> x
+      | None -> ""
+    let mapOptionalIntValue (optionalValue) =
+      match optionalValue with
+      | Some x -> x
+      | None -> 0
     // let appendPrefixLike (term: SearchTerm) =
     //     match term.[0] with
     //     | '%' -> term

@@ -9,7 +9,7 @@ open Client.Navigation
 
 let handleNotFound (model: Model) =
   Browser.console.error("Error parsing url: " + Browser.window.location.href)
-  ( model, Navigation.modifyUrl (toPath Page.Home) )
+  ( model, Navigation.modifyUrl (toPath Page.Dashboard) )
 
 /// The navigation logic of the application given a page identity parsed from the .../#info
 /// information in the URL.
@@ -26,13 +26,16 @@ let urlUpdate (result:Page option) (model: Model) =
     let m, cmd = Client.Teabag.State.init()
     { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (cmd id)
 
-  | Some Page.Home ->
-    { model with PageModel = HomePageModel }, Cmd.none
+  | Some Page.Dashboard ->
+    let m, cmd, cmd2 = Client.Dashboard.State.init()
+    { model with PageModel = DashboardPageModel m },  Cmd.batch [   Cmd.map DashboardMsg cmd
+                                                                    Cmd.map DashboardMsg cmd2 ]
 
 let init page =
+  let m, cmd, cmd2 = Client.Dashboard.State.init()
   let model =
     { User = None
-      PageModel = HomePageModel }
+      PageModel = DashboardPageModel m }
   urlUpdate page model
 
 let update msg model =
@@ -48,4 +51,10 @@ let update msg model =
     { model with
         PageModel = TeabagPageModel m }, Cmd.map TeabagMsg cmd
   | TeabagMsg _, _ ->
+    model, Cmd.none
+  | DashboardMsg msg, DashboardPageModel m ->
+    let m, cmd = Client.Dashboard.State.update msg m
+    { model with
+        PageModel = DashboardPageModel m }, Cmd.map DashboardMsg cmd
+  | DashboardMsg _, _ ->
     model, Cmd.none

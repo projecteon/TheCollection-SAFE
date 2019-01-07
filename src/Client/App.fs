@@ -12,8 +12,8 @@ open Client.Navigation
 
 let viewPage model dispatch =
     match model.PageModel with
-    | HomePageModel ->
-        Client.Home.View.view ()
+    | DashboardPageModel m ->
+        Client.Dashboard.View.view m (DashboardMsg >> dispatch)
 
     | TeabagsPageModel m ->
         Client.Teabags.View.view m (TeabagsMsg >> dispatch)

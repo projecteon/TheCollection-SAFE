@@ -3,7 +3,7 @@ module ClientTypes
 open Services.Dtos
 
 type PageModel =
-    | HomePageModel
+    | DashboardPageModel of Client.Dashboard.Types.Model
     | TeabagsPageModel of Client.Teabags.Types.Model
     | TeabagPageModel of Client.Teabag.Types.Model
 
@@ -12,5 +12,6 @@ type Model =
       PageModel : PageModel }
 
 type Msg =
+    | DashboardMsg of Client.Dashboard.Types.Msg
     | TeabagsMsg of Client.Teabags.Types.Msg
     | TeabagMsg of Client.Teabag.Types.Msg

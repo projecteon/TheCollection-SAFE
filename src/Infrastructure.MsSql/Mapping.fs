@@ -1,7 +1,9 @@
 namespace TeaCollection.Infrastructure.MsSql
 
-open Domain.Tea
 open NodaTime
+open System
+
+open Domain.Tea
 
 module Mapping =
   let mapRefValue id text : RefValue option =
@@ -9,6 +11,6 @@ module Mapping =
     | Some id, Some text -> Some {id = id; description = text}
     | _, _ -> None
 
-  let mapInstant utcDateTime : Instant =
-    utcDateTime
+  let mapInstant (utcDateTime: DateTime) : Instant =
+    utcDateTime.ToUniversalTime()
     |> Instant.FromDateTimeUtc

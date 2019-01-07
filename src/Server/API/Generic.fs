@@ -60,3 +60,9 @@ let handleGet2 (get: ('a -> Option<'b> )) id next ctx =
     | Some x -> return! Successful.OK x next ctx
     | _ -> return! Successful.NO_CONTENT next ctx
   }
+
+let handleGetNoParam (get: Task<'a>) next ctx =
+  task {
+    let! data = get
+    return! Successful.OK data next ctx
+  }

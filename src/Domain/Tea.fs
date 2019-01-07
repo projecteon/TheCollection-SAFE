@@ -7,7 +7,17 @@ open Domain.Types
 
 type Brand = {
     id: DbId
-    name: string
+    name: BrandName
+}
+
+type Bagtype = {
+    id: DbId
+    name: BagtypeName
+}
+
+type Country = {
+    id: DbId
+    name: CountryName
 }
 
 type RefValue = {

@@ -11,14 +11,12 @@
     <ProjectReference Include="..\Services\Services.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Repository\Brands.fs" />
-    <Compile Include="Repository\Bagtype.fs" />
-    <Compile Include="Repository\Country.fs" />
-    <Compile Include="Repository\Teabag.fs" />
     <Compile Include="API\Generic.fs" />
-    <Compile Include="API\Teabag.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy C:\Users\$(Username)\.nuget\packages\system.data.sqlclient\4.6\runtimes\win\lib\netstandard2.0\System.Data.SqlClient.dll bin\Debug\netcoreapp2.1\" />
+  </Target> -->
 </Project>

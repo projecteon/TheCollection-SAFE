@@ -9,11 +9,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\paket-files\infrastructure.mssql\rspeele\TaskBuilder.fs\TaskBuilder.fs" Link="TaskBuilder.fs" />
     <Compile Include="DbContext.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Util.fs" />
     <Compile Include="Mapping.fs" />
+    <Compile Include="BagtypeRepository.fs" />
     <Compile Include="BrandRepository.fs" />
+    <Compile Include="CountryRepository.fs" />
     <Compile Include="TeabagRepository.fs" />
   </ItemGroup>
 
