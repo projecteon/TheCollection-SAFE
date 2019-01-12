@@ -40,11 +40,13 @@ module TeabagRepository =
       }
 
     let getById (connectiongString: string) id =
-      let cmd = new TeabagById(connectiongString)
-      cmd.Execute(id)
-      |> function
-        | Some x -> x |> mapByIdData |> Some
-        | _ -> None
+      task {
+        let cmd = new TeabagById(connectiongString)
+        let! teabag = cmd.AsyncExecute(id)
+        return match teabag with
+                | Some x -> x |> mapByIdData |> Some
+                | _ -> None
+      }
 
     // https://docs.microsoft.com/en-us/previous-versions/sql/compact/sql-server-compact-4.0/gg699618(v=sql.110)
     // https://sqlperformance.com/2015/01/t-sql-queries/pagination-with-offset-fetch

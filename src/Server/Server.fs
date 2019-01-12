@@ -16,15 +16,6 @@ open Giraffe.Serialization
 let publicPath = Path.GetFullPath "../Client/public"
 let port = 8085us
 
-let getInitCounter() : Task<Counter> = task { return 42 }
-
-let handleGetCounter =
-  fun next ctx ->
-    task {
-        let! counter = getInitCounter()
-        return! Successful.OK counter next ctx
-    }
-
 let searchAllTeabags = TeabagRepository.searchAll DbContext.ConnectionString
 let getByIdTeabags = TeabagRepository.getById DbContext.ConnectionString
 let getByIdBrands = BrandRepository.getById DbContext.ConnectionString
@@ -54,14 +45,13 @@ let webApp =
       (choose [
         GET >=> choose [
           routef "/thumbnails/%i" thumbnailHandler
-          route "/counter" >=> handleGetCounter
-          route "/teabags" >=> (API.Generic.handleGetAll3 searchAllTeabags)
-          routef "/teabags/%i" (API.Generic.handleGet2 getByIdTeabags)
-          route "/teabags/countby/brands" >=> (API.Generic.handleGetNoParam (TeabagRepository.brandCount DbContext.ConnectionString))
-          route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetNoParam (TeabagRepository.bagtypeCount DbContext.ConnectionString))
-          route "/brands" >=> (API.Generic.handleGetAll getAllBrands)
-          route "/bagtypes" >=> (API.Generic.handleGetAll getAllBagtypes)
-          route "/country" >=> (API.Generic.handleGetAll getAllCountries)
+          route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags)
+          routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags)
+          route "/teabags/countby/brands" >=> (API.Generic.handleGetAll (TeabagRepository.brandCount DbContext.ConnectionString))
+          route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.ConnectionString))
+          route "/brands" >=> (API.Generic.handleGetAllSearch getAllBrands)
+          route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
+          route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
         ]
       ])
     setStatusCode 404 >=> text "Not Found"

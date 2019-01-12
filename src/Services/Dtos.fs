@@ -2,8 +2,6 @@ module Services.Dtos
 
 open Domain.Types
 
-type Counter = int
-
 type JWT = string
 type UserData =
   { UserName : string
