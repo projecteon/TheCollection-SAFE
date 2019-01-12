@@ -2,6 +2,7 @@ module Client.Teabags.Types
 
 open Domain.Types
 open Services.Dtos
+open Fable.Import
 
 type SearchResult = {
   data: Teabag list
@@ -10,11 +11,12 @@ type SearchResult = {
 
 type Model = {
   result: Teabag list
-  resultCount: int option;
-  searchedTerms: string option;
-  searchError: string option;
-  zoomImageId: ImageId option;
-  page: int64;
+  resultCount: int option
+  searchedTerms: string option
+  searchError: string option
+  zoomImageId: ImageId option
+  page: int64
+  isLoading: bool
 }
 
 type Msg =

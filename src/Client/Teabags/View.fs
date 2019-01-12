@@ -78,7 +78,7 @@ let searchBar (model:Model) dispatch =
     yield resultCount model
     yield searchError model
     yield Field.div [ Field.HasAddons ] [
-      Control.p [ Control.IsExpanded ] [
+      Control.p [ Control.IsExpanded; Control.IsLoading model.isLoading ] [
         yield inputElement model dispatch
       ]
       Control.p [ ] [

@@ -28,6 +28,7 @@ let init () =
       searchError=None
       zoomImageId = None
       page = int64 0
+      isLoading = false
     }
     initialModel
 
@@ -39,14 +40,14 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     | Search ->
       let result = validateSearchTerm model
       match result with
-      | Success x -> {model with searchError = None; result = []; resultCount=None}, getTeabagsCmd model
+      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, getTeabagsCmd model
       | Failure x -> {model with searchError = Some x}, Cmd.none
     | SearchSuccess result ->
         printfn "teabags update"
-        { model with result = result.data; resultCount=Some result.count }, Cmd.none
+        { model with result = result.data; resultCount=Some result.count; isLoading=false }, Cmd.none
     | SearchError exn ->
         printfn "search error %O" exn
-        model, Cmd.none
+        { model with isLoading=false }, Cmd.none
     | ZoomImageToggle id ->
         { model with zoomImageId = id }, Cmd.none
     | _ -> model, Cmd.none
