@@ -18,6 +18,9 @@ let urlUpdate (result:Page option) (model: Model) =
   | None ->
     handleNotFound model
 
+  | Some Page.Login ->
+    { model with PageModel = LoginPageModel }, Cmd.none
+
   | Some Page.Teabags ->
     let m = Client.Teabags.State.init()
     { model with PageModel = TeabagsPageModel m }, Cmd.none

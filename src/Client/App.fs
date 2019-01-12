@@ -12,6 +12,9 @@ open Client.Navigation
 
 let viewPage model dispatch =
     match model.PageModel with
+    | LoginPageModel ->
+      Client.Login.View.view
+
     | DashboardPageModel m ->
         Client.Dashboard.View.view m (DashboardMsg >> dispatch)
 

@@ -6,6 +6,7 @@ type PageModel =
     | DashboardPageModel of Client.Dashboard.Types.Model
     | TeabagsPageModel of Client.Teabags.Types.Model
     | TeabagPageModel of Client.Teabag.Types.Model
+    | LoginPageModel
 
 type Model =
     { User : UserData option

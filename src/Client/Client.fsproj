@@ -15,6 +15,7 @@
         <Compile Include="Components/Navbar.fs" />
         <Compile Include="Components/BarChart.fs" />
         <Compile Include="Components/PieChart.fs" />
+        <Compile Include="Login/View.fs" />
         <Compile Include="Dashboard/Types.fs" />
         <Compile Include="Dashboard/State.fs" />
         <Compile Include="Dashboard/View.fs" />

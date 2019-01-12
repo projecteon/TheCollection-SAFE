@@ -6,12 +6,14 @@ open Elmish.Browser.UrlParser
 [<RequireQualifiedAccess>]
 type Page =
   | Dashboard
+  | Login
   | Teabags
   | Teabag of string
 
 let toPath =
   function
   | Page.Dashboard -> "/"
+  | Page.Login -> "/login"
   | Page.Teabags -> "/teabags"
   | Page.Teabag id -> "/teabags/" + id
 
@@ -23,6 +25,7 @@ let pageParser : Parser<Page -> Page,_> =
   oneOf
     [
       map Page.Dashboard (s "")
+      map Page.Login (s "login")
       map Page.Teabags (s "teabags")
       map Page.Teabag (s "teabags" </> str)
     ]
