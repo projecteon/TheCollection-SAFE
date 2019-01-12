@@ -9,15 +9,15 @@ open Fulma
 
 module P = Fable.Helpers.React.Props
 
-let renderChart data =
+let renderBarChart data =
   match data with
   | Some x -> x |> Array.ofList |> Array.truncate 10 |> Some |> BarChart.view
   | None -> None |> BarChart.view
 
-let renderChart2 data =
+let renderPieChart data =
   match data with
   | Some x -> x |> Array.ofList |> Array.truncate 10 |> Some |> PieChart.view
-  | None -> None |> BarChart.view
+  | None -> None |> PieChart.view
   
 let view (model:Model) dispatch =
     [
@@ -27,7 +27,7 @@ let view (model:Model) dispatch =
           Panel.panel [] [
             Panel.heading [ ] [ str "Brands"]
             Panel.block [ ] [
-              renderChart model.countByBrands
+              renderBarChart model.countByBrands
             ]
           ]
         ]
@@ -35,7 +35,7 @@ let view (model:Model) dispatch =
           Panel.panel [] [
             Panel.heading [ ] [ str "Bagtypes"]
             Panel.block [ ] [
-              renderChart2 model.countByBagtypes
+              renderPieChart model.countByBagtypes
             ]
           ]
         ]
