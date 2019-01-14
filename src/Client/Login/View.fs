@@ -4,7 +4,6 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Fulma
-open Fulma.FontAwesome
 
 let view =
     [ Hero.hero [
