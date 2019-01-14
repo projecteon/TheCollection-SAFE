@@ -85,7 +85,8 @@ module.exports = {
         proxy: CONFIG.devServerProxy,
         hot: true,
         inline: true,
-        historyApiFallback: CONFIG.historyApiFallback, // https://stackoverflow.com/questions/37271062/historyapifallback-doesnt-work-in-webpack-dev-server/38207496#38207496
+        // historyApiFallback: CONFIG.historyApiFallback, // https://stackoverflow.com/questions/37271062/historyapifallback-doesnt-work-in-webpack-dev-server/38207496#38207496
+        historyApiFallback: true,
         contentBase: CONFIG.contentBase
     },
     // - fable-loader: transforms F# into JS
