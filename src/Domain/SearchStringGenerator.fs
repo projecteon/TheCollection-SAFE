@@ -7,7 +7,7 @@ module SearchStringGenerator =
     [<Literal>]
     let private NonValidSearchChars = @"[^-&a-z0-9\s]"
 
-    let private replacement = [| "a"; "a"; "a"; "a"; "a"; "a"; "c"; "e"; "e"; "e"; "e"; "i"; "i"; "i"; "i"; "n"; "o"; "o"; "o"; "o"; "o"; "ss"; "u"; "u"; "u"; "u"; "y"; "y" |]
+    let private replacement =  [| "a"; "a"; "a"; "a"; "a"; "a"; "c"; "e"; "e"; "e"; "e"; "i"; "i"; "i"; "i"; "n"; "o"; "o"; "o"; "o"; "o"; "ss"; "u"; "u"; "u"; "u"; "y"; "y" |]
     let private invalidChars = [| 'à'; 'á'; 'â'; 'ã'; 'ä'; 'å'; 'ç'; 'é'; 'è'; 'ê'; 'ë'; 'ì'; 'í'; 'î'; 'ï'; 'ñ'; 'ò'; 'ó'; 'ô'; 'ö'; 'õ'; 'ß'; 'ù'; 'ú'; 'û'; 'ü'; 'ý'; 'ÿ' |]
 
     // https://stackoverflow.com/questions/34985836/index-of-element-in-array-f
