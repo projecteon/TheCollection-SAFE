@@ -39,7 +39,7 @@ let toBarChart (categories: ResizeArray<string> option) (data: ResizeArray<Primi
   }
   axis =
     match categories with
-    | Some x -> Some ( { x = { ``type``= Some "category"; categories = categories }})
+    | Some x -> Some ( { x = { ``type``= Some "category"; categories = categories }; rotated = None })
     | None -> None
 }
 

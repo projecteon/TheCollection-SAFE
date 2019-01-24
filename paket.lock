@@ -634,8 +634,8 @@ GITHUB
     src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs (2e1ba955ffcff32a3aa2638d3dcc4f4057cf7186)
       Fable.Elmish
   remote: projecteon/Fable.C3
-    src/Fable.C3.React/Chart.fs (c06e8dd0a80be2608aac066a4272d9ccbbc3b8c6)
-    src/Fable.C3/Fable.C3.fs (c06e8dd0a80be2608aac066a4272d9ccbbc3b8c6)
+    src/Fable.C3.React/Chart.fs (e4428c3fa6a22ee49cc062a5d46ac1b83404cb00)
+    src/Fable.C3/Fable.C3.fs (e4428c3fa6a22ee49cc062a5d46ac1b83404cb00)
 GROUP Domain
 STORAGE: NONE
 RESTRICTION: == netstandard2.0

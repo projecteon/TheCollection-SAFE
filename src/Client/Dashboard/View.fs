@@ -12,6 +12,7 @@ open Fable.C3
 open Fulma
 
 module P = Fable.Helpers.React.Props
+module C3 = Fable.C3.React
 
 let renderBarChart data =
   match data with
@@ -63,14 +64,14 @@ let view (model:Model) dispatch =
               div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
                 str "Brands"
                 div [][
-                  yield (TransformationsIcon model.countBrands dispatch TransformCountByBagtype)
+                  yield (TransformationsIcon model.countBrands dispatch TransformCountByBrand)
                   yield Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (ReloadBrands)) ] ][Fa.i [ Fa.Solid.SyncAlt ][]]
                 ]
               ]
             ]
             Panel.block [ ] [
               match model.countBrands with
-                | Some x -> yield (Fable.C3React.chart { data = x.data; axis = x.axis; height = 320 })
+                | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
                 | None -> yield null
             ]
           ]
@@ -87,7 +88,7 @@ let view (model:Model) dispatch =
             ]
             Panel.block [ ] [
               match model.countBagtypes with
-              | Some x -> yield (Fable.C3React.chart { data = x.data; axis = x.axis; height = 320 })
+              | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
               | None -> yield null
             ]
           ]
