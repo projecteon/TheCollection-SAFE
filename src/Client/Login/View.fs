@@ -2,6 +2,7 @@ module Client.Login.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Elmish.Browser.Navigation
 
 open Fulma
 
@@ -12,7 +13,7 @@ let view =
         Hero.body [] [
           Container.container [Container.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ]] [
             div [ Class "column is-4 is-offset-4 login" ] [
-              Heading.h3 [ Heading.Modifiers [ Modifier.TextColor IsGrey ] ] [ str "Login" ]
+              Heading.h3 [ Heading.Modifiers [ Modifier.TextColor IsGrey ] ] [ str "The Collection" ]
               Box.box' [] [
                 Image.image [ Image.CustomClass "avatar" ] [
                   img [ Src "/svg/teapot.svg" ]
