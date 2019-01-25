@@ -6,7 +6,9 @@ open Elmish.Browser.Navigation
 
 open Fulma
 
-let view =
+open Types
+
+let view  (model : Model) (dispatch : Msg -> unit) =
     [ Hero.hero [
         Hero.Color IsLight
         Hero.IsFullHeight ] [
@@ -35,7 +37,7 @@ let view =
                       ]
                     ]
                   ]
-                  Button.button [ Button.Color IsInfo; Button.IsFullWidth ][ str "Login"]
+                  Button.button [ Button.Color IsInfo; Button.IsFullWidth; Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Login) ][ str "Login"]
                 ]
               ]
             ]
