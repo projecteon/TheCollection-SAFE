@@ -2,8 +2,8 @@ module Client.Teabags.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Fable.FontAwesome
 open Fulma
-open Fulma.FontAwesome
 
 open Client.Navigation
 open Client.Components.Navbar
@@ -38,10 +38,10 @@ let resultItem (teabag: Teabag) dispatch =
       ]
       yield Card.footer [] [
         yield a [ Class "card-footer-item   "; Href (Client.Navigation.toPath (Page.Teabag (teabag.id.ToString()))); OnClick goToUrl ] [
-          yield Icon.faIcon [ Icon.Size IsSmall; ] [ Fa.icon Fa.I.Pencil ]
+          yield Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
         ]
         yield a [ Class "card-footer-item"; OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] [
-          yield Icon.faIcon [ Icon.Size IsSmall ] [ Fa.icon Fa.I.Search ]
+          yield Icon.icon [ Icon.Size IsSmall ] [ Fa.i [ Fa.Solid.Search ][] ]
         ]
       ]
     ]
@@ -86,7 +86,7 @@ let searchBar (model:Model) dispatch =
           Button.Disabled (model.searchedTerms.IsNone)
           Button.Color IsPrimary
           Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Search)
-        ] [ Icon.faIcon [ ] [ Fa.icon Fa.I.Search ] ]
+        ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Search ][] ] ]
       ]
     ]
   ]

@@ -2,8 +2,8 @@ module Client.Components.ComboBox.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Fable.FontAwesome
 open Fulma
-open Fulma.FontAwesome
 
 open Client.Components.ComboBox.Types
 
@@ -44,15 +44,16 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
 
 let inputIcon model =
   match model.Value with
-  | Some x -> Icon.faIcon [
+  | Some x -> Icon.icon [
         yield Icon.Size IsSmall
         yield Icon.IsRight
         if model.Value.IsSome then
           yield Icon.Modifiers [Modifier.TextColor IsSuccess]] [
-      match model.HasFocus, model.IsSearching with
-      | true, false -> yield Fa.icon Fa.I.Search
-      | true, true -> yield Fa.icon Fa.I.CircleONotch
-      | _ -> yield Fa.icon Fa.I.Check
+        Fa.i [ match model.HasFocus, model.IsSearching with
+                | true, false -> yield Fa.Solid.Search
+                | true, true -> yield Fa.Solid.CircleNotch
+                | _ -> yield Fa.Solid.Check ] [ ]
+      
     ]
   | None -> null
 
@@ -77,7 +78,7 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
     ]
     Field.div [ Field.HasAddons ] [
       Control.p [ ] [
-        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.faIcon [ ] [ Fa.icon Fa.I.Close ] ]
+        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ][] ] ]
       ]
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
         yield inputElement model dispatch

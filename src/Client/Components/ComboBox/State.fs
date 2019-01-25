@@ -20,7 +20,7 @@ let queryString model =
 
 // https://github.com/SAFE-Stack/SAFE-Search
 // https://github.com/iyegoroff/fable-import-debounce
-let getBrandsCmd model =
+let getCmd model =
   Cmd.ofPromise
     (Fetch.fetchAs<RefValue list> (sprintf "%s%s" model.ApiPath (queryString model)) (Decode.Auto.generateDecoder<RefValue list>()) )
     []
@@ -86,4 +86,4 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
       (FetchSuggestions >> Cmd.ofMsg)
   | FetchSuggestions text ->
     let nextModel = { currentModel with IsSearching = true }
-    nextModel, getBrandsCmd currentModel
+    nextModel, getCmd currentModel

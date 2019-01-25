@@ -15,8 +15,8 @@
     <Compile Include="Server.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
   <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="copy C:\Users\$(Username)\.nuget\packages\system.data.sqlclient\4.6\runtimes\win\lib\netstandard2.0\System.Data.SqlClient.dll bin\Debug\netcoreapp2.1\" />
   </Target> -->
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

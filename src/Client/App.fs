@@ -26,9 +26,13 @@ let viewPage model dispatch =
 
 /// Constructs the view for the application given the model.
 let view model dispatch =
+  match model.PageModel with
+  | PageModel.LoginPageModel ->
+    div [ Class "loginPage" ] (viewPage model dispatch)
+  | _ ->
     div [Class "container"] [
-        Client.Components.Navbar.view()()
-        div [ ] (viewPage model dispatch)
+      Client.Components.Navbar.view()()
+      div [ ] (viewPage model dispatch)
     ]
 
 

@@ -3,6 +3,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.0.0",
         "@babel/runtime": "^7.0.0",
+        "c3": "0.6.11",
         "react": "16.5.2",
         "react-bootstrap": "0.32.4",
         "react-dom": "16.5.2",
@@ -17,6 +18,7 @@
         "concurrently": "4.0.1",
         "fable-compiler": "^2.0.0",
         "fable-loader": "^2.0.0",
+        "fontawesome": "5.6.3",
         "terser-webpack-plugin": "^1.1.0",
         "remotedev": "0.2.7",
         "webpack": "^4.20.2",
