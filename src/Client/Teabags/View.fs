@@ -10,7 +10,6 @@ open Client.Components.Navbar
 open Client.FileUrlHandler
 open Client.Teabags.Types
 open Services.Dtos
-open Domain.Types
 
 let getDisplayValue (model: Model) =
   match model.searchedTerms with
@@ -18,17 +17,17 @@ let getDisplayValue (model: Model) =
     | _ -> ""
 
 let resultItem (teabag: Teabag) dispatch =
-  div [ Key (teabag.id.ToString()); Class "column is-one-fifth-desktop is-full-mobile" ] [
-    yield Card.card [] [
-      yield Card.image [] [
-        yield figure [] [
+  Column.column [ Column.Props [Key (teabag.id.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
+    Card.card [] [
+      Card.image [] [
+        figure [] [
             img [ Src (getUrl teabag.imageid) ]
         ]
       ]
-      yield Card.content [] [
-        yield p [ Class "title is-4" ] [ str teabag.brand.Value.description ]
-        yield p [ Class "subtitle is-6" ] [ str teabag.flavour ]
-        yield Content.content [ ] [
+      Card.content [] [
+        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.Value.description ]
+        Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ][ str teabag.flavour ]
+        Content.content [ ] [
           div [] [ small [] [ str teabag.serie ] ]
           div [] [ small [] [ str teabag.hallmark ] ]
           div [] [ small [] [ str teabag.serialnumber ] ]
@@ -36,12 +35,12 @@ let resultItem (teabag: Teabag) dispatch =
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
       ]
-      yield Card.footer [] [
-        yield a [ Class "card-footer-item   "; Href (Client.Navigation.toPath (Page.Teabag (teabag.id.ToString()))); OnClick goToUrl ] [
-          yield Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
+      Card.footer [] [
+        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.ToString()))); OnClick goToUrl ] ][
+          Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
         ]
-        yield a [ Class "card-footer-item"; OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] [
-          yield Icon.icon [ Icon.Size IsSmall ] [ Fa.i [ Fa.Solid.Search ][] ]
+        Card.Footer.a [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
+          Icon.icon [ Icon.Size IsSmall ] [ Fa.i [ Fa.Solid.Search ][] ]
         ]
       ]
     ]
@@ -75,11 +74,11 @@ let resultCount model =
 
 let searchBar (model:Model) dispatch =
   Field.div [ ] [
-    yield resultCount model
-    yield searchError model
-    yield Field.div [ Field.HasAddons ] [
+    resultCount model
+    searchError model
+    Field.div [ Field.HasAddons ] [
       Control.p [ Control.IsExpanded; Control.IsLoading model.isLoading ] [
-        yield inputElement model dispatch
+        inputElement model dispatch
       ]
       Control.p [ ] [
         Button.button [
@@ -96,19 +95,18 @@ let zoomImage model dispatch =
   | Some x ->
     Modal.modal [ Modal.IsActive true ]
       [ Modal.background [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] ] [ ]
-        Modal.content [ ]
-          [ img [ Src (getUrl x) ] ]
+        Modal.content [ ] [ img [ Src (getUrl x) ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
   | None -> null
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [
-    yield div [] [
-      yield searchBar model dispatch
-      yield div [ Class "columns is-mobile is-multiline" ] [
-        yield searchResult model dispatch
+    div [] [
+      searchBar model dispatch
+      Columns.columns [ Columns.IsMultiline; Columns.IsMobile ] [
+         searchResult model dispatch
       ]
-      yield zoomImage model dispatch
+      zoomImage model dispatch
     ]
   ]

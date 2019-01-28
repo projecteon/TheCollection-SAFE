@@ -41,8 +41,8 @@ let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
 let view (model:Model) dispatch =
     [
       br []
-      div [ P.Class "columns is-multiline dashboard"] [
-        div [ P.Class "column is-one-third-desktop is-full-mobile" ] [
+      Columns.columns [ Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
+        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [ str "Brands"]
             Panel.block [ ] [
@@ -50,7 +50,7 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
-        div [ P.Class "column is-one-third-desktop is-full-mobile" ] [
+        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [ str "Bagtypes"]
             Panel.block [ ] [
@@ -58,7 +58,7 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
-        div [ P.Class "column is-one-third-desktop is-full-mobile"; ][
+        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [
               div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
@@ -76,7 +76,7 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
-        div [ P.Class "column is-one-third-desktop is-full-mobile"; ][
+        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [
               div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
@@ -94,4 +94,5 @@ let view (model:Model) dispatch =
           ]
         ]
       ]
-      br [] ]
+      br []
+    ]

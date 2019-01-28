@@ -81,9 +81,9 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
         Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ][] ] ]
       ]
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
-        yield inputElement model dispatch
-        yield inputIcon model
-        yield viewChoices model dispatch
+        inputElement model dispatch
+        inputIcon model
+        viewChoices model dispatch
       ]
     ]
   ]
@@ -94,8 +94,8 @@ let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
       str model.Label
     ]
     Control.div [ Control.IsExpanded; Control.HasIconRight ] [
-      yield inputElement model dispatch
-      yield inputIcon model
-      yield viewChoices model dispatch
+      inputElement model dispatch
+      inputIcon model
+      viewChoices model dispatch
     ]
   ]

@@ -5,6 +5,8 @@ open Elmish.Browser.Navigation
 open Elmish.React
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Fulma
+
 
 open ClientTypes
 open State
@@ -30,7 +32,7 @@ let view model dispatch =
   | PageModel.LoginPageModel m ->
     div [ Class "loginPage" ] (viewPage model dispatch)
   | _ ->
-    div [Class "container"] [
+    Container.container [ ] [
       Client.Components.Navbar.view()()
       div [ ] (viewPage model dispatch)
     ]

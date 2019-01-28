@@ -23,3 +23,5 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     model, Cmd.ofMsg (Msg.LoginSuccess { UserName = "Test"; Token = "JWT" })
   | LoginSuccess userData ->
     model, ((Navigation.newUrl (toPath Page.Dashboard)))
+  | LoginFailure exn ->
+    model, Cmd.none

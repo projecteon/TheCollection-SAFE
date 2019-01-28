@@ -35,19 +35,19 @@ let viewLink page description =
 
 let brand =
   div [ Class "navbar-brand" ] [
-      yield R.a [ Class "navbar-item"; Href "\\"] [
-        yield img [ Src "/svg/teapot.svg"; Style [Width 30; Height 30;]; Alt ""]
+      R.a [ Class "navbar-item"; Href "\\"] [
+        img [ Src "/svg/teapot.svg"; Style [Width 30; Height 30;]; Alt ""]
       ]
-      yield a [
+      a [
           Role "button"
           Class "navbar-burger burger"
           AriaLabel "menu"
           AriaExpanded false
           DataTarget "navMenu"
         ] [
-          yield span [AriaHidden true] []
-          yield span [AriaHidden true] []
-          yield span [AriaHidden true] []
+          span [AriaHidden true] []
+          span [AriaHidden true] []
+          span [AriaHidden true] []
       ]
   ]
 
@@ -57,9 +57,9 @@ let navMenu =
       Class "navbar-menu"
     ] [
       div [ Class "navbar-end" ] [
-        yield viewLink Page.Dashboard "Dashboard"
-        yield viewLink Page.Teabags "Teabags"
-        yield viewLink Page.Login "Logout"
+        viewLink Page.Dashboard "Dashboard"
+        viewLink Page.Teabags "Teabags"
+        viewLink Page.Login "Logout"
       ]
     ]
 
@@ -71,8 +71,8 @@ let inline private clientView () =
           AriaLabel "main naviation"
         ] [
           div [Class "container"] [
-            yield brand
-            yield navMenu
+            brand
+            navMenu
           ]
         ]
 

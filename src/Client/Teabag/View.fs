@@ -8,18 +8,7 @@ open Client.Components
 open Client.FileUrlHandler
 open Client.Teabag.Types
 open Services.Dtos
-
-type AutoComplete =
- | Off
- | On
- override this.ToString () =
-        match this with
-        | Off -> "off"
-        | On -> "on"
-
-type HTMLAttr =
-     | [<CompiledName("autocomplete")>] AutoComplete of AutoComplete
-     interface IHTMLProp
+open HtmlProps
 
 let form (teabag: Teabag) (model:Model) dispatch =
     form [AutoComplete Off] [
@@ -62,21 +51,21 @@ let form (teabag: Teabag) (model:Model) dispatch =
 
 let view (model:Model) (dispatch: Msg -> unit) =
     [
-        yield div [ Class "columns is-mobile is-multiline" ] [
-            match model.data with
-            | Some x ->
-                yield div [ Class "column is-half-desktop is-full-mobile" ] [
-                    yield Content.content [] []
-                    yield img [ Src (getUrl x.imageid) ]
-                ]
-                yield div [ Class "column is-half-desktop is-full-mobile" ] [
-                    yield Content.content [] []
-                    yield Card.card [] [ Card.content [] [ form x model dispatch ] ]
-                ]
-            | _ ->
-                yield div [ Class "column is-centered" ] [
-                    yield Content.content [] []
-                    yield div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
-                ]
-        ]
+      yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile ] [
+          match model.data with
+          | Some x ->
+              yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
+                  Content.content [] []
+                  img [ Src (getUrl x.imageid) ]
+              ]
+              yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
+                  Content.content [] []
+                  Card.card [] [ Card.content [] [ form x model dispatch ] ]
+              ]
+          | _ ->
+              yield Column.column [ ] [
+                  yield Content.content [] []
+                  yield div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
+              ]
+      ]
     ]
