@@ -7,7 +7,7 @@ open Fable.C3
 open Thoth.Json
 
 open Client.Dashboard.Types
-open Domain.Types
+open Services.Dtos
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
 let getCountByBrandsCmd =

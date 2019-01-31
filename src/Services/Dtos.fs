@@ -1,7 +1,5 @@
 module Services.Dtos
 
-open Domain.Types
-
 type JWT = string
 type UserData =
   { UserName : string
@@ -17,6 +15,10 @@ type RefValue = {
   description: string;
 };
 
+
+type DbId = int
+type ImageId =  DbId option
+
 type Teabag = {
   id: int;
   brand: RefValue option;
@@ -27,4 +29,9 @@ type Teabag = {
   country: RefValue option;
   serialnumber: string;
   imageid: ImageId;
+}
+
+type CountBy<'a> = {
+  count: int
+  description: 'a
 }

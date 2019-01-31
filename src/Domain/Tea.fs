@@ -1,7 +1,5 @@
 namespace Domain.Tea
 
-open NodaTime
-
 open Domain.Searchable
 open Domain.Types
 
@@ -35,15 +33,5 @@ type Teabag = {
   [<Searchable()>] country: RefValue option;
   [<Searchable()>] serialnumber: SerialNumber;
   imageid: ImageId;
-  created: Instant;
+  created: CreatedDate;
 }
-
-type Result<'TSuccess,'TFailure> =
-    | Success of 'TSuccess
-    | Failure of 'TFailure
-
-module ROP =
-  let bind switchFunction twoTrackInput =
-    match twoTrackInput with
-    | Success s -> switchFunction s
-    | Failure f -> Failure f

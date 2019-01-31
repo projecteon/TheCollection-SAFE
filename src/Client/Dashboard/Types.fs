@@ -1,7 +1,7 @@
 module Client.Dashboard.Types
 
 open Fable.C3
-open Domain.Types
+open Services.Dtos
 
 type DataCount = Ten=10 | Twenty=20 
 
