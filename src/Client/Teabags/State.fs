@@ -2,25 +2,29 @@ module Client.Teabags.State
 
 open Elmish
 open Fable.PowerPack
+open Fable.PowerPack.Fetch
 open Thoth.Json
 
+open Client.Util
 open Client.Teabags.Types
 open Services.Dtos
-open Domain.Types
 
 let queryString model =
     match model.searchedTerms with
     | Some x -> sprintf "?term=%s&page=%i" x model.page
     | _ -> ""
 
-let getTeabagsCmd model =
+let getTeabagsCmd model (token: JWT) =
     Cmd.ofPromise
         (Fetch.fetchAs<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()) )
-        []
+        [Fetch.requestHeaders [
+          HttpRequestHeaders.Authorization ("Bearer " + (getToken token))
+          HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        ]]
         SearchSuccess
         SearchError
 
-let init () =
+let init (userData: UserData option) =
     let initialModel = {
       result = []
       resultCount=None
@@ -29,6 +33,7 @@ let init () =
       zoomImageId = None
       page = int64 0
       isLoading = false
+      userData = userData
     }
     initialModel
 
@@ -40,7 +45,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     | Search ->
       let result = validateSearchTerm model
       match result with
-      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, getTeabagsCmd model
+      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryAuthorizationRequest (getTeabagsCmd model) model.userData
       | Failure x -> {model with searchError = Some x}, Cmd.none
     | SearchSuccess result ->
         printfn "teabags update"

@@ -8,6 +8,7 @@ type Model = {
   brandCmp: ComboBox.Types.Model
   bagtypeCmp: ComboBox.Types.Model
   countryCmp: ComboBox.Types.Model
+  userData: UserData option
 }
 
 let EmptyRefValue = {

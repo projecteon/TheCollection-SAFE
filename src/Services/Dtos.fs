@@ -1,9 +1,12 @@
 module Services.Dtos
 
-type JWT = string
-type UserData =
-  { UserName : string
-    Token    : JWT }
+type Email = Email of string
+type JWT = JWT of string
+
+type UserData = {
+  UserName : Email
+  Token    : JWT
+}
 
 type SearchResult<'a> = {
   data: 'a
@@ -35,3 +38,7 @@ type CountBy<'a> = {
   count: int
   description: 'a
 }
+
+let getToken jwtToken =
+  match jwtToken with
+  | JWT token -> token

@@ -3,26 +3,38 @@ module Client.Dashboard.State
 open Elmish
 open Fable.Core
 open Fable.PowerPack
+open Fable.PowerPack.Fetch
+
 open Fable.C3
 open Thoth.Json
 
+open Client.Util
 open Client.Dashboard.Types
 open Services.Dtos
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
-let getCountByBrandsCmd =
+let getCountByBrandsCmd (token: JWT) =
   Cmd.ofPromise
     (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/brands" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
-    []
+    [Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + (getToken token))
+        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+    ]]
     GetCountByBrandsSuccess
     GetCountByBrandsError
 
-let getCountBybagtypesCmd =
-  Cmd.ofPromise
-    (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
-    []
-    GetCountByBagtypesSuccess
-    GetCountByBagtypesError
+let getCountBybagtypesCmd (userData: UserData option) =
+  match userData with
+  | Some x ->
+    Cmd.ofPromise
+      (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
+      [Fetch.requestHeaders [
+          HttpRequestHeaders.Authorization ("Bearer " + (getToken x.Token))
+          HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+      ]]
+      GetCountByBagtypesSuccess
+      GetCountByBagtypesError
+    | _ -> Cmd.none
 
 let mapToData (countBy: CountBy<string> list) =
   countBy
@@ -59,14 +71,15 @@ let transform (chart: ChartConfig option) (tranformation: ChartTransformation) =
     | BarToPie -> toPieChart x.data.columns
   | None -> None
 
-let init () =
+let init (userData: UserData option) =
     let initialModel = {
       countByBrands = None
       countByBagtypes = None
       countBrands = None
       countBagtypes = None
+      userData = userData
     }
-    initialModel, getCountByBrandsCmd, getCountBybagtypesCmd
+    initialModel, tryAuthorizationRequest getCountByBrandsCmd userData, getCountBybagtypesCmd userData
 
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
@@ -80,4 +93,4 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     {model with countBrands = (transform model.countBrands transformation)}, Cmd.none
   | TransformCountByBagtype transformation ->
     {model with countBagtypes = (transform model.countBagtypes transformation)}, Cmd.none
-  | ReloadBrands -> model, getCountByBrandsCmd
+  | ReloadBrands -> model, tryAuthorizationRequest getCountByBrandsCmd model.userData

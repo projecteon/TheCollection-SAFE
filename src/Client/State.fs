@@ -6,6 +6,7 @@ open Fable.Import
 
 open Services.Dtos
 open ClientTypes
+open Client.Util
 open Client.Navigation
 
 let handleNotFound (model: Model) =
@@ -29,15 +30,15 @@ let urlUpdate (result:Page option) (model: Model) =
     { model with PageModel = LoginPageModel m }, (Navigation.modifyUrl (toPath Page.Login))
 
   | Some Page.Teabags ->
-    let m = Client.Teabags.State.init()
+    let m = Client.Teabags.State.init(model.User)
     { model with PageModel = TeabagsPageModel m }, Cmd.none
 
   | Some (Page.Teabag id) ->
-    let m, cmd = Client.Teabag.State.init()
-    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (cmd id)
+    let m, cmd = Client.Teabag.State.init(model.User)
+    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryAuthorizationRequest (cmd id) model.User)
 
   | Some Page.Dashboard ->
-    let m, cmd, cmd2 = Client.Dashboard.State.init()
+    let m, cmd, cmd2 = Client.Dashboard.State.init(model.User)
     { model with PageModel = DashboardPageModel m },  Cmd.batch [   Cmd.map DashboardMsg cmd
                                                                     Cmd.map DashboardMsg cmd2 ]
 

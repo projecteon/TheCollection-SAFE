@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Generic.fs" />
+    <Compile Include="Security.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />

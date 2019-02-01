@@ -4,14 +4,19 @@ open System.Threading.Tasks
 open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.IdentityModel.Tokens
+open System.Text
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
-open Services.Dtos
+open Thoth.Json
 
+open Services.Dtos
 open TeaCollection.Infrastructure.MsSql
+open Security
 
 open Giraffe.Serialization
+open Microsoft.AspNetCore.Authentication.JwtBearer
 
 let publicPath = Path.GetFullPath "../Client/public"
 let port = 8085us
@@ -41,10 +46,11 @@ let thumbnailHandler imageId : HttpHandler =
 
 let webApp =
   choose [
+    POST >=> route "/api/token" >=> handlePostToken
+    GET >=> routef "/api/thumbnails/%i" thumbnailHandler
     subRoute "/api"
       (choose [
-        GET >=> choose [
-          routef "/thumbnails/%i" thumbnailHandler
+        GET >=> authorize >=> choose [
           route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags)
           routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags)
           route "/teabags/countby/brands" >=> (API.Generic.handleGetAll (TeabagRepository.brandCount DbContext.ConnectionString))
@@ -58,9 +64,10 @@ let webApp =
   ]
 
 let configureSerialization (services:IServiceCollection) =
-  let fableJsonSettings = Newtonsoft.Json.JsonSerializerSettings()
-  fableJsonSettings.Converters.Add(Fable.JsonConverter())
-  services.AddSingleton<IJsonSerializer>(NewtonsoftJsonSerializer fableJsonSettings)
+  //let fableJsonSettings = Newtonsoft.Json.JsonSerializerSettings()
+  //fableJsonSettings.Converters.Add(Fable.JsonConverter())
+  //services.AddSingleton<IJsonSerializer>(NewtonsoftJsonSerializer fableJsonSettings)
+  services.AddSingleton<IJsonSerializer>(Thoth.Json.Giraffe.ThothSerializer())
 
 let app = application {
   url ("http://0.0.0.0:" + port.ToString() + "/")
@@ -69,6 +76,7 @@ let app = application {
   use_static publicPath
   service_config configureSerialization
   use_gzip
+  use_jwt_authentication secret "jwtwebapp.net"
 }
 
 run app

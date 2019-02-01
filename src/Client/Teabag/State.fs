@@ -2,6 +2,7 @@ module Client.Teabag.State
 
 open Elmish
 open Fable.PowerPack
+open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Client.Components
@@ -11,14 +12,17 @@ open Services.Dtos
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
 
-let getTeabagCmd id =
+let getTeabagCmd id (token: JWT) =
   Cmd.ofPromise
     (Fetch.fetchAs<Teabag> (sprintf "/api/teabags/%s" id) (Decode.Auto.generateDecoder<Teabag>()) )
-    []
+    [Fetch.requestHeaders [
+      HttpRequestHeaders.Authorization ("Bearer " + (getToken token))
+      HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+    ]]
     GetSuccess
     GetError
 
-let init () =
+let init (userData: UserData option) =
     let brandCmp = ComboBox.State.init("Brand", "/api/brands")
     let bagtypeCmp = ComboBox.State.init("Bagtype", "/api/bagtypes")
     let countryCmp = ComboBox.State.init("Country", "/api/country")
@@ -27,6 +31,7 @@ let init () =
       brandCmp = brandCmp
       bagtypeCmp = bagtypeCmp
       countryCmp = countryCmp
+      userData = userData
     }
     initialModel, getTeabagCmd
 

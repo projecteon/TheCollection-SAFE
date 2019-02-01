@@ -19,6 +19,7 @@ type Model = {
   countByBagtypes: CountBy<string> list option
   countBrands: ChartConfig option 
   countBagtypes: ChartConfig option
+  userData: UserData option
 }
 
 type Msg =

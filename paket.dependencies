@@ -32,6 +32,7 @@ group Server
     nuget FSharp.Core
     nuget Saturn
     nuget Fable.JsonConverter
+    nuget Thoth.Json.Giraffe
 
 group Client
     source https://api.nuget.org/v3/index.json

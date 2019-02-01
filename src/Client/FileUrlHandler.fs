@@ -1,10 +1,8 @@
 module Client.FileUrlHandler
 
-open Domain.Types
-
 type FileUrl = string
 
-let getUrl (id: ImageId): FileUrl =
+let getUrl (id: int option): FileUrl =
   match id with
   | Some x -> sprintf "/api/thumbnails/%i" x
   | None -> "/api/thumbnails/0"
