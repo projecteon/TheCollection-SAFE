@@ -1,6 +1,7 @@
 module Client.Teabag.Types
 
 open Client.Components
+open Domain.SharedTypes
 open Services.Dtos
 
 type Model = {
@@ -11,13 +12,13 @@ type Model = {
   userData: UserData option
 }
 
-let EmptyRefValue = {
-  id = 0
+let EmptyRefValue: RefValue = {
+  id = DbId 0
   description = ""
 }
 
 let NewTeabag = {
-    id = 0
+    id = DbId 0
     brand = Some EmptyRefValue
     serie = ""
     flavour = ""
@@ -25,7 +26,7 @@ let NewTeabag = {
     bagtype = Some EmptyRefValue
     country = Some EmptyRefValue
     serialnumber = ""
-    imageid = None;
+    imageid = ImageId None;
 }
 
 type Msg =

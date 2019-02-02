@@ -52,26 +52,26 @@ let update msg model =
   match msg, model.PageModel with
   | TeabagsMsg msg, TeabagsPageModel m ->
     let m, cmd = Client.Teabags.State.update msg m
-    { model with
-        PageModel = TeabagsPageModel m }, Cmd.map TeabagsMsg cmd
+    { model with PageModel = TeabagsPageModel m }, Cmd.map TeabagsMsg cmd
   | TeabagsMsg _, _ ->
     model, Cmd.none
   | TeabagMsg msg, TeabagPageModel m ->
     let m, cmd = Client.Teabag.State.update msg m
-    { model with
-        PageModel = TeabagPageModel m }, Cmd.map TeabagMsg cmd
+    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg cmd
   | TeabagMsg _, _ ->
     model, Cmd.none
   | DashboardMsg msg, DashboardPageModel m ->
     let m, cmd = Client.Dashboard.State.update msg m
-    { model with
-        PageModel = DashboardPageModel m }, Cmd.map DashboardMsg cmd
+    { model with PageModel = DashboardPageModel m }, Cmd.map DashboardMsg cmd
   | DashboardMsg _, _ ->
     model, Cmd.none
   | LoginMsg msg, LoginPageModel m ->
-    let m, cmd = Client.Login.State.update msg m
-    let user: UserData option = match msg with | Client.Login.Types.Msg.LoginSuccess userData -> Some userData | _ -> None
-    { model with
-        PageModel = LoginPageModel m; User = user }, Cmd.map LoginMsg cmd
+    let m, cmd, exmsg = Client.Login.State.update msg m
+    //let user: UserData option = match msg with | Client.Login.Types.Msg.LoginSuccess userData -> Some userData | _ -> None
+    let newModel =
+      match exmsg with
+      | Client.Login.Types.ExternalMsg.NoOp -> model
+      | Client.Login.Types.ExternalMsg.SignedIn userData -> { model with User = Some userData }
+    { newModel with PageModel = LoginPageModel m }, Cmd.map LoginMsg cmd
   | LoginMsg _, _ ->
     model, Cmd.none

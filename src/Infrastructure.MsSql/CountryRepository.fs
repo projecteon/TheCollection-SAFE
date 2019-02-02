@@ -5,6 +5,7 @@ open FSharp.Control.Tasks.V2
 
 open FSharp.Data
 open DbContext
+open Domain.SharedTypes
 open Domain.Tea
 open Search
 open Util
@@ -14,7 +15,7 @@ module CountryRepository =
     let  QrySQL = "
         DECLARE @sName varchar(50)
         SET @sName = @name
-        
+
         SELECT a.id, a.s_name
         FROM tcs_country a
         WHERE 1=1
@@ -29,7 +30,7 @@ module CountryRepository =
         return cmd.Execute(nameFilter |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
-            id = x.id
+            id = DbId x.id
             Country.name = x.s_name
           })
         |> Seq.toList
@@ -51,7 +52,7 @@ module CountryRepository =
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
-              id = x.id
+              id = DbId x.id
               Country.name = x.s_name
             }
           | _ -> None
@@ -70,5 +71,5 @@ module CountryRepository =
         let cmd = new InsertCountry(connectiongString)
         cmd.Execute(country.name)
         |> function
-            | Some x -> Some { country with id = x }
+            | Some x -> Some { country with id = DbId x }
             | _ -> None

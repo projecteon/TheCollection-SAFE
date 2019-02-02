@@ -4,6 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Include="SharedTypes.fs" />
         <Compile Include="ReflectionUtil.fs" />
         <Compile Include="Searchable.fs" />
         <Compile Include="SearchStringGenerator.fs" />

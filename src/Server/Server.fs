@@ -64,9 +64,6 @@ let webApp =
   ]
 
 let configureSerialization (services:IServiceCollection) =
-  //let fableJsonSettings = Newtonsoft.Json.JsonSerializerSettings()
-  //fableJsonSettings.Converters.Add(Fable.JsonConverter())
-  //services.AddSingleton<IJsonSerializer>(NewtonsoftJsonSerializer fableJsonSettings)
   services.AddSingleton<IJsonSerializer>(Thoth.Json.Giraffe.ThothSerializer())
 
 let app = application {

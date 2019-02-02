@@ -8,6 +8,7 @@ open NodaTime
 open DbContext
 open Domain.Tea
 open Domain.Types
+open Domain.SharedTypes
 open Search
 open Util
 open Mapping
@@ -27,7 +28,7 @@ module TeabagRepository =
     type TeabagById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
 
     let mapByIdData (record: TeabagById.Record) = {
-        id = record.id
+        id = DbId record.id
         brand =  (mapRefValue record.ro_brand record.t_ro_brand)
         bagtype = (mapRefValue record.ro_bagtype record.t_ro_bagtype)
         country =  (mapRefValue record.rs_country record.t_rs_country)
@@ -35,7 +36,7 @@ module TeabagRepository =
         hallmark = record.s_hallmark
         serie = record.s_serie
         serialnumber = record.s_serialnumber
-        imageid = record.rf_image
+        imageid = ImageId (mapDbId record.rf_image)
         created = mapInstant <| record.d_created
       }
 
@@ -76,7 +77,7 @@ module TeabagRepository =
     type TeabagQry = SqlCommandProvider<SQLQry, ConnectionString>
 
     let mapData (record: TeabagQry.Record) = {
-        id = record.id
+        id = DbId record.id
         brand =  (mapRefValue record.ro_brand record.t_ro_brand)
         bagtype = (mapRefValue record.ro_bagtype record.t_ro_bagtype)
         country =  (mapRefValue record.rs_country record.t_rs_country)
@@ -84,7 +85,7 @@ module TeabagRepository =
         hallmark = record.s_hallmark
         serie = record.s_serie
         serialnumber = record.s_serialnumber
-        imageid = record.rf_image
+        imageid = ImageId (mapDbId record.rf_image)
         created = mapInstant <| record.d_created
       }
 

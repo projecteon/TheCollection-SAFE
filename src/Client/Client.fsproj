@@ -7,6 +7,7 @@
         <Compile Include="..\..\paket-files\client\CompositionalIT\fshelpers\src\FsHelpers\Elmish.Debounce\Elmish.Debounce.fs" Link="Elmish.Debounce.fs" />
         <Compile Include="..\..\paket-files\client\projecteon\Fable.C3\src\Fable.C3\Fable.C3.fs" Link="Fable.C3.fs" />
         <Compile Include="..\..\paket-files\client\projecteon\Fable.C3\src\Fable.C3.React\Chart.fs" Link="Chart.fs" />
+        <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="../Services/Dtos.fs" />
         <Compile Include="HtmlProps.fs" />
         <Compile Include="Util.fs" />

@@ -1,6 +1,7 @@
 namespace Domain.Tea
 
 open Domain.Searchable
+open Domain.SharedTypes
 open Domain.Types
 
 type Brand = {

@@ -1,5 +1,6 @@
 module Client.Teabags.Types
 
+open Domain.SharedTypes
 open Services.Dtos
 
 type SearchResult = {

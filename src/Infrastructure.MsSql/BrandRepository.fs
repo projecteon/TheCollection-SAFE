@@ -5,6 +5,7 @@ open FSharp.Control.Tasks.V2
 
 open FSharp.Data
 open DbContext
+open Domain.SharedTypes
 open Domain.Tea
 open Search
 open Util
@@ -29,7 +30,7 @@ module BrandRepository =
         return cmd.Execute(nameFilter |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
-            id = x.id
+            id = DbId x.id
             Brand.name = x.s_name
         })
         |> Seq.toList
@@ -50,7 +51,7 @@ module BrandRepository =
         cmd.Execute(id)
         |> function
             | Some x -> Some {
-                    id = x.id
+                    id = DbId x.id
                     Brand.name = x.s_name
                 }
             | _ -> None
@@ -69,6 +70,6 @@ module BrandRepository =
         let cmd = new InsertBrand(connectiongString)
         return cmd.Execute(brand.name)
         |> function
-            | Some x -> Some { brand with id = x }
+            | Some x -> Some { brand with id = DbId x }
             | _ -> None
       }
