@@ -67,7 +67,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   printf "update login"
   match msg with
   | ChangeUserName data ->
-    { model with userName = data }, Cmd.none, NoOp
+    { model with userName = data }, Cmd.ofMsg Validate, NoOp
   | ChangePassword data ->
      { model with password = data }, Cmd.ofMsg Validate, NoOp
   | Validate ->
