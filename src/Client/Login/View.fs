@@ -9,11 +9,7 @@ open Fulma
 open Types
 open HtmlProps
 open Client.Login
-
-let private getDisplayValue (value: string option) =
-  match value with
-  | Some x -> x
-  | _ -> ""
+open Domain.SharedTypes
 
 let private loginBtnContent model =
       if model.isWorking then Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
@@ -47,8 +43,8 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       yield Input.email [
                         yield Input.Option.Id "email"
                         yield Input.Placeholder "your@email.com"
-                        yield Input.Value (getDisplayValue model.userName)
-                        yield Input.OnChange (fun ev -> dispatch (ChangeUserName (Some ev.Value)))
+                        yield Input.Value model.userName.String
+                        yield Input.OnChange (fun ev -> dispatch (ChangeUserName (EmailAddress ev.Value)))
                         if (List.isEmpty model.userNameError = false) then
                           yield Input.Color IsDanger
                         else if model.hasTriedToLogin then
@@ -66,8 +62,8 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Input.password [
                         yield Input.Option.Id "password"
                         yield Input.Placeholder (sprintf "password")
-                        yield Input.Value (getDisplayValue model.password)
-                        yield Input.OnChange (fun ev -> dispatch (ChangePassword (Some ev.Value)))
+                        yield Input.Value model.password.String
+                        yield Input.OnChange (fun ev -> dispatch (ChangePassword (Password ev.Value)))
                         if (List.isEmpty model.passwordError = false) then
                           yield Input.Color IsDanger
                         else if model.hasTriedToLogin then

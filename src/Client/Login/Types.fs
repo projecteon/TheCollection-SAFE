@@ -1,11 +1,12 @@
 module Client.Login.Types
 
+open Domain.SharedTypes
 open Services.Dtos
 
 type Model = {
-  userName: string option
+  userName: EmailAddress
   userNameError: string list
-  password: string option
+  password: Password
   passwordError: string list
   isWorking: bool
   loginError: string option
@@ -17,8 +18,8 @@ type ExternalMsg =
   | SignedIn of UserData
 
 type Msg =
-  | ChangeUserName of string option
-  | ChangePassword of string option
+  | ChangeUserName of EmailAddress
+  | ChangePassword of Password
   | Validate
   | ValidateAndLogin 
   | Login

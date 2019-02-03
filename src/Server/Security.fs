@@ -49,17 +49,9 @@ let handleGetSecured =
         let email = ctx.User.FindFirst ClaimTypes.NameIdentifier
         text ("User " + email.Value + " is authorized to access this resource.") next ctx
 
-let private unboxEmailAdress emailAddress =
-  match emailAddress with
-  | EmailAddress emailAddress -> emailAddress
-
-let private unboxPassword password =
-  match password with
-  | Password password -> password
-
-let validateUser loginModel =
-  if (unboxEmailAdress loginModel.Email) = "spro@outlook.com" && (unboxPassword loginModel.Password) = "appmaster" then true
-  else if (unboxEmailAdress loginModel.Email) = "l.wolterink@hotmail.com" && (unboxPassword loginModel.Password) = "teamaster" then true
+let validateUser (loginModel: LoginViewModel) =
+  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then true
+  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then true
   else false
 
 let handlePostToken =
@@ -68,7 +60,7 @@ let handlePostToken =
             let! model = ctx.BindJsonAsync<LoginViewModel>()
             match (validateUser model) with
             | true -> 
-              let tokenResult = generateToken (getEmail model.Email)
+              let tokenResult = generateToken model.Email.String
               return! Successful.OK tokenResult next ctx
             | _ -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" "Invalid username or password!") next ctx 
         }

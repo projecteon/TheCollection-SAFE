@@ -7,12 +7,8 @@ open Client.Util
 open Client.Login.Types
 open Client.Navigation
 open Services.Dtos
-open Services
 open Domain.SharedTypes
-open Services
-open Client.Login
-open Services
-
+open Domain.Validation
 
 let isValid (model: Model) =
   List.isEmpty model.userNameError && List.isEmpty model.passwordError
@@ -29,18 +25,16 @@ let private tryLoginCmd (model: Model) =
   | false -> Cmd.none
 
 let private validateUsername (model: Model) =
-  let emailAddress = match model.userName with | Some x -> EmailAddress x | None -> EmailAddress ""
   if model.hasTriedToLogin then
-    match (EmailValidation.validate emailAddress) with
+    match (EmailValidation.validate model.userName) with
     | Success x -> []
     | Failure y -> [y]
   else
     model.passwordError
 
 let private validatePassword (model: Model) =
-  let password = match model.password with | Some x -> Password x | None -> Password ""
   if model.hasTriedToLogin then
-    match (PasswordValidation.validate password) with
+    match (PasswordValidation.validate model.password) with
     | Success x -> []
     | Failure y -> [y]
   else
@@ -53,9 +47,9 @@ let private updateValidationErrorsCmd (model: Model) =
   
 let init () =
     let initialModel = {
-      userName = None
+      userName = EmailAddress.Empty
       userNameError = []
-      password = None
+      password = Password.Empty
       passwordError = []
       isWorking = false
       loginError = None
@@ -78,7 +72,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
     let validatedModel = updateValidationErrorsCmd newModel
     validatedModel, tryLoginCmd validatedModel, NoOp
   | Login ->
-    { model with isWorking = true; loginError = None }, loginCmd { Email = EmailAddress model.userName.Value; Password = Password model.password.Value}, NoOp //Cmd.ofMsg (Msg.LoginSuccess { UserName = "Test"; Token = "JWT" })
+    { model with isWorking = true; loginError = None }, loginCmd { Email = model.userName; Password = model.password}, NoOp //Cmd.ofMsg (Msg.LoginSuccess { UserName = "Test"; Token = "JWT" })
   | LoginSuccess userData ->
     { model with isWorking = false }, ((Navigation.newUrl (toPath Page.Dashboard))), SignedIn userData
   | LoginFailure exn ->
