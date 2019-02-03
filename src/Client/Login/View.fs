@@ -79,7 +79,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                     ]
                     (inputError model.passwordError) |> ofList
                   ]
-                  Button.button [ Button.Color IsInfo; Button.IsFullWidth; Button.Disabled (State.isValid model = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
+                  Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
                     loginBtnContent model
                   ]
                 ]
