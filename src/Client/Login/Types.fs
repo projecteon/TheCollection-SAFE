@@ -2,16 +2,14 @@ module Client.Login.Types
 
 open Services.Dtos
 
-//type LoginViewModel = {
-//  Email : string
-//  Password : string
-//}
-
 type Model = {
   userName: string option
+  userNameError: string list
   password: string option
+  passwordError: string list
   isWorking: bool
   loginError: string option
+  hasTriedToLogin: bool 
 }
 
 type ExternalMsg =
@@ -21,6 +19,8 @@ type ExternalMsg =
 type Msg =
   | ChangeUserName of string option
   | ChangePassword of string option
+  | Validate
+  | ValidateAndLogin 
   | Login
   | LoginSuccess of UserData
   | LoginFailure of exn

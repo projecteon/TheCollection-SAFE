@@ -8,20 +8,25 @@ open Fulma
 
 open Types
 open HtmlProps
+open Client.Login
 
-let getDisplayValue (value: string option) =
+let private getDisplayValue (value: string option) =
   match value with
   | Some x -> x
   | _ -> ""
 
-let loginBtnContent model =
+let private loginBtnContent model =
       if model.isWorking then Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
       else str "Login"
 
-let loginError model =
+let private loginError model =
   match model.loginError with
   | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
   | None -> null
+
+let private inputError errorList =
+  errorList
+  |> List.map (fun x -> Help.help [ Help.Color IsDanger ] [ str x ])
 
 let view  (model : Model) (dispatch : Msg -> unit) =
     [ Hero.hero [
@@ -39,31 +44,42 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                 form [AutoComplete Off] [
                   Field.div [] [
                     Control.p [ Control.HasIconLeft ] [
-                      Input.email [
-                        Input.Option.Id "email"
-                        Input.Placeholder "your@email.com"
-                        Input.Value (getDisplayValue model.userName)
-                        Input.OnChange (fun ev -> dispatch (ChangeUserName (Some ev.Value)))
+                      yield Input.email [
+                        yield Input.Option.Id "email"
+                        yield Input.Placeholder "your@email.com"
+                        yield Input.Value (getDisplayValue model.userName)
+                        yield Input.OnChange (fun ev -> dispatch (ChangeUserName (Some ev.Value)))
+                        if (List.isEmpty model.userNameError = false) then
+                          yield Input.Color IsDanger
+                        else if model.hasTriedToLogin then
+                          yield Input.Color IsSuccess
                       ]
-                      Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
+                      yield Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Envelope ] [ ]
                       ]
+                      for error in inputError model.userNameError ->
+                        error
                     ]
                   ]
                   Field.div [] [
                     Control.p [ Control.HasIconLeft ] [
                       Input.password [
-                        Input.Option.Id "password"
-                        Input.Placeholder (sprintf "password")
-                        Input.Value (getDisplayValue model.password)
-                        Input.OnChange (fun ev -> dispatch (ChangePassword (Some ev.Value)))
+                        yield Input.Option.Id "password"
+                        yield Input.Placeholder (sprintf "password")
+                        yield Input.Value (getDisplayValue model.password)
+                        yield Input.OnChange (fun ev -> dispatch (ChangePassword (Some ev.Value)))
+                        if (List.isEmpty model.passwordError = false) then
+                          yield Input.Color IsDanger
+                        else if model.hasTriedToLogin then
+                          yield Input.Color IsSuccess
                       ]
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Key ] [ ]
                       ]
                     ]
+                    (inputError model.passwordError) |> ofList
                   ]
-                  Button.button [ Button.Color IsInfo; Button.IsFullWidth; Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Login) ][
+                  Button.button [ Button.Color IsInfo; Button.IsFullWidth; Button.Disabled (State.isValid model = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
                     loginBtnContent model
                   ]
                 ]
