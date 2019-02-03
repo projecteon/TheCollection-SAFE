@@ -14,7 +14,7 @@ module Dtos =
     static member Create(s : string)=
         if (s <> "" || s <> null ) then Ok s
         else Error "Invalid string"
-                
+                  
   [<CLIMutable>]
   type LoginViewModel = {
       Email : EmailAddress
@@ -99,9 +99,9 @@ module PasswordValidation =
 module EmailValidation =
 
   let private isValidEmailAddress (emailAddress: Dtos.EmailAddress) =
+    // https://emailregex.com/
     let emailAddrRegex =
-      @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)" +
-        "*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z"
+      @"^(([^<>()\[\]\\.,;:\s@]+(\.[^<>()\[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
     let regex = Regex.IsMatch((Dtos.getEmail emailAddress), emailAddrRegex, RegexOptions.IgnoreCase)
     match regex with
     | true -> Success emailAddress
