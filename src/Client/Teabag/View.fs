@@ -28,7 +28,7 @@ let form (teabag: Teabag) (model:Model) dispatch =
                 str "Hallmark"
             ]
             Control.div [ ] [
-                Input.text [ Input.Placeholder "Ex: Hallmark"; Input.DefaultValue teabag.hallmark; Input.Option.Id "hallmark"; Input.OnChange (fun ev -> dispatch (HallmarkChanged ev.Value)) ]
+                Textarea.textarea [ Textarea.Placeholder "Ex: Hallmark"; Textarea.DefaultValue teabag.hallmark; Textarea.Option.Id "hallmark"; Textarea.OnChange (fun ev -> dispatch (HallmarkChanged ev.Value)) ] []
             ]
         ]
         Field.div [ ] [
