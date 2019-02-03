@@ -17,7 +17,7 @@ let getCountByBrandsCmd (token: JWT) =
   Cmd.ofPromise
     (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/brands" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
     [Fetch.requestHeaders [
-        HttpRequestHeaders.Authorization ("Bearer " + (getToken token))
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
     ]]
     GetCountByBrandsSuccess
@@ -29,7 +29,7 @@ let getCountBybagtypesCmd (userData: UserData option) =
     Cmd.ofPromise
       (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
       [Fetch.requestHeaders [
-          HttpRequestHeaders.Authorization ("Bearer " + (getToken x.Token))
+          HttpRequestHeaders.Authorization ("Bearer " + x.Token.String)
           HttpRequestHeaders.ContentType "application/json; charset=utf-8"
       ]]
       GetCountByBagtypesSuccess

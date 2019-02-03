@@ -1,7 +1,6 @@
 namespace Services
 
 open Domain.SharedTypes
-open System.Text.RegularExpressions
 
 module Dtos =
   type JWT = JWT of string
@@ -53,14 +52,3 @@ module Dtos =
     description: 'a
   }
 
-  let getToken jwtToken =
-    match jwtToken with
-    | JWT token -> token
-
-  let getDbId dbId =
-    match dbId with
-    | DbId dbId -> dbId
-
-  let getImageId imageId =
-    match imageId with
-    | ImageId imageId -> imageId

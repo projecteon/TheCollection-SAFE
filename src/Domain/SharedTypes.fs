@@ -2,7 +2,14 @@ namespace Domain
 
 module SharedTypes =
   type DbId = DbId of int
+    with
+    member this.Int = let (DbId i) = this in i
+    static member Empty = DbId 0
+
   type ImageId = ImageId of DbId option
+    with
+    member this.Option = let (ImageId o) = this in o
+    static member Empty = ImageId None
 
   type EmailAddress = EmailAddress of string
     with

@@ -18,7 +18,7 @@ let getTeabagsCmd model (token: JWT) =
     Cmd.ofPromise
         (Fetch.fetchAs<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()) )
         [Fetch.requestHeaders [
-          HttpRequestHeaders.Authorization ("Bearer " + (getToken token))
+          HttpRequestHeaders.Authorization ("Bearer " + token.String)
           HttpRequestHeaders.ContentType "application/json; charset=utf-8"
         ]]
         SearchSuccess

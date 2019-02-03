@@ -17,7 +17,7 @@ let getDisplayValue (model: Model) =
     | _ -> ""
 
 let resultItem (teabag: Teabag) dispatch =
-  Column.column [ Column.Props [Key ((getDbId teabag.id).ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
+  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
         figure [] [
@@ -36,7 +36,7 @@ let resultItem (teabag: Teabag) dispatch =
         ]
       ]
       Card.footer [] [
-        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag ((getDbId teabag.id).ToString()))); OnClick goToUrl ] ][
+        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.Int.ToString()))); OnClick goToUrl ] ][
           Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
         ]
         Card.Footer.a [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
