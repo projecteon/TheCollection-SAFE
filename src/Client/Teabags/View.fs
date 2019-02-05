@@ -54,6 +54,7 @@ let searchResult (model:Model) dispatch =
 let inputElement model dispatch =
   Input.text [
     yield Input.Option.Id "searchterm"
+    yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
     yield Input.Value (getDisplayValue model)
     yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
@@ -82,7 +83,7 @@ let searchBar (model:Model) dispatch =
       ]
       Control.p [ ] [
         Button.button [
-          Button.Disabled (model.searchedTerms.IsNone)
+          Button.Disabled (model.searchedTerms.IsNone || model.isLoading)
           Button.Color IsPrimary
           Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Search)
         ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Search ][] ] ]
