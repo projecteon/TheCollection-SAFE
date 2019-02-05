@@ -24,7 +24,6 @@ type Model = {
 type Msg =
 | Clear
 | Init of RefValue option
-| InitError of exn
 | OnSearchTermChange of string
 | OnFocused
 | OnBlur

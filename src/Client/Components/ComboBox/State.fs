@@ -8,11 +8,6 @@ open Thoth.Json
 open Services.Dtos
 open Client.Components.ComboBox.Types
 
-let getInit (refValue: RefValue option) =
-  promise {
-    return refValue
-  }
-
 let queryString model =
   match model.SearchTerm with
   | Some x -> sprintf "?term=%s" x
@@ -29,7 +24,7 @@ let getCmd model =
 
 
 let setValueCmd (refValue: RefValue option) =
-  Cmd.ofPromise getInit refValue Init InitError
+  Cmd.ofMsg (Init refValue)
 
 let init (label: string, apiPath: string) =
   let initialModel = {
@@ -60,8 +55,6 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
   | Init x ->
     let nextModel = { currentModel with Value = x }
     nextModel, Cmd.none
-  | InitError x ->
-    currentModel, Cmd.none
   | OnFocused ->
     let nextModel = { currentModel with HasFocus = true }
     nextModel, Cmd.none

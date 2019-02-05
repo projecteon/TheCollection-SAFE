@@ -64,13 +64,13 @@ let inputElement model dispatch =
 let searchError model =
   match model.searchError with
   | Some x -> Help.help [ Help.Color IsDanger ] [ str x ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
                 [ str <| (sprintf "Resultcount: %i" <| x) ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let searchBar (model:Model) dispatch =
   Field.div [ ] [
@@ -98,7 +98,7 @@ let zoomImage model dispatch =
         Modal.content [ ] [ img [ Src (getUrl x) ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [

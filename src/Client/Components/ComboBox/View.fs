@@ -27,12 +27,12 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
         Dropdown.content [ ] [
           match model.Value with
           | Some x ->
-            yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnClick (fun ev -> dispatch (OnChange x)) ] ] [ str x.description ]
+            yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnMouseDown (fun ev -> dispatch (OnChange x)) ] ] [ str x.description ]
+            yield Dropdown.divider [ ]
           | _ -> ()
 
           match model.SearchResult with
           | Some results ->
-            yield Dropdown.divider [ ]
             yield results
             |> List.map (fun refvalue -> Dropdown.Item.a [ Dropdown.Item.Props [ Key (refvalue.id.ToString()); OnMouseDown (fun ev -> dispatch (OnChange refvalue)) ] ] [ str refvalue.description ])
             |> ofList
@@ -55,7 +55,7 @@ let inputIcon model =
                 | _ -> yield Fa.Solid.Check ] [ ]
       
     ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let inputElement model dispatch =
   Input.text [

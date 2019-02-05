@@ -18,7 +18,7 @@ let private loginBtnContent model =
 let private loginError model =
   match model.loginError with
   | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let private inputError errorList =
   errorList
