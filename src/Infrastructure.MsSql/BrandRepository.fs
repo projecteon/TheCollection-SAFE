@@ -24,10 +24,10 @@ module BrandRepository =
 
     type BrandQry = SqlCommandProvider<QrySQL, ConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchTerm) : Task<Brand list> =
+    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
       task {
         let cmd = new BrandQry(connectiongString)
-        return cmd.Execute(nameFilter |> extractSearchTerm)
+        return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id

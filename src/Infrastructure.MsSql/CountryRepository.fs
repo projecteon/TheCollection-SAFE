@@ -24,10 +24,10 @@ module CountryRepository =
 
     type CountryQry = SqlCommandProvider<QrySQL, ConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchTerm) : Task<Country list> =
+    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Country list> =
       task {
         let cmd = new CountryQry(connectiongString)
-        return cmd.Execute(nameFilter |> extractSearchTerm)
+        return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id

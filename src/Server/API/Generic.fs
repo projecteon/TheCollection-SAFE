@@ -9,7 +9,7 @@ open TeaCollection.Infrastructure.MsSql
 open Search
 
 [<CLIMutable>]
-type QuertyFilter = {
+type QueryParams = {
     Term: SearchTerm
     Page: int option
 }
@@ -24,17 +24,17 @@ let pageNumberOrDefault queryFilter =
   | Some x -> int64 x
   | None -> int64 0
 
-let handleGetAllSearch (getAll: (SearchTerm -> Task<'a list> )) next (ctx: HttpContext) =
+let handleGetAllSearch (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) =
   task {
-    let filter = ctx.BindQueryString<QuertyFilter>()
-    let! data = getAll(filter.Term)
+    let filter = ctx.BindQueryString<'a>()
+    let! data = getAll(filter)
     return! Successful.OK data next ctx
   }
 
-let handleGetAllWithPaging (getAll: (SearchTerm -> int64 -> 'a list*int )) next (ctx: HttpContext) =
+let handleGetAllWithPaging (getAll: ('a -> 'b list*int )) next (ctx: HttpContext) =
   task {
-    let filter = ctx.BindQueryString<QuertyFilter>()
-    let (data, count) = getAll(filter.Term) (pageNumberOrDefault filter)
+    let filter = ctx.BindQueryString<'a>()
+    let (data, count) = getAll(filter)
     return! Successful.OK {data=data; count=count} next ctx
   }
 

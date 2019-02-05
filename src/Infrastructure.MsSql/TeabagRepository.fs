@@ -98,15 +98,22 @@ module TeabagRepository =
 
     let getAll (connectiongString: string) (searchFilter: SearchTerm) page =
       let cmd = new TeabagQry(connectiongString)
-      cmd.Execute((searchFilter |> extractSearchTerm3), pageSize * page, pageSize)
+      cmd.Execute((searchFilter |> createJsonTermArray), pageSize * page, pageSize)
       // |> List.ofSeq
       |> Seq.map mapData
       |> Seq.toList
 
-    let searchAll (connectiongString: string) (searchFilter: SearchTerm) page =
+    
+    let pageNumberOrDefault queryFilter =
+      match queryFilter.Page with
+      | Some x -> int64 x
+      | None -> int64 0
+
+    let searchAll (connectiongString: string) (searchParams: SearchParams) =
       let cmd = new TeabagQry(connectiongString)
-      let result = cmd.Execute((searchFilter |> extractSearchTerm3), pageSize * page, pageSize)
+      let result = cmd.Execute((searchParams.Term |> createJsonTermArray), pageSize * (pageNumberOrDefault searchParams), pageSize)
       (result |> Seq.map mapData |> Seq.toList, result |> Seq.tryHead |> mapTotalCount)
+
 
     [<Literal>]
     let  SQLBrandCountQry = "

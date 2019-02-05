@@ -24,10 +24,10 @@ module BagtypeRepository =
 
     type BagtypeQry = SqlCommandProvider<QrySQL, ConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchTerm) : Task<Bagtype list> =
+    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Bagtype list> =
       task {
         let cmd = new BagtypeQry(connectiongString)
-        return cmd.Execute(nameFilter |> extractSearchTerm)
+        return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id
