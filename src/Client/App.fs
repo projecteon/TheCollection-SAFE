@@ -34,6 +34,7 @@ let view model dispatch =
   | _ ->
     Container.container [ ] [
       Client.Components.Navbar.view()()
+      hr [Style [MarginTop 0]]
       div [ ] (viewPage model dispatch)
     ]
 
