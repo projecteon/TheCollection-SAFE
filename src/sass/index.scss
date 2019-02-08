@@ -1,0 +1,85 @@
+@import '../../node_modules/bulma/bulma';
+@import '../../node_modules/c3/src/scss/main';
+
+#close:hover {
+  color: red
+}
+
+.comboChoices {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  padding-bottom: calc(.375em - 1px);
+  padding-left: calc(.625em - 1px);
+  padding-right: calc(.625em - 1px);
+  padding-top: calc(.375em - 1px);
+  z-index: 2;
+  height: 100%;
+  background-color: #fff;
+}
+
+.isDisplayed {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.isDisplayed .dropdown-menu {
+  display: block;
+  width: 100%;
+}
+
+.modal {
+z-index: 100
+}
+
+.modal-content {
+display: flex;
+justify-content: center;
+}
+
+.modal-content img {
+max-width: 90vw;
+max-height: calc(100vh - 60px);
+}
+
+.avatar {
+margin-top: -70px;
+padding-bottom: 20px;
+}
+
+.avatar img {
+padding: 5px;
+background: #fff;
+border-radius: 50%;
+-webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+display: inline;
+width: 128px !important;
+display: inline;
+
+}
+
+.loginPage {
+position: absolute;
+top: 0;
+width: 100%;
+}
+
+.login > .box {
+margin-top: 5rem;
+}
+
+.dashboard .panel .panel-heading .icon {
+color: #551919;
+opacity: 0.5;
+cursor: pointer;
+margin-left: 7px;
+font-size: 0.8em;
+}
+
+.dashboard .panel .panel-heading .icon:hover {
+  opacity: 1;
+}

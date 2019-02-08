@@ -30,7 +30,11 @@ var CONFIG = {
         presets: [
             ["@babel/preset-env", {
                 "targets": {
-                    "browsers": ["last 2 versions"]
+                    "browsers": [
+                      ">0.2%",
+                      "not dead",
+                      "not ie < 11",
+                      "not op_mini all"]
                 },
                 "modules": false,
                 "useBuiltIns": "usage",
@@ -104,6 +108,10 @@ module.exports = {
                     loader: 'babel-loader',
                     options: CONFIG.babel
                 },
+            },
+            {
+              test: /\.(scss|sass)$/,
+              use: ["style-loader", "css-loader", "sass-loader"]
             }
         ]
     }
