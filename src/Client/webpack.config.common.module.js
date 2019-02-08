@@ -100,3 +100,38 @@ exports.fileLoaderRule = function (assetsPath) {
     },
   }
 };
+
+exports.fableLoaderRule = function () {
+  return {
+    test: /\.fs(x|proj)?$/,
+    loader: require.resolve('fable-loader')
+  }
+}
+
+// Use babel-preset-env to generate JS compatible with most-used browsers.
+// More info at https://github.com/babel/babel/blob/master/packages/babel-preset-env/README.md
+exports.bableLoaderRule = function () {
+  return {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    use: {
+      loader: require.resolve('babel-loader'),
+      options: {
+        presets: [
+            ["@babel/preset-env", {
+                "targets": {
+                    "browsers": [
+                      ">0.2%",
+                      "not dead",
+                      "not ie < 11",
+                      "not op_mini all"]
+                },
+                "modules": false,
+                "useBuiltIns": "usage",
+            }]
+        ],
+        plugins: ["@babel/plugin-transform-runtime"]
+      }
+    },
+  }
+}

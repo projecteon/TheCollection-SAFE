@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 var MinifyPlugin = require("terser-webpack-plugin");
+const webpackModuleCommon = require('./webpack.config.common.module');
 
 function resolve(filePath) {
     return path.join(__dirname, filePath)
@@ -23,25 +24,7 @@ var CONFIG = {
     historyApiFallback: {
         index: resolve("./index.html")
     },
-    contentBase: resolve("./public"),
-    // Use babel-preset-env to generate JS compatible with most-used browsers.
-    // More info at https://github.com/babel/babel/blob/master/packages/babel-preset-env/README.md
-    babel: {
-        presets: [
-            ["@babel/preset-env", {
-                "targets": {
-                    "browsers": [
-                      ">0.2%",
-                      "not dead",
-                      "not ie < 11",
-                      "not op_mini all"]
-                },
-                "modules": false,
-                "useBuiltIns": "usage",
-            }]
-        ],
-        plugins: ["@babel/plugin-transform-runtime"]
-    }
+    contentBase: resolve("./public")
 }
 
 var isProduction = process.argv.indexOf("-p") >= 0;
@@ -97,22 +80,9 @@ module.exports = {
     // - babel-loader: transforms JS to old syntax (compatible with old browsers)
     module: {
         rules: [
-            {
-                test: /\.fs(x|proj)?$/,
-                use: "fable-loader"
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: CONFIG.babel
-                },
-            },
-            {
-              test: /\.(scss|sass)$/,
-              use: ["style-loader", "css-loader", "sass-loader"]
-            }
+            webpackModuleCommon.fableLoaderRule(),
+            webpackModuleCommon.bableLoaderRule(),
+            webpackModuleCommon.sassLoaderRuledev(),
         ]
     }
 };
