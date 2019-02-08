@@ -3,14 +3,16 @@ module App
 open Elmish
 open Elmish.Browser.Navigation
 open Elmish.React
+open Fable.Core.JsInterop
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 open Fulma
 
-
 open ClientTypes
 open State
 open Client.Navigation
+
+importAll "../sass/index.scss"
 
 let viewPage model dispatch =
     match model.PageModel with
