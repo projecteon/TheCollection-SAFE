@@ -1,5 +1,6 @@
 namespace TeaCollection.Infrastructure.MsSql
 
+open System
 open System.Threading.Tasks
 open FSharp.Control.Tasks.V2
 open FSharp.Data
@@ -159,6 +160,56 @@ module TeabagRepository =
         |> Seq.map (fun x -> {
             count = mapOptionalIntValue(x.i_count)
             description = mapOptionalStringValue(x.t_ro_bagtype)
+          })
+        |> Seq.toList
+      }
+
+    [<Literal>]
+    let  SQLInsertedCountQry = "
+        DECLARE @MIN_YEAR DATETIME;
+        DECLARE @MAX_YEAR DATETIME;
+        SELECT @MIN_YEAR = MIN(d_created), @MAX_YEAR = MAX(d_created) FROM tcd_teabag; 
+
+        DECLARE @DateFrom DATETIME;
+        DECLARE @DateTo DATETIME;
+
+        SELECT
+           @DateFrom = DATEADD(yy, DATEDIFF(yy, 0, @MIN_YEAR), 0),
+           @DateTo = DATEADD(yy, DATEDIFF(yy, 0, @MAX_YEAR) + 1, -1);
+
+        WITH MonthYearCalendar(date)
+        AS
+        ( 
+        SELECT @DateFrom 
+        UNION ALL
+        SELECT DATEADD(month,1,MonthYearCalendar.date) FROM MonthYearCalendar WHERE MonthYearCalendar.date < DATEADD(month, -1, @DateTo)
+        ), teabagCalCTE (d_inserted, i_count) as (
+	        SELECT
+		        d_inserted = DATEADD(MONTH, DATEDIFF(MONTH, 0, d_created), 0),
+		        COUNT(a.id) as i_count
+	        FROM tcd_teabag a
+	        GROUP BY DATEADD(MONTH, DATEDIFF(MONTH, 0, d_created), 0)
+        )
+
+        --SELECT * FROM MonthYearCalendar OPTION (MAXRECURSION 5000);
+        --SELECT  * FROM teabagCalCTE
+
+        SELECT a.date as d_inserted, ISNULL(b.i_count, 0) AS i_count
+        FROM MonthYearCalendar a
+        LEFT JOIN teabagCalCTE b ON a.date = b.d_inserted
+        OPTION (MAXRECURSION 5000)
+    "
+    
+    type InsertedCountQry = SqlCommandProvider<SQLInsertedCountQry, ConnectionString>
+
+    let insertedCount (connectiongString: string) : Task<CountBy<Instant> list> =
+      task {
+        let cmd = new InsertedCountQry(connectiongString)
+        return cmd.Execute()
+        |> List.ofSeq
+        |> Seq.map (fun x -> {
+            count = x.i_count
+            description = mapInstant <| (mapOptionalDateTimeValue <| x.d_inserted)
           })
         |> Seq.toList
       }

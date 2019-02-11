@@ -1,5 +1,6 @@
 namespace TeaCollection.Infrastructure.MsSql
 
+open System
 open Search
 
 module Util =
@@ -40,4 +41,9 @@ module Util =
       match optionalValue with
       | Some x -> x
       | None -> 0
+
+    let mapOptionalDateTimeValue (optionalValue) =
+      match optionalValue with
+      | Some x -> x
+      | None -> DateTime.MinValue
 
