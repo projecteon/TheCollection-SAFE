@@ -10,6 +10,8 @@
         <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="../Domain/Validation.fs" />
         <Compile Include="../Services/Dtos.fs" />
+        <Compile Include="Fable.Import.Moment.fs" />
+        <Compile Include="Extensions.fs" />
         <Compile Include="HtmlProps.fs" />
         <Compile Include="Util.fs" />
         <Compile Include="FileUrlHandler.fs" />

@@ -93,6 +93,21 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
+        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+          Panel.panel [] [
+            Panel.heading [ ] [
+              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
+                str "Inserted"
+                div [][]
+              ]
+            ]
+            Panel.block [ ] [
+              match model.countInserted with
+              | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
+              | None -> yield Fable.Helpers.React.nothing
+            ]
+          ]
+        ]
       ]
       br []
     ]

@@ -38,9 +38,10 @@ let urlUpdate (result:Page option) (model: Model) =
     { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryAuthorizationRequest (cmd id) model.User)
 
   | Some Page.Dashboard ->
-    let m, cmd, cmd2 = Client.Dashboard.State.init(model.User)
+    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init(model.User)
     { model with PageModel = DashboardPageModel m },  Cmd.batch [   Cmd.map DashboardMsg cmd
-                                                                    Cmd.map DashboardMsg cmd2 ]
+                                                                    Cmd.map DashboardMsg cmd2
+                                                                    Cmd.map DashboardMsg cmd3 ]
 
 let init page =
   let m, cmd = Client.Login.State.init()
