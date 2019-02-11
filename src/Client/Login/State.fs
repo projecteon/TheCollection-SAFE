@@ -11,7 +11,10 @@ open Domain.SharedTypes
 open Domain.Validation
 
 let isValid (model: Model) =
-  List.isEmpty model.userNameError && List.isEmpty model.passwordError
+  List.isEmpty model.userNameError
+  && List.isEmpty model.passwordError
+  && model.userName.String.Length > 0
+  && model.password.String.Length > 0
 
 let private loginCmd (model: LoginViewModel) =
   Cmd.ofPromise

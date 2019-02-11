@@ -40,7 +40,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                 form [AutoComplete Off] [
                   Field.div [] [
                     Control.p [ Control.HasIconLeft ] [
-                      yield Input.email [
+                      Input.email [
                         yield Input.Option.Id "email"
                         yield Input.Placeholder "your@email.com"
                         yield Input.Value model.userName.String
@@ -50,11 +50,10 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                         else if model.hasTriedToLogin then
                           yield Input.Color IsSuccess
                       ]
-                      yield Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
+                      Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Envelope ] [ ]
                       ]
-                      for error in inputError model.userNameError ->
-                        error
+                      (inputError model.userNameError) |> ofList
                     ]
                   ]
                   Field.div [] [
@@ -72,8 +71,8 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Key ] [ ]
                       ]
+                      (inputError model.passwordError) |> ofList
                     ]
-                    (inputError model.passwordError) |> ofList
                   ]
                   Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
                     loginBtnContent model
