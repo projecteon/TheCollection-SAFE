@@ -30,6 +30,9 @@ module Dtos =
     count: int
   }
 
+  type UtcDateTimeString = UtcDateTimeString of string with
+    member this.String = let (UtcDateTimeString s) = this in s
+
   type RefValue = {
     id: DbId;
     description: string;
@@ -45,10 +48,5 @@ module Dtos =
     country: RefValue option;
     serialnumber: string;
     imageid: ImageId;
-  }
-
-  type CountBy<'a> = {
-    count: int
-    description: 'a
   }
 

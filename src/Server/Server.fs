@@ -1,22 +1,16 @@
 open System.IO
-open System.Threading.Tasks
-
 open Microsoft.AspNetCore
-open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
-open Microsoft.IdentityModel.Tokens
-open System.Text
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
 open Thoth.Json
 
-open Services.Dtos
+//open Services.Dtos
 open TeaCollection.Infrastructure.MsSql
 open Security
 
 open Giraffe.Serialization
-open Microsoft.AspNetCore.Authentication.JwtBearer
 
 let publicPath = Path.GetFullPath "../Client/public"
 let port = 8085us
@@ -29,6 +23,7 @@ let getByIdBagtypes = BagtypeRepository.getById DbContext.ConnectionString
 let getAllBagtypes = BagtypeRepository.getAll DbContext.ConnectionString
 let getByIdCountries = CountryRepository.getById DbContext.ConnectionString
 let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
+let getCountByInserted = (TeabagRepository.insertedCount DbContext.ConnectionString)
 
 // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
@@ -44,6 +39,7 @@ let thumbnailHandler imageId : HttpHandler =
       return! ctx.WriteBytesAsync bytes
     }
 
+
 let webApp =
   choose [
     POST >=> route "/api/token" >=> handlePostToken
@@ -55,6 +51,7 @@ let webApp =
           routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags)
           route "/teabags/countby/brands" >=> (API.Generic.handleGetAll (TeabagRepository.brandCount DbContext.ConnectionString))
           route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.ConnectionString))
+          route "/teabags/countby/inserteddate" >=> API.Generic.handleGetTransformAll getCountByInserted Transformers.transform
           route "/brands" >=> (API.Generic.handleGetAllSearch getAllBrands)
           route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)

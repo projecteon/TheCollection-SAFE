@@ -51,3 +51,9 @@ let handleGetAll (get: Task<'a>) next ctx =
     let! data = get
     return! Successful.OK data next ctx
   }
+
+let handleGetTransformAll (get: Task<'a>) (transform: ('a -> 'b )) next ctx =
+  task {
+    let! data = get
+    return! Successful.OK (transform data) next ctx
+  }

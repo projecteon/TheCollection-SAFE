@@ -33,6 +33,7 @@ group Server
     nuget Saturn
     nuget Fable.JsonConverter
     nuget Thoth.Json.Giraffe
+    nuget NodaTime
 
 group Client
     source https://api.nuget.org/v3/index.json
