@@ -21,7 +21,7 @@ let private colorIndex x =
     tailRecursiveFactorial x
 
 let private cells data =
-  data |> Array.mapi (fun i x -> cell [P.Fill (colorIndex i)] []) |> ofArray
+  data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (colorIndex i)] []) |> ofArray
 
 type PieLabelProps = {
   fill: string
