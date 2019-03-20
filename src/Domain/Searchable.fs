@@ -23,7 +23,7 @@ module Searchable =
                 ] ||
                 Convert.GetTypeCode(x) <> TypeCode.Object
 
-    let getSearchableProperties(objectValue: obj) =
+    let private getSearchableProperties(objectValue: obj) =
         if objectValue = null then Seq.empty
         else
             objectValue.GetType().GetProperties()
@@ -32,7 +32,7 @@ module Searchable =
                 attr.Length > 0
             )
 
-    let getSearchablePropertyValue<'T> (propertyInfo: PropertyInfo) (objectValue: 'T) =
+    let private getSearchablePropertyValue<'T> (propertyInfo: PropertyInfo) (objectValue: 'T) =
         match propertyInfo.PropertyType, propertyInfo.GetValue(objectValue) with
         | pi, NotNull  when pi.IsSimpleType() -> propertyInfo.GetValue(objectValue)
         | pi, NotNull -> propertyInfo.GetValue(objectValue)
@@ -46,7 +46,7 @@ module Searchable =
     type Tree =
       TreeNode seq
 
-    let rec createSearchableNode (o: obj) =
+    let rec private createSearchableNode (o: obj) =
         getSearchableProperties(o)
         |> Seq.map (fun x ->
                         match (isOption x) with
@@ -62,7 +62,7 @@ module Searchable =
                             | _ -> TreeNode.BranchNode (createSearchableNode (unboxOptionValue(x.GetValue(o))))
                     )
 
-    let flattenTree (tree: TreeNode list) =
+    let private flattenTree (tree: TreeNode list) =
         let rec loop acc (nodes: TreeNode list) =
             match nodes with
             | [] -> acc
@@ -72,3 +72,6 @@ module Searchable =
                     | BranchNode b -> loop ((loop acc (b |> Seq.toList))) xs
 
         loop [] tree
+
+    let getSearchStrings(o: obj) =
+      o |> createSearchableNode |> List.ofSeq |> flattenTree

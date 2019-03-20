@@ -40,13 +40,24 @@ module Dtos =
 
   type Teabag = {
     id: DbId;
-    brand: RefValue option;
+    brand: RefValue;
     serie: string;
     flavour: string;
     hallmark: string;
-    bagtype: RefValue option;
+    bagtype: RefValue;
     country: RefValue option;
     serialnumber: string;
+    imageid: ImageId;
+  }
+
+  type UpsertTeabag = {
+    brand: RefValue;
+    serie: Serie option;
+    flavour: Flavour;
+    hallmark: Hallmark option;
+    bagtype: RefValue;
+    country: RefValue option;
+    serialnumber: SerialNumber option;
     imageid: ImageId;
   }
 

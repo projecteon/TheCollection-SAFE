@@ -20,3 +20,42 @@ module Mapping =
   let mapInstant (utcDateTime: DateTime) : Instant =
     utcDateTime.ToUniversalTime()
     |> Instant.FromDateTimeUtc
+
+  //let stringOptionToDbValue (value: string option): string =
+  //  match value with
+  //  | Some x -> x
+  //  | None -> null
+
+  let inline toDbStringValue (x : ^T option) =
+    match x with
+    | Some x -> (^T : (member String : string) (x))
+    | None -> null
+
+  type ToDbValue =
+  | DbId of DbId
+  | DbIdOption of DbId option
+  | RefValue of RefValue
+  | RefValueOption of RefValue option
+
+  let rec toDbIntValue (value: ToDbValue) =
+    match value with
+    | DbId y -> y.Int
+    | DbIdOption y ->
+      match y with
+      | Some x -> x |> ToDbValue.DbId |> toDbIntValue
+      | None -> 0
+    | RefValue y -> y.id |> ToDbValue.DbId |> toDbIntValue
+    | RefValueOption y ->
+      match y with
+      | Some x -> x |> ToDbValue.RefValue |> toDbIntValue
+      | None -> 0
+
+  //let inline refValueOptionToDbValue (x : RefValue option) =
+  //  match x with
+  //  | Some x -> x.id.Int
+  //  | None -> 0
+
+  //let inline dbIdOptionToDbValue (x : DbId option) =
+  //  match x with
+  //  | Some x -> x.Int
+  //  | None -> 0

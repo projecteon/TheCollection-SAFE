@@ -4,6 +4,7 @@ open System.Text.RegularExpressions
 open Elmish
 
 open Services.Dtos
+open Domain.SharedTypes
 
 let ReplaceWhiteSpaceRegex = new Regex(@"\s+")
 let ReplaceWhitespace value =
@@ -18,8 +19,13 @@ type Model = {
   SearchResult: Option<RefValue list>
   DebouncedTerm : Elmish.Debounce.Model<string>
   IsSearching : bool
-  ApiPath: string
+  RefValueType: RefValueTypes
+  userData: UserData option
 }
+
+type ExternalMsg =
+  | UnChanged
+  | OnChange of RefValue option
 
 type Msg =
 | Clear

@@ -24,6 +24,7 @@ let getAllBagtypes = BagtypeRepository.getAll DbContext.ConnectionString
 let getByIdCountries = CountryRepository.getById DbContext.ConnectionString
 let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
 let getCountByInserted = (TeabagRepository.insertedCount DbContext.ConnectionString)
+let getAllRefValues = RefValueRepository.getAll DbContext.ConnectionString
 
 // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
@@ -47,17 +48,19 @@ let webApp =
     subRoute "/api"
       (choose [
         GET >=> authorize >=> choose [
-          route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags)
-          routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags)
+          route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
+          routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
           route "/teabags/countby/brands" >=> (API.Generic.handleGetAll (TeabagRepository.brandCount DbContext.ConnectionString))
           route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.ConnectionString))
           route "/teabags/countby/inserteddate" >=> API.Generic.handleGetTransformAll getCountByInserted Transformers.transform
           route "/brands" >=> (API.Generic.handleGetAllSearch getAllBrands)
           route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
+          route "/refvalues" >=> (API.Generic.handleGetAllQuery getAllRefValues)
         ]
       ])
-    setStatusCode 404 >=> text "Not Found"
+    RequestErrors.NOT_FOUND "Not found"
+    //setStatusCode 404 >=> text "Not Found"
   ]
 
 let configureSerialization (services:IServiceCollection) =
@@ -74,3 +77,6 @@ let app = application {
 }
 
 run app
+
+// https://dev.to/samueleresca/build-web-service-using-f-and-aspnet-core-52l8
+// https://vtquan.github.io/fsharp/creating-api-with-giraffe/

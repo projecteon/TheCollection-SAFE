@@ -75,7 +75,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
     let validatedModel = updateValidationErrorsCmd newModel
     validatedModel, tryLoginCmd validatedModel, NoOp
   | Login ->
-    { model with isWorking = true; loginError = None }, loginCmd { Email = model.userName; Password = model.password}, NoOp //Cmd.ofMsg (Msg.LoginSuccess { UserName = "Test"; Token = "JWT" })
+    { model with isWorking = true; loginError = None }, loginCmd { Email = model.userName; Password = model.password}, NoOp
   | LoginSuccess userData ->
     { model with isWorking = false }, ((Navigation.newUrl (toPath Page.Dashboard))), SignedIn userData
   | LoginFailure exn ->

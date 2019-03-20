@@ -48,3 +48,51 @@ module EmailValidation =
     emailAddress
     |> isValidEmailAddress
     >>= validateEmailEmptiness
+
+
+//module RefValueValidation =
+//  open Domain.Tea
+
+//  let private validateHasValue (refValue: RefValue option) =
+//    if (refValue.IsSome && refValue.Value.id > (0 |> DbId)) then
+//      Success refValue
+//    else
+//      Failure "Value is required"
+
+//  let validate (refValue: RefValue option) =
+//    refValue
+//    |> validateHasValue
+
+//module FlavourValidation =
+//  open Domain.Types
+
+//  let private validateEmailEmptiness (flavour: Flavour) =
+//    let flavourString = flavour.String
+//    if (flavourString.IsSome &&
+//        flavourString.Value <> null &&
+//        flavourString.Value <> "") then
+//      Success flavour
+//    else
+//      Failure "Flavour is required"
+
+//  let validate (flavour: Flavour) =
+//    flavour
+//    |> validateEmailEmptiness
+
+//module TeabagValidation =
+//  open Domain.Tea
+
+//  let private validateFlavour (teabag: Teabag) =
+//    match (FlavourValidation.validate teabag.flavour) with
+//    | Failure x -> Failure x
+//    | _ -> Success teabag
+
+//  let private validateBrand (teabag: Teabag) =
+//    match (RefValueValidation.validate teabag.brand) with
+//    | Failure x -> Failure x
+//    | _ -> Success teabag
+
+//  let validate (teabag: Teabag) =
+//    teabag
+//    |> validateFlavour
+//    >>= validateBrand

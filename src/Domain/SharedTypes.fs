@@ -21,10 +21,34 @@ module SharedTypes =
     member this.String = let (Password s) = this in s
     static member Empty = Password ""
 
+  type Flavour = Flavour of string
+    with
+    member this.String = let (Flavour s) = this in s
+
+  type Hallmark = Hallmark of string
+    with
+    member this.String = let (Hallmark s) = this in s     
+    static member From (value: string option) = match value with | None -> None | Some x -> x |> Hallmark |> Some
+
+  type Serie = Serie of string
+    with
+    member this.String = let (Serie s) = this in s
+    static member From (value: string option) = match value with | None -> None | Some x -> x |> Serie |> Some
+
+  type SerialNumber = SerialNumber of string
+    with
+    member this.String = let (SerialNumber s) = this in s
+    static member From (value: string option) = match value with | None -> None | Some x -> x |> SerialNumber |> Some
+
   type CountBy<'a> = {
     count: int
     description: 'a
   }
+
+  type RefValueTypes =
+    | Brand
+    | Bagtype
+    | Country
 
   // https://fsharpforfunandprofit.com/posts/recipe-part2/
   type Result<'TSuccess,'TFailure> =

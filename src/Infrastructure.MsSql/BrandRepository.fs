@@ -6,11 +6,13 @@ open FSharp.Control.Tasks.V2
 open FSharp.Data
 open DbContext
 open Domain.SharedTypes
+open Domain.Types
 open Domain.Tea
 open Search
 open Util
 
 module BrandRepository =
+
     [<Literal>]
     let  QrySQL = "
         DECLARE @sName varchar(50)
@@ -31,11 +33,10 @@ module BrandRepository =
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id
-            Brand.name = x.s_name
+            Brand.name = x.s_name |> BrandName
         })
         |> Seq.toList
       }
-
 
     [<Literal>]
     let  ByIdSQL = "
@@ -52,7 +53,7 @@ module BrandRepository =
         |> function
             | Some x -> Some {
                     id = DbId x.id
-                    Brand.name = x.s_name
+                    Brand.name = x.s_name |> BrandName
                 }
             | _ -> None
 
@@ -68,7 +69,7 @@ module BrandRepository =
     let insert (connectiongString: string) (brand : Brand) =
       task {
         let cmd = new InsertBrand(connectiongString)
-        return cmd.Execute(brand.name)
+        return cmd.Execute(brand.name.String)
         |> function
             | Some x -> Some { brand with id = DbId x }
             | _ -> None

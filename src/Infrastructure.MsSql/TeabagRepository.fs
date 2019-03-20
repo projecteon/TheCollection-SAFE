@@ -6,15 +6,62 @@ open FSharp.Control.Tasks.V2
 open FSharp.Data
 open NodaTime
 
+open Mapping
 open DbContext
 open Domain.Tea
 open Domain.Types
+open Domain.Searchable
+open Domain.SearchStringGenerator
 open Domain.SharedTypes
 open Search
 open Util
-open Mapping
 
 module TeabagRepository =
+    [<Literal>]
+    let  InsertSQL = "
+        INSERT INTO tcd_teabag
+           (ro_brand
+           ,ro_bagtype
+           ,rs_country
+           ,rf_image
+           ,s_flavour
+           ,s_hallmark
+           ,s_serie
+           ,s_serialnumber
+           ,s_search_terms
+           ,d_created)
+        OUTPUT INSERTED.ID
+        VALUES
+           (@ro_brand
+           ,@ro_bagtype
+           ,@rs_country
+           ,@rf_image
+           ,@s_flavour
+           ,@s_hallmark
+           ,@s_serie
+           ,@s_serialnumber
+           ,@s_search_terms
+           , GETDATE())
+    "
+
+    type InsertTeabag = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+
+    let insert (connectiongString: string) (teabag: Domain.Tea.Teabag) =
+      task {
+        let cmd = new InsertTeabag(connectiongString)
+        let searchString = teabag |> getSearchStrings |> String.Concat |> GenerateSearchString |> String.Concat
+        let! id = cmd.AsyncExecute( teabag.brand.id.Int
+                                    , teabag.bagtype.id.Int
+                                    , teabag.country |> ToDbValue.RefValueOption |> toDbIntValue
+                                    , teabag.imageid.Option |> ToDbValue.DbIdOption|> toDbIntValue
+                                    , teabag.flavour.String
+                                    , teabag.hallmark |> toDbStringValue
+                                    , teabag.serie |> toDbStringValue
+                                    , teabag.serialnumber  |> toDbStringValue
+                                    , searchString)
+        return id
+      }
+
     [<Literal>]
     let  ByIdSQL = "
         SELECT a.*
@@ -30,13 +77,13 @@ module TeabagRepository =
 
     let mapByIdData (record: TeabagById.Record) = {
         id = DbId record.id
-        brand =  (mapRefValue record.ro_brand record.t_ro_brand)
-        bagtype = (mapRefValue record.ro_bagtype record.t_ro_bagtype)
+        brand =  {id = DbId record.ro_brand; description = record.t_ro_brand.Value}
+        bagtype = {id = DbId record.ro_bagtype; description = record.t_ro_bagtype.Value}
         country =  (mapRefValue record.rs_country record.t_rs_country)
-        flavour = record.s_flavour
-        hallmark = record.s_hallmark
-        serie = record.s_serie
-        serialnumber = record.s_serialnumber
+        flavour = record.s_flavour |> Flavour
+        hallmark = record.s_hallmark |> Hallmark.From
+        serie = record.s_serie |> Serie.From
+        serialnumber = record.s_serialnumber |> SerialNumber.From
         imageid = ImageId (mapDbId record.rf_image)
         created = mapInstant <| record.d_created
       }
@@ -79,13 +126,13 @@ module TeabagRepository =
 
     let mapData (record: TeabagQry.Record) = {
         id = DbId record.id
-        brand =  (mapRefValue record.ro_brand record.t_ro_brand)
-        bagtype = (mapRefValue record.ro_bagtype record.t_ro_bagtype)
+        brand =  {id = DbId record.ro_brand; description = record.t_ro_brand.Value}
+        bagtype = {id = DbId record.ro_bagtype; description = record.t_ro_bagtype.Value}
         country =  (mapRefValue record.rs_country record.t_rs_country)
-        flavour = record.s_flavour
-        hallmark = record.s_hallmark
-        serie = record.s_serie
-        serialnumber = record.s_serialnumber
+        flavour = record.s_flavour |> Flavour
+        hallmark = record.s_hallmark |> Hallmark.From
+        serie = record.s_serie |> Serie.From
+        serialnumber = record.s_serialnumber |> SerialNumber.From
         imageid = ImageId (mapDbId record.rf_image)
         created = mapInstant <| record.d_created
       }

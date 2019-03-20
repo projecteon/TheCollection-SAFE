@@ -5,15 +5,15 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7BE83677-1942-401F-9BED-A8D241426AE5}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Domain", "src\Domain\Domain.fsproj", "{78BEB134-D636-40AE-B64A-BFDCD6440756}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Domain", "src\Domain\Domain.fsproj", "{78BEB134-D636-40AE-B64A-BFDCD6440756}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Server", "src\Server\Server.fsproj", "{0C35D17E-6BFF-48BB-BE89-E3B04CC82C22}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Server", "src\Server\Server.fsproj", "{0C35D17E-6BFF-48BB-BE89-E3B04CC82C22}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Client", "src\Client\Client.fsproj", "{62C8B6BF-B94B-4C62-A2E6-2AD11C4D8A75}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Client", "src\Client\Client.fsproj", "{62C8B6BF-B94B-4C62-A2E6-2AD11C4D8A75}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Services", "src\Services\Services.fsproj", "{8D19D678-E9D5-4901-8B45-363175BAB732}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Services", "src\Services\Services.fsproj", "{8D19D678-E9D5-4901-8B45-363175BAB732}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Infrastructure.MsSql", "src\Infrastructure.MsSql\Infrastructure.MsSql.fsproj", "{C2E07DD7-5529-4A02-8833-33918ED927BA}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Infrastructure.MsSql", "src\Infrastructure.MsSql\Infrastructure.MsSql.fsproj", "{C2E07DD7-5529-4A02-8833-33918ED927BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,9 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{78BEB134-D636-40AE-B64A-BFDCD6440756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -89,11 +86,17 @@ Global
 		{C2E07DD7-5529-4A02-8833-33918ED927BA}.Release|x86.ActiveCfg = Release|Any CPU
 		{C2E07DD7-5529-4A02-8833-33918ED927BA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{78BEB134-D636-40AE-B64A-BFDCD6440756} = {7BE83677-1942-401F-9BED-A8D241426AE5}
 		{0C35D17E-6BFF-48BB-BE89-E3B04CC82C22} = {7BE83677-1942-401F-9BED-A8D241426AE5}
 		{62C8B6BF-B94B-4C62-A2E6-2AD11C4D8A75} = {7BE83677-1942-401F-9BED-A8D241426AE5}
 		{8D19D678-E9D5-4901-8B45-363175BAB732} = {7BE83677-1942-401F-9BED-A8D241426AE5}
 		{C2E07DD7-5529-4A02-8833-33918ED927BA} = {7BE83677-1942-401F-9BED-A8D241426AE5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CFB7868-BD14-4007-B4BC-8A789E08ACA8}
 	EndGlobalSection
 EndGlobal

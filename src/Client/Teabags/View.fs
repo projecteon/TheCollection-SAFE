@@ -25,18 +25,18 @@ let resultItem (teabag: Teabag) dispatch =
         ]
       ]
       Card.content [] [
-        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.Value.description ]
+        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.description ]
         Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ][ str teabag.flavour ]
         Content.content [ ] [
           div [] [ small [] [ str teabag.serie ] ]
           div [] [ small [] [ str teabag.hallmark ] ]
           div [] [ small [] [ str teabag.serialnumber ] ]
-          div [] [ small [] [ str teabag.bagtype.Value.description ] ]
+          div [] [ small [] [ str teabag.bagtype.description ] ]
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
       ]
       Card.footer [] [
-        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.Int.ToString()))); OnClick goToUrl ] ][
+        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))); OnClick goToUrl ] ][
           Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
         ]
         Card.Footer.a [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][

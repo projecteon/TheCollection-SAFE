@@ -6,6 +6,7 @@ open FSharp.Control.Tasks.V2
 open FSharp.Data
 open DbContext
 open Domain.SharedTypes
+open Domain.Types
 open Domain.Tea
 open Search
 open Util
@@ -31,7 +32,7 @@ module BagtypeRepository =
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id
-            Bagtype.name = x.s_name
+            Bagtype.name = x.s_name |> BagtypeName
           })
         |> Seq.toList
       }
@@ -53,7 +54,7 @@ module BagtypeRepository =
         |> function
           | Some x -> Some {
               id = DbId x.id
-              Bagtype.name = x.s_name
+              Bagtype.name = x.s_name |> BagtypeName
             }
           | _ -> None
       }
@@ -69,7 +70,7 @@ module BagtypeRepository =
 
     let insert (connectiongString: string) (bagtype : Bagtype) =
       let cmd = new InsertBagtype(connectiongString)
-      cmd.Execute(bagtype.name)
+      cmd.Execute(bagtype.name.String)
       |> function
         | Some x -> Some { bagtype with id = DbId x }
         | _ -> None

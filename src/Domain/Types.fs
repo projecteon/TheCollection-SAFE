@@ -2,11 +2,14 @@ namespace Domain.Types
 
 open NodaTime
 
-type Flavour = string option
-type Hallmark = string option
-type Serie = string option
-type SerialNumber = string option
-type BrandName = string
-type BagtypeName = string
-type CountryName = string
+type BrandName  = BrandName of string
+    with
+    member this.String = let (BrandName s) = this in s
+type BagtypeName  = BagtypeName of string
+    with
+    member this.String = let (BagtypeName s) = this in s
+type CountryName  = CountryName of string
+    with
+    member this.String = let (CountryName s) = this in s
+
 type CreatedDate = Instant

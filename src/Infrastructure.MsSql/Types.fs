@@ -1,5 +1,7 @@
 namespace TeaCollection.Infrastructure.MsSql
 
+open Domain.SharedTypes
+
 module Search =
     type SearchTerm = string option
     type SearchTerms = string list
@@ -8,6 +10,12 @@ module Search =
     type SearchParams = {
         Term: SearchTerm
         Page: int option
+    }
+
+    [<CLIMutable>]
+    type RefValueSearchParams = {
+        Term: SearchTerm
+        RefValueType: RefValueTypes
     }
 
 module Seq =

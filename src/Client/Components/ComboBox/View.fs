@@ -5,7 +5,10 @@ open Fable.Helpers.React.Props
 open Fable.FontAwesome
 open Fulma
 
+open Services.Dtos
+open Domain.SharedTypes
 open Client.Components.ComboBox.Types
+open Elmish.React
 
 let getDisplayValue (model: Model) =
   match model.HasFocus with
@@ -18,6 +21,14 @@ let getDisplayValue (model: Model) =
     | Some x -> x.description
     | _ -> ""
 
+let private hasValue (value: RefValue option) =
+  match value with
+  | Some x ->
+    match x.id with
+    | DbId y when y = 0 -> false
+    | _ -> true
+  | None -> false
+
 let viewChoices (model: Model) (dispatch : Msg -> unit) =
   match model.HasFocus with
   | true ->
@@ -26,9 +37,10 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
       Dropdown.menu [ ] [
         Dropdown.content [ ] [
           match model.Value with
-          | Some x ->
+          | Some x when x.id.Int > 0 ->
             yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnMouseDown (fun ev -> dispatch (OnChange x)) ] ] [ str x.description ]
-            yield Dropdown.divider [ ]
+            if model.SearchResult.IsSome then
+              yield Dropdown.divider [ ]
           | _ -> ()
 
           match model.SearchResult with
@@ -47,7 +59,7 @@ let inputIcon model =
   | Some x -> Icon.icon [
         yield Icon.Size IsSmall
         yield Icon.IsRight
-        if model.Value.IsSome then
+        if model.Value |> hasValue then
           yield Icon.Modifiers [Modifier.TextColor IsSuccess]] [
         Fa.i [ match model.HasFocus, model.IsSearching with
                 | true, false -> yield Fa.Solid.Search
@@ -67,7 +79,7 @@ let inputElement model dispatch =
         DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
         DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
     ]
-    if model.Value.IsSome then
+    if model.Value |> hasValue then
       yield Input.Color IsSuccess
   ]
 
@@ -88,6 +100,8 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
     ]
   ]
 
+let lazyViewWithButtons = Common.lazyView2 viewWithButtons
+
 let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
   Field.div [ ] [
     Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
@@ -99,3 +113,5 @@ let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
       viewChoices model dispatch
     ]
   ]
+
+let lazyViewWithoutButtons = Common.lazyView2 lazyViewWithButtons

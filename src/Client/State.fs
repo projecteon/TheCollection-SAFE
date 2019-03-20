@@ -16,7 +16,6 @@ let handleNotFound (model: Model) =
 /// The navigation logic of the application given a page identity parsed from the .../#info
 /// information in the URL.
 let urlUpdate (result:Page option) (model: Model) =
-  printf "urlUpdate"
   match result with
   | None ->
     handleNotFound model
@@ -35,7 +34,11 @@ let urlUpdate (result:Page option) (model: Model) =
 
   | Some (Page.Teabag id) ->
     let m, cmd = Client.Teabag.State.init(model.User)
-    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryAuthorizationRequest (cmd id) model.User)
+    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryAuthorizationRequest (id |> Some |> cmd) model.User)
+
+  | Some (Page.TeabagNew str) ->
+    let m, cmd = Client.Teabag.State.init(model.User)
+    { model with PageModel = TeabagPageModel m },  Cmd.map TeabagMsg (tryAuthorizationRequest (cmd None) model.User)
 
   | Some Page.Dashboard ->
     let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init(model.User)
@@ -49,7 +52,6 @@ let init page =
   urlUpdate page model
 
 let update msg model =
-  printf "update app"
   match msg, model.PageModel with
   | TeabagsMsg msg, TeabagsPageModel m ->
     let m, cmd = Client.Teabags.State.update msg m

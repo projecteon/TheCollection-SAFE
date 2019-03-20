@@ -18,15 +18,12 @@ let viewPage model dispatch =
     match model.PageModel with
     | LoginPageModel m ->
       Client.Login.View.view m (LoginMsg >> dispatch)
-
     | DashboardPageModel m ->
-        Client.Dashboard.View.view m (DashboardMsg >> dispatch)
-
+      Client.Dashboard.View.view m (DashboardMsg >> dispatch)
     | TeabagsPageModel m ->
-        Client.Teabags.View.view m (TeabagsMsg >> dispatch)
-
+      Client.Teabags.View.view m (TeabagsMsg >> dispatch)
     | TeabagPageModel m ->
-        Client.Teabag.View.view m (TeabagMsg >> dispatch)
+      Client.Teabag.View.view m (TeabagMsg >> dispatch)
 
 /// Constructs the view for the application given the model.
 let view model dispatch =
@@ -46,7 +43,7 @@ open Elmish.Debug
 open Elmish.HMR
 #endif
 
-Program.mkProgram init update view
+Program.mkProgram init update (lazyView2 view)
 |> Program.toNavigable urlParser urlUpdate
 #if DEBUG
 |> Program.withConsoleTrace

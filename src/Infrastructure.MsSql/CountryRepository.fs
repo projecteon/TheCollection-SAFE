@@ -6,6 +6,7 @@ open FSharp.Control.Tasks.V2
 open FSharp.Data
 open DbContext
 open Domain.SharedTypes
+open Domain.Types
 open Domain.Tea
 open Search
 open Util
@@ -31,7 +32,7 @@ module CountryRepository =
         |> List.ofSeq
         |> Seq.map (fun x -> {
             id = DbId x.id
-            Country.name = x.s_name
+            Country.name = x.s_name |> CountryName
           })
         |> Seq.toList
       }
@@ -53,7 +54,7 @@ module CountryRepository =
         |> function
           | Some x -> Some {
               id = DbId x.id
-              Country.name = x.s_name
+              Country.name = x.s_name |> CountryName
             }
           | _ -> None
       }
@@ -69,7 +70,7 @@ module CountryRepository =
 
     let insert (connectiongString: string) (country : Country) =
         let cmd = new InsertCountry(connectiongString)
-        cmd.Execute(country.name)
+        cmd.Execute(country.name.String)
         |> function
             | Some x -> Some { country with id = DbId x }
             | _ -> None

@@ -13,14 +13,18 @@ open Giraffe
 open Domain.SharedTypes
 open Services.Dtos
 
+
+// https://medium.com/@dsincl12/json-web-token-with-giraffe-and-f-4cebe1c3ef3b
+// https://github.com/giraffe-fsharp/Giraffe/blob/master/samples/JwtApp/JwtApp/Program.fs
+
 let secret = "spadR2dre#u-ruBrE@TepA&*Uf@U"
 
 let authorize: HttpHandler =
     requiresAuthentication (challenge JwtBearerDefaults.AuthenticationScheme)
 
-let generateToken email =
+let generateToken (email: EmailAddress) =
     let claims = [|
-        Claim(JwtRegisteredClaimNames.Sub, email);
+        Claim(JwtRegisteredClaimNames.Sub, email.String);
         Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) |]
 
     let expires = Nullable(DateTime.UtcNow.AddHours(1.0))
@@ -38,7 +42,7 @@ let generateToken email =
             signingCredentials = signingCredentials)
 
     let tokenResult = {
-      UserName = EmailAddress email
+      UserName = email
       Token = JWT <| JwtSecurityTokenHandler().WriteToken(token)
     }
 
@@ -49,19 +53,18 @@ let handleGetSecured =
         let email = ctx.User.FindFirst ClaimTypes.NameIdentifier
         text ("User " + email.Value + " is authorized to access this resource.") next ctx
 
-let validateUser (loginModel: LoginViewModel) =
-  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then true
-  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then true
-  else false
+let loginUser loginModel =
+  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then (generateToken loginModel.Email) |> Some
+  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then (generateToken loginModel.Email) |> Some
+  else None
 
 let handlePostToken =
-    fun (next : HttpFunc) (ctx : HttpContext) ->
-        task {
-            let! model = ctx.BindJsonAsync<LoginViewModel>()
-            match (validateUser model) with
-            | true -> 
-              let tokenResult = generateToken model.Email.String
-              return! Successful.OK tokenResult next ctx
-            | _ -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" "Invalid username or password!") next ctx 
-        }
+  fun (next : HttpFunc) (ctx : HttpContext) ->
+    task {
+      let! model = ctx.BindJsonAsync<LoginViewModel>()
+      match (loginUser model) with
+      | Some tokenResult -> 
+        return! Successful.OK tokenResult next ctx
+      | None -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" "Invalid username or password!") next ctx 
+    }
 

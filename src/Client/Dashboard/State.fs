@@ -119,7 +119,7 @@ let xData (data: CountBy<Moment> list): PrimitiveArray =
 
 let periodMonthData (data: CountBy<Moment> list) =
   [|data |> xData|]
-  |> Array.append <| (splitData data)
+  |> Array.append <| ((splitData data) |> Array.tail)
 
 let toPeriodMonthChart2 (data: CountBy<Moment> list) =
   Some {
@@ -162,7 +162,6 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | GetCountByInsertedSuccess data ->
     let dashboardData = data |> List.map(fun x -> {count = x.count; description = moment(U7.Case3 x.description.String)})
     let config =  dashboardData |> toPeriodMonthChart2
-    printf "%O" config
     { model with countByInserted = Some dashboardData; countInserted = config }, Cmd.none
   | GetCountByBagtypesError exn -> model, Cmd.none
   | GetCountByInsertedError exn -> model, Cmd.none

@@ -19,11 +19,11 @@ let EmptyRefValue: RefValue = {
 
 let NewTeabag = {
     id = DbId 0
-    brand = Some EmptyRefValue
+    brand = EmptyRefValue
     serie = ""
     flavour = ""
     hallmark = ""
-    bagtype = Some EmptyRefValue
+    bagtype = EmptyRefValue
     country = Some EmptyRefValue
     serialnumber = ""
     imageid = ImageId None;
@@ -33,7 +33,10 @@ type Msg =
 | Get
 | GetError of exn
 | GetSuccess of Teabag
+| FlavourChanged of string
 | HallmarkChanged of string
+| SerialnumberChanged of string
+| SerieChanged of string
 | BrandCmp of ComboBox.Types.Msg
 | BagtypeCmp of ComboBox.Types.Msg
 | CountryCmp of ComboBox.Types.Msg
