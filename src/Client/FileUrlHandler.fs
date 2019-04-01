@@ -5,7 +5,7 @@ open Services
 
 type FileUrl = string
 
-let private getUrlDbId (dbId: DbId) =
+let getUrlDbId (dbId: DbId) =
   dbId.Int
   |> sprintf "/api/thumbnails/%i"
 

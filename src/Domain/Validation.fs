@@ -3,11 +3,35 @@ namespace Domain.Validation
 open Domain.SharedTypes
 open System.Text.RegularExpressions
 
+module Helpers =
+  let reMapResult (model: 'a) (validationResult: Result<'b, 'c>) =
+    match validationResult with
+    | Success x -> Success model
+    | Failure y -> Failure y
+
+module StringValidations =
+  let notNull (value: string) =
+    if (value = null && value.Length > 0) then
+      Failure (sprintf "Is required")
+    else 
+      Success value
+
+  let minimumLength (length: int) (value: string) =
+    if (value.Length < length) then
+      Failure (sprintf "Must contain more than %i characters" length)
+    else 
+      Success value
+
+  let maximumLength (length: int) (value: string) =
+    if (value.Length > length) then
+      Failure (sprintf "Cannot contain more than %i characters" length)
+    else 
+      Success value
+
 module PasswordValidation =
   let private validatePasswordEmptiness (password: Password) =
     let passwordString = password.String
-    if (passwordString <> null &&
-          passwordString <> "") then
+    if (passwordString <> null && passwordString <> "") then
       Success password
     else
       Failure "Password cannot be empty"
@@ -34,7 +58,7 @@ module EmailValidation =
     let regex = Regex.IsMatch((emailAddress.String), emailAddrRegex, RegexOptions.IgnoreCase)
     match regex with
     | true -> Success emailAddress
-    | false -> Failure "Email address is not in valid format"
+    | false -> Failure "Email address is not in a valid format"
 
   let private validateEmailEmptiness (emailAddress: EmailAddress) =
     let emailAddressString = emailAddress.String

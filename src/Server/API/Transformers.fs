@@ -18,6 +18,14 @@ let transformRefValue (refvalue: Domain.Tea.RefValue option): Services.Dtos.RefV
       description = x.description
     }
 
+let transformDomainRefValue (refvalue: Services.Dtos.RefValue option): Domain.Tea.RefValue option =
+  match refvalue with
+  | None -> None
+  | Some x -> Some {
+      id = x.id
+      description = x.description
+    }
+
 let transformBrandToRefValue (brand: Brand): Services.Dtos.RefValue = {
   id = brand.id
   description = brand.name.String
@@ -47,3 +55,29 @@ let transformTeabag (teabag: Domain.Tea.Teabag): Services.Dtos.Teabag = {
 let transformTeabags (data: Domain.Tea.Teabag list): Services.Dtos.Teabag list =
   data
   |> List.map transformTeabag
+
+let transformDtoTeabag (teabag: Services.Dtos.Teabag): UpsertTeabag = {
+  brand = { id = teabag.brand.id; description = teabag.brand.description }
+  serie = teabag.serie |> Serie |> Some
+  flavour = teabag.flavour |> Flavour
+  hallmark = teabag.hallmark |> Hallmark |> Some
+  bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
+  country = teabag.country
+  serialnumber = teabag.serialnumber |> SerialNumber |> Some
+  imageid = teabag.imageid
+}
+
+let transformDtoToInsertTeabag (teabag: Services.Dtos.Teabag) : Domain.Tea.Teabag =
+  let created = System.DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc
+  {
+    id = DbId 0
+    brand = { id = teabag.brand.id; description = teabag.brand.description }
+    serie = teabag.serie |> Serie |> Some
+    flavour = teabag.flavour |> Flavour
+    hallmark = teabag.hallmark |> Hallmark |> Some
+    bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
+    country = teabag.country |> transformDomainRefValue 
+    serialnumber = teabag.serialnumber |> SerialNumber |> Some
+    imageid = teabag.imageid
+    created = created
+  }

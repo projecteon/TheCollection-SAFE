@@ -80,3 +80,31 @@ let handleGetAllQuery (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) =
       return! Successful.OK data next ctx
     | Error err -> return! RequestErrors.BAD_REQUEST err next ctx
   }
+
+let handlePost (insert: ('a -> Task<'b> )) (transform: ('c -> 'a )) (validate: ('a -> Result<'a, string>)) next (ctx: HttpContext) =
+  task {
+    let! postModel = ctx.BindJsonAsync<'c>()
+    let data = transform postModel
+    let validatedModel = validate data
+    match validatedModel with
+    | Success model ->
+      let! result = insert model
+      return! Successful.OK result next ctx
+    | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx    
+  }
+
+let handlePut (get: ('a -> Task<Option<'b>> )) (update: ('a*'b -> Task)) (transform: ('b*'c -> 'b )) (validate: ('b -> Result<'b, string>)) id next (ctx: HttpContext) =
+  task {
+    let! currentData = get id
+    match currentData with
+    | None -> return! RequestErrors.NOT_FOUND (sprintf "Entity with id: %O not found" id) next ctx
+    | Some x ->
+      let! postModel = ctx.BindJsonAsync<'c>()
+      let data = transform (x, postModel)
+      let validatedModel = validate data
+      match validatedModel with
+      | Success model ->
+        let! result = update (id, model)
+        return! Successful.OK result next ctx
+      | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx    
+  }

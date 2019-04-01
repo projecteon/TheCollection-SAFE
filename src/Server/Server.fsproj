@@ -12,6 +12,7 @@
   <ItemGroup>
     <Compile Include="../Services/Dtos.fs" />
     <Compile Include="NodaTimeHelper.fs" />
+    <Compile Include="API\FileUpload.fs" />
     <Compile Include="API\Transformers.fs" />
     <Compile Include="API\Generic.fs" />
     <Compile Include="Security.fs" />

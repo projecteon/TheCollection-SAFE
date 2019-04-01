@@ -61,3 +61,52 @@ module Dtos =
     imageid: ImageId;
   }
 
+module RefValueValidation =
+  open Dtos
+
+  let private validateHasValue (refValue: RefValue) =
+    if (refValue.id.Int > 0) then
+      Success refValue
+    else
+      Failure "Value is required"
+
+  let validate (refValue: RefValue) =
+    refValue
+    |> validateHasValue
+
+
+module FlavourValidation =
+  open Domain.Validation
+
+  let private validateLength (flavour: Flavour) =
+    let isValid =
+      flavour.String
+      |> Domain.Validation.StringValidations.minimumLength 1
+      >>= Domain.Validation.StringValidations.maximumLength 255
+
+    Helpers.reMapResult flavour isValid
+
+  let validate (flavour: Flavour) =
+    flavour
+    |> validateLength
+
+
+module TeabagValidation =
+  open Dtos
+  open Domain.Validation
+
+  let private validateFlavour (teabag: Teabag) =
+    let isValid =
+      teabag.flavour
+      |> StringValidations.maximumLength 1
+      >>= StringValidations.maximumLength 255
+    Helpers.reMapResult teabag isValid
+
+  let private validateBrand (teabag: Teabag) =
+    let isValid = teabag.brand |> RefValueValidation.validate
+    Helpers.reMapResult teabag isValid
+
+  let validate (teabag: Teabag) =
+    teabag
+    |> validateBrand
+    >>= validateFlavour

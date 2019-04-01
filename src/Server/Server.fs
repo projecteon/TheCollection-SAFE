@@ -26,6 +26,11 @@ let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
 let getCountByInserted = (TeabagRepository.insertedCount DbContext.ConnectionString)
 let getAllRefValues = RefValueRepository.getAll DbContext.ConnectionString
 
+let createTeabagCommand = TeabagRepository.insert DbContext.ConnectionString
+
+let validate (model: 'a) =
+  Domain.SharedTypes.Result.Success model
+
 // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
 let readImageFile imageId =
@@ -40,6 +45,16 @@ let thumbnailHandler imageId : HttpHandler =
       return! ctx.WriteBytesAsync bytes
     }
 
+let fileUploadHandler =
+  fun (next : HttpFunc) (ctx : Http.HttpContext) ->
+    task {
+      let formFeature = ctx.Features.Get<Http.Features.IFormFeature>()
+      let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
+      return!
+        (form.Files
+        |> Seq.fold (fun acc file -> sprintf "%s\n%s" acc file.FileName) ""
+        |> text) next ctx
+    }
 
 let webApp =
   choose [
@@ -57,6 +72,10 @@ let webApp =
           route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
           route "/refvalues" >=> (API.Generic.handleGetAllQuery getAllRefValues)
+        ]
+        POST >=> authorize >=> choose [
+          route "/teabags/upload" >=> fileUploadHandler
+          route "/teabags" >=> (API.Generic.handlePost createTeabagCommand Transformers.transformDtoToInsertTeabag validate)
         ]
       ])
     RequestErrors.NOT_FOUND "Not found"
