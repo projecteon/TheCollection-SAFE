@@ -28,10 +28,12 @@ let getCmd model (token: JWT) =
     ]]
     SearchSuccess
     SearchError
-
-
+    
 let setValueCmd (refValue: RefValue option) =
-  Cmd.ofMsg (Init refValue)
+  Cmd.ofMsg (SetValue refValue)
+
+let setErrors (errors: string seq) =
+  Cmd.ofMsg (SetErrors errors)
 
 let init (label: string, refValueType: RefValueTypes, userData: UserData option) =
   let initialModel = {
@@ -44,6 +46,7 @@ let init (label: string, refValueType: RefValueTypes, userData: UserData option)
     IsSearching = false
     RefValueType = refValueType
     userData = userData
+    Errors = []
   }
   initialModel
 
@@ -58,8 +61,12 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
     else
       let nextModel = { currentModel with SearchTerm = Some x }
       nextModel, Debounce.inputCmd x DebounceSearchTermMsg, ExternalMsg.UnChanged
-  | Init x ->
+  | SetValue x ->
     let nextModel = { currentModel with Value = x }
+    nextModel, Cmd.none, ExternalMsg.UnChanged
+  | SetErrors errors ->
+    printf "update %O" (errors |> List.ofSeq)
+    let nextModel = { currentModel with Errors = errors }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | OnFocused ->
     let nextModel = { currentModel with HasFocus = true }

@@ -79,7 +79,9 @@ let inputElement model dispatch =
         DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
         DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
     ]
-    if model.Value |> hasValue then
+    if (Seq.isEmpty model.Errors = false) then
+      yield Input.Color IsDanger
+    else if model.Value |> hasValue then
       yield Input.Color IsSuccess
   ]
 
@@ -95,6 +97,7 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
         inputElement model dispatch
         inputIcon model
+        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
         viewChoices model dispatch
       ]
     ]
@@ -110,6 +113,7 @@ let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
     Control.div [ Control.IsExpanded; Control.HasIconRight ] [
       inputElement model dispatch
       inputIcon model
+      (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
       viewChoices model dispatch
     ]
   ]

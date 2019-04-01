@@ -21,6 +21,7 @@ type Model = {
   IsSearching : bool
   RefValueType: RefValueTypes
   userData: UserData option
+  Errors: string seq
 }
 
 type ExternalMsg =
@@ -29,7 +30,8 @@ type ExternalMsg =
 
 type Msg =
 | Clear
-| Init of RefValue option
+| SetValue of RefValue option
+| SetErrors of string seq
 | OnSearchTermChange of string
 | OnFocused
 | OnBlur
