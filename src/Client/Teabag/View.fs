@@ -2,6 +2,7 @@ module Client.Teabag.View
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Fable.FontAwesome
 open Fulma
 
 open Client.Components
@@ -10,7 +11,10 @@ open Client.Teabag.Types
 open Services.Dtos
 open HtmlProps
 
-let form (teabag: Teabag) (model:Model) dispatch =
+module R = Fable.Helpers.React
+
+
+let teabagForm (teabag: Teabag) (model:Model) dispatch =
   form [AutoComplete Off] [
     (ComboBox.View.viewWithoutButtons model.brandCmp (BrandCmp >> dispatch))
     Field.div [ ] [
@@ -47,25 +51,59 @@ let form (teabag: Teabag) (model:Model) dispatch =
         Input.text [ Input.Placeholder "Ex: With logo"; Input.Value teabag.serie; Input.Option.Id "serie"; Input.OnChange (fun ev -> dispatch (SerieChanged ev.Value)) ]
       ]
     ]
-  ]
-
-let view (model:Model) (dispatch: Msg -> unit) =
-    [
-      yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile ] [
-          match model.data with
-          | Some x ->
-              yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-                  Content.content [] []
-                  img [ Src (getUrl x.imageid) ]
-              ]
-              yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-                  Content.content [] []
-                  Card.card [] [ Card.content [] [ form x model dispatch ] ]
-              ]
-          | _ ->
-              yield Column.column [ ] [
-                  yield Content.content [] []
-                  yield div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
-              ]
+    Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
+      Control.div [ ] [
+        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [ str "Submit" ]
+      ]
+      Control.div [ ] [
+        Button.button [ Button.Color IsDanger; Button.IsFullWidth; Button.Disabled true ] [ str "Cancel" ]
       ]
     ]
+  ]
+
+let fileUploadForm dispatch =
+  form [] [
+    Field.div [ ]
+      [ File.file [ File.IsBoxed; File.Color IsPrimary; File.Size IsLarge; File.IsCentered ]
+          [ File.label [ ]
+              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.Util.convertToFile |> ImageChanged |> dispatch); Accept "image/png, image/jpeg" ] ]
+                File.cta [ ]
+                  [ File.icon [ ]
+                      [ Icon.icon [ ]
+                          [ Fa.i [ Fa.Solid.Upload ]
+                              [ ] ] ]
+                    File.label [ GenericOption.Props [ Props.HtmlFor "imageinput" ] ]
+                      [ str "Choose a file..." ] ] ] ] ]
+  ]
+
+let uploadFormOrBan (teabag: Teabag) dispatch =
+  match teabag.id.Int with
+  | 0 ->
+    Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ] [
+      Icon.icon [Icon.Size IsLarge; Icon.Modifiers [Modifier.TextColor Color.IsGrey ; Modifier.TextAlignment (Screen.All, TextAlignment.Centered)]] [ Fa.i [ Fa.Solid.Ban; Fa.Size Fa.Fa6x ] [] ]
+    ]
+  | _ -> fileUploadForm dispatch
+
+let view (model:Model) (dispatch: Msg -> unit) =
+  [
+    yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsVCentered ] [
+      match model.data with
+      | Some x ->
+        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
+          Content.content [] [
+            match x.imageid.Option with
+            | Some x -> yield img [ Src (getUrlDbId x) ]
+            | None -> yield uploadFormOrBan x dispatch
+          ]
+        ]
+        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
+          Content.content [] []
+          Card.card [] [ Card.content [] [ teabagForm x model dispatch ] ]
+        ]
+      | _ ->
+        yield Column.column [ ] [
+          yield Content.content [] []
+          yield div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
+        ]
+    ]
+  ]

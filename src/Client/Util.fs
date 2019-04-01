@@ -9,12 +9,14 @@ open Thoth.Json
 open Services.Dtos
 
 module Util =
+  open Fable.Core
+
   let inline httpPost2<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
       let body = Encode.Auto.toString(0, data)
       let props = [
           RequestProperties.Method HttpMethod.POST
           Fetch.requestHeaders [
-              if token.IsSome then yield HttpRequestHeaders.Authorization ("Bearer " + token.Value.ToString())
+              if token.IsSome then yield HttpRequestHeaders.Authorization ("Bearer " + token.Value.String)
               yield HttpRequestHeaders.ContentType "application/json; charset=utf-8"
           ]
           RequestProperties.Body !^body
@@ -32,7 +34,7 @@ module Util =
   let inline httpPost<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
       try
           let! res = Fetch.postRecord<'Data> url data [ Fetch.requestHeaders [
-            if token.IsSome then yield HttpRequestHeaders.Authorization ("Bearer " + token.Value.ToString())
+            if token.IsSome then yield HttpRequestHeaders.Authorization ("Bearer " + token.Value.String)
             yield HttpRequestHeaders.ContentType "application/json; charset=utf-8"
           ] ]
           let! txt = res.text()
@@ -41,7 +43,19 @@ module Util =
       | exn -> return! failwithf "Error while posting to %s. Message: %s" url exn.Message
   }
 
+  let inline convertToFile (input: Fable.Import.Browser.EventTarget): Fable.Import.Browser.File =
+    input?files?item(0)
+
   let tryAuthorizationRequest (cmd: (JWT -> Cmd<'Msg> )) (userData: UserData option) =
     match userData with
     | Some x -> cmd x.Token
     | _ -> Cmd.none
+
+module FulmaHelpers =
+  open Fable.Helpers.React
+  open Fulma
+
+  let inputError errorList =
+    printf "inputError %O" errorList
+    errorList
+    |> List.map (fun x -> Help.help [ Help.Color IsDanger ] [ str x ])

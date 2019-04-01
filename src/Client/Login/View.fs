@@ -20,10 +20,6 @@ let private loginError model =
   | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
   | None -> Fable.Helpers.React.nothing
 
-let private inputError errorList =
-  errorList
-  |> List.map (fun x -> Help.help [ Help.Color IsDanger ] [ str x ])
-
 let view  (model : Model) (dispatch : Msg -> unit) =
     [ Hero.hero [
         Hero.Color IsLight
@@ -53,7 +49,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Envelope ] [ ]
                       ]
-                      (inputError model.userNameError) |> ofList
+                      (Client.FulmaHelpers.inputError model.userNameError) |> ofList
                     ]
                   ]
                   Field.div [] [
@@ -71,7 +67,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Key ] [ ]
                       ]
-                      (inputError model.passwordError) |> ofList
+                      (Client.FulmaHelpers.inputError model.passwordError) |> ofList
                     ]
                   ]
                   Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
