@@ -1,5 +1,16 @@
 @import '../../node_modules/bulma/bulma';
 @import '../../node_modules/c3/src/scss/main';
+// unable to do this way due to pathing and loading font files - FIGURE OUT HOW!!
+// try
+// https://stackoverflow.com/questions/48672073/fontawesome-5-with-sass
+
+// https://chriscourses.com/blog/loading-fonts-webpack
+// https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
+// @import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
+$fa-font-path: "../../node_modules/@fortawesome/fontawesome-free/WebFonts" !default;
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/regular.scss';
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/solid.scss';
 
 #close:hover {
   color: red

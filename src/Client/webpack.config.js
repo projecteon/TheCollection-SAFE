@@ -83,6 +83,7 @@ module.exports = {
             webpackModuleCommon.fableLoaderRule(),
             webpackModuleCommon.bableLoaderRule(),
             webpackModuleCommon.sassLoaderRuledev(),
+            webpackModuleCommon.fileLoaderRule(),
         ]
     }
 };

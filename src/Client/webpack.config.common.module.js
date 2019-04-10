@@ -88,7 +88,9 @@ exports.sassLoaderRuleProd = function() {
 }
 
 exports.fileLoaderRule = function (assetsPath) {
+  const basePath = assetsPath !== undefined ? assetsPath : '';
   return {
+    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
     loader: require.resolve('file-loader'),
     // Exclude `js` files to keep "css" loader working as it injects
     // it's runtime that would otherwise be processed through "file" loader.
@@ -96,7 +98,7 @@ exports.fileLoaderRule = function (assetsPath) {
     // by webpacks internal loaders.
     exclude: [/\.(js|jsx)$/, /\.html$/, /\.json$/],
     options: {
-      name: assetsPath + 'media/[name].[hash:8].[ext]',
+      name: basePath + 'media/[name].[hash:8].[ext]',
     },
   }
 };
