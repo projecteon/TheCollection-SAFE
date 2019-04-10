@@ -35,6 +35,32 @@ let setValueCmd (refValue: RefValue option) =
 let setErrors (errors: string seq) =
   Cmd.ofMsg (SetErrors errors)
 
+let tryOnChange (model: Model) (newValue: RefValue) =
+  match model.Value with
+  | Some x when x.id = newValue.id ->
+    let nextModel = { model with SearchTerm = None; SearchResult = None; HasFocus = false; SearchResultHoverIndex = 0 }
+    nextModel, Cmd.none, ExternalMsg.UnChanged
+  | _ ->
+    let nextModel = { model with Value = Some newValue; SearchTerm = None; SearchResult = None; HasFocus = false; SearchResultHoverIndex = 0 }
+    nextModel, Cmd.none, ExternalMsg.OnChange <| Some newValue
+
+let tryDecreaseSearchResultHover (model: Model) =
+  if model.SearchResultHoverIndex >= 0 then
+    {model with SearchResultHoverIndex = model.SearchResultHoverIndex - 1 }
+  else
+    model
+
+let tryIncreaseSearchResultHover (model: Model) =
+  let maxIndex =
+    match model.SearchResult with
+    | Some y when model.Value.IsSome -> (y |> List.length) + 1
+    | Some y -> y |> List.length
+    | None -> 0
+  if model.SearchResultHoverIndex <= maxIndex then
+    {model with SearchResultHoverIndex = model.SearchResultHoverIndex + 1 }
+  else
+    model
+
 let init (label: string, refValueType: RefValueTypes, userData: UserData option) =
   let initialModel = {
     Value = None
@@ -42,6 +68,7 @@ let init (label: string, refValueType: RefValueTypes, userData: UserData option)
     SearchTerm = None
     HasFocus = false
     SearchResult = None
+    SearchResultHoverIndex = 0
     DebouncedTerm = Debounce.init (TimeSpan.FromMilliseconds 300.) ""
     IsSearching = false
     RefValueType = refValueType
@@ -71,17 +98,35 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
     let nextModel = { currentModel with HasFocus = true }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | OnBlur ->
-    let nextModel = { currentModel with HasFocus = false }
+    let nextModel = { currentModel with HasFocus = false; SearchResultHoverIndex = 0 }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | OnChange x ->
-    let nextModel = { currentModel with Value = Some x; SearchTerm = None; SearchResult = None; HasFocus = false }
-    nextModel, Cmd.none, ExternalMsg.OnChange <| Some x
+    tryOnChange currentModel x
   | SearchSuccess x ->
-    let nextModel = { currentModel with SearchResult = Some x; IsSearching = false }
+    let results =
+      match currentModel.Value with
+      | Some currentValue -> x |> List.filter (fun z -> z.id <> currentValue.id)
+      | None -> x
+    
+    let nextModel = { currentModel with SearchResult = Some results; IsSearching = false }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | SearchError x ->
     let nextModel = { currentModel with IsSearching = false }
     nextModel, Cmd.none, ExternalMsg.UnChanged
+  | IncreaseSearchResultHoverIndex ->
+    tryIncreaseSearchResultHover currentModel, Cmd.none, ExternalMsg.UnChanged
+  | DecreaseSearchResultHoverIndex ->
+    tryDecreaseSearchResultHover currentModel, Cmd.none, ExternalMsg.UnChanged
+  | SelectSearchResultHoverIndex ->
+    let nextCmd =
+      match currentModel.SearchResult with
+      | Some x->
+        let selectIndex = currentModel.SearchResultHoverIndex - (if currentModel.Value.IsNone then 0 else 1)
+        match x |> List.tryItem selectIndex with
+        | Some a -> Cmd.ofMsg (OnChange a)
+        | None -> Cmd.none
+      | None -> Cmd.none
+    currentModel, nextCmd, ExternalMsg.UnChanged
   | DebounceSearchTermMsg msg ->
     let (dModel, dMsg) = Debounce.updateWithCmd
                           msg

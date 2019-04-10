@@ -9,6 +9,38 @@ open Services.Dtos
 open Domain.SharedTypes
 open Client.Components.ComboBox.Types
 open Elmish.React
+open Fulma
+
+let CarrigeReturnKeyCode = 13.0
+let ArrowUpKeyCode = 38.0
+let ArrowDownKeyCode = 40.0
+
+let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) = 
+  let isLeftButtonClick = ev.button = 0.0;
+  if isLeftButtonClick then
+    dispatch (OnChange newValue)
+  else
+    ev.stopPropagation()
+    ev.preventDefault() |> ignore
+
+let onKeyDown (model: Model) dispatch (ev: Fable.Import.React.KeyboardEvent) =
+  if model.HasFocus = false && model.SearchResult.IsNone && model.Value.IsNone then
+    ev |> ignore
+  else
+    let isUpOrDownArrow = [|ArrowDownKeyCode; ArrowUpKeyCode|] |> Array.tryFindIndex ((=) ev.keyCode) |> function | None -> false | _ -> true
+    if isUpOrDownArrow then
+      ev.preventDefault();
+      ev.stopPropagation();
+
+    if ev.keyCode = ArrowUpKeyCode then
+      dispatch DecreaseSearchResultHoverIndex |> ignore
+    else if ev.keyCode = ArrowDownKeyCode then
+      dispatch IncreaseSearchResultHoverIndex |> ignore
+    else if ev.keyCode = CarrigeReturnKeyCode then
+      dispatch SelectSearchResultHoverIndex |> ignore
+      (ev.currentTarget :?> Fable.Import.Browser.HTMLInputElement).blur()
+    else
+      ev |> ignore
 
 let getDisplayValue (model: Model) =
   match model.HasFocus with
@@ -29,16 +61,22 @@ let private hasValue (value: RefValue option) =
     | _ -> true
   | None -> false
 
+let private getHoveredStyle index  searchResultHoverIndex =
+  if index = searchResultHoverIndex then
+    [ CSSProp.BackgroundColor "whitesmoke"; CSSProp.Color "#0a0a0a" ]
+  else
+    []
+  
 let viewChoices (model: Model) (dispatch : Msg -> unit) =
   match model.HasFocus with
-  | true ->
+  | true when model.Value.IsSome || model.SearchResult.IsSome ->
     Dropdown.dropdown [ Dropdown.CustomClass "isDisplayed" ] [
       div [] []
       Dropdown.menu [ ] [
         Dropdown.content [ ] [
           match model.Value with
           | Some x when x.id.Int > 0 ->
-            yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnMouseDown (fun ev -> dispatch (OnChange x)) ] ] [ str x.description ]
+            yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnMouseDown (fun ev -> onChange dispatch ev x); Style (getHoveredStyle 0 model.SearchResultHoverIndex) ] ] [ str x.description ]
             if model.SearchResult.IsSome then
               yield Dropdown.divider [ ]
           | _ -> ()
@@ -46,7 +84,7 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
           match model.SearchResult with
           | Some results ->
             yield results
-            |> List.map (fun refvalue -> Dropdown.Item.a [ Dropdown.Item.Props [ Key (refvalue.id.ToString()); OnMouseDown (fun ev -> dispatch (OnChange refvalue)) ] ] [ str refvalue.description ])
+            |> List.mapi (fun index refvalue -> Dropdown.Item.a [ Dropdown.Item.Props [ Key (refvalue.id.ToString()); OnMouseDown (fun ev -> onChange dispatch ev refvalue); Style (getHoveredStyle (if model.Value.IsSome then index + 1 else index) model.SearchResultHoverIndex) ] ] [ str refvalue.description ])
             |> ofList
           | _ -> ()
         ]
@@ -76,8 +114,9 @@ let inputElement model dispatch =
     yield Input.Value (getDisplayValue model)
     yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
     yield Input.Props [
-        DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
-        DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
+      DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
+      DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
+      DOMAttr.OnKeyDown (fun ev -> onKeyDown model dispatch ev)
     ]
     if (Seq.isEmpty model.Errors = false) then
       yield Input.Color IsDanger

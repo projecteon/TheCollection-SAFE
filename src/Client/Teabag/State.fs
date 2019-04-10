@@ -19,24 +19,25 @@ let private valueOrDefault (value: RefValue option): RefValue =
   | Some x -> x
   | None -> EmptyRefValue
 
+let private refValueToOptional (value: RefValue): RefValue option =
+  if value = EmptyRefValue then None
+  else Some value
+
 let private mapValidationErrors validationError =
   match validationError with
   | ValidationErrors.BrandError x -> x
   | ValidationErrors.BagtypeError x -> x
   | ValidationErrors.FlavourError x -> x
 
-let private validateAndMapResult (doValidation: bool, errorType: (string -> ValidationErrors), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
-  if doValidation then
-    match (validateFunc value) with
-    | Success x -> None
-    | Failure y -> y |> errorType |> Some
-  else
-    None
+let private validateAndMapResult (errorType: (string -> ValidationErrors), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
+  match (validateFunc value) with
+  | Success x -> None
+  | Failure y -> y |> errorType |> Some
 
-let private validate (doValidation: bool, teabag: Teabag) =
+let private validate (teabag: Teabag) =
   let validationErrors = seq [
-    validateAndMapResult (doValidation, ValidationErrors.BrandError, teabag.brand, RefValueValidation.validate)
-    validateAndMapResult (doValidation, ValidationErrors.BagtypeError, teabag.bagtype, RefValueValidation.validate)
+    validateAndMapResult (ValidationErrors.BrandError, teabag.brand, RefValueValidation.validate)
+    validateAndMapResult (ValidationErrors.BagtypeError, teabag.bagtype, RefValueValidation.validate)
   ]
   validationErrors |> Seq.choose id
 
@@ -135,9 +136,9 @@ let init (userData: UserData option) =
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
   | GetSuccess data ->
-    { model with data = Some data; doValidation = true; isWorking = false }, Cmd.batch [Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> Some))
-                                                                                        Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> Some))
-                                                                                        Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
+    { model with data = Some data; doValidation = false; isWorking = false }, Cmd.batch [ Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> refValueToOptional))
+                                                                                          Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> refValueToOptional))
+                                                                                          Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
   | GetError exn -> { model with fetchError = Some exn; isWorking = false }, Cmd.none
   | FlavourChanged flavour ->
     match model.data with
@@ -206,16 +207,16 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | Validate ->
     let validatedModel =
       match model.data, model.doValidation with
-        | Some x, true -> { model with validationErrors = validate (model.doValidation, x)}
+        | Some x, true -> { model with validationErrors = validate x}
         | _, _ -> model
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)  ]
   | ValidateAndSave ->
     let newModel = { model with doValidation = true }
     let validatedModel =
-      match model.data with
-        | Some x -> { model with validationErrors = validate (newModel.doValidation, x)}
-        | None -> newModel
+      match model.data, newModel.doValidation with
+        | Some x, true -> { newModel with validationErrors = validate x}
+        | _ -> newModel
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)
                                 trySave validatedModel]

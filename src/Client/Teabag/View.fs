@@ -102,13 +102,11 @@ let view (model:Model) (dispatch: Msg -> unit) =
           ]
         ]
         yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-          Content.content [] []
           Card.card [] [ Card.content [] [ teabagForm x model dispatch ] ]
         ]
       | _ ->
         yield Column.column [ ] [
-          yield Content.content [] []
-          yield div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
+          div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
         ]
     ]
   ]

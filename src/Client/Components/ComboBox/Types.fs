@@ -17,6 +17,7 @@ type Model = {
   SearchTerm: string option
   HasFocus: bool
   SearchResult: Option<RefValue list>
+  SearchResultHoverIndex: int
   DebouncedTerm : Elmish.Debounce.Model<string>
   IsSearching : bool
   RefValueType: RefValueTypes
@@ -36,6 +37,9 @@ type Msg =
 | OnFocused
 | OnBlur
 | OnChange of RefValue
+| IncreaseSearchResultHoverIndex
+| DecreaseSearchResultHoverIndex
+| SelectSearchResultHoverIndex
 | SearchSuccess of RefValue list
 | SearchError of exn
 | DebounceSearchTermMsg of Debounce.Msg<string>
