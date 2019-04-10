@@ -9,7 +9,6 @@ open Services.Dtos
 open Domain.SharedTypes
 open Client.Components.ComboBox.Types
 open Elmish.React
-open Fulma
 
 let CarrigeReturnKeyCode = 13.0
 let ArrowUpKeyCode = 38.0
