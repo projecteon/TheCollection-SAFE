@@ -15,7 +15,7 @@ let handleNotFound (model: Model) =
 
 /// The navigation logic of the application given a page identity parsed from the .../#info
 /// information in the URL.
-let urlUpdate (result:Page option) (model: Model) =
+let urlUpdate (result: Page option) (model: Model) =
   match result with
   | None ->
     handleNotFound model
@@ -70,7 +70,6 @@ let update msg model =
     model, Cmd.none
   | LoginMsg msg, LoginPageModel m ->
     let m, cmd, exmsg = Client.Login.State.update msg m
-    //let user: UserData option = match msg with | Client.Login.Types.Msg.LoginSuccess userData -> Some userData | _ -> None
     let newModel =
       match exmsg with
       | Client.Login.Types.ExternalMsg.NoOp -> model
