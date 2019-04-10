@@ -54,8 +54,9 @@ module Util =
 
 module FulmaHelpers =
   open Fable.Helpers.React
+  open Fable.Helpers.React.Props
   open Fulma
 
   let inputError errorList =
     errorList
-    |> List.map (fun x -> Help.help [ Help.Color IsDanger ] [ str x ])
+    |> List.mapi (fun index x -> Help.help [ Help.Props [Key (index.ToString())]; Help.Color IsDanger ] [ str x ])
