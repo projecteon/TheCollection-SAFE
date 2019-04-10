@@ -34,5 +34,4 @@ let pageParser : Parser<Page -> Page,_> =
     ]
 
 let urlParser location =
-  printf "urlParser %O" location
   parsePath pageParser location

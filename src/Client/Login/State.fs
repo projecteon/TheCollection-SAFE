@@ -47,7 +47,7 @@ let private updateValidationErrorsCmd (model: Model) =
   let userNameErrors = validateUsername model
   let passwordErrors = validatePassword model
   { model with userNameError = userNameErrors; passwordError = passwordErrors; }
-  
+
 let init () =
     let initialModel = {
       userName = EmailAddress.Empty
@@ -61,7 +61,6 @@ let init () =
     initialModel, Cmd.none
 
 let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
-  printf "update login"
   match msg with
   | ChangeUserName data ->
     { model with userName = data }, Cmd.ofMsg Validate, NoOp

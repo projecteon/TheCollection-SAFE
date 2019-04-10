@@ -83,7 +83,6 @@ let handleGetAllQuery (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) =
 
 let handlePost (insert: ('a -> Task<'b> )) (transform: ('c -> 'a )) (validate: ('a -> Result<'a, string>)) next (ctx: HttpContext) =
   task {
-    printf "handlePost"
     let! postModel = ctx.BindJsonAsync<'c>()
     let data = transform postModel
     let validatedModel = validate data
@@ -91,7 +90,7 @@ let handlePost (insert: ('a -> Task<'b> )) (transform: ('c -> 'a )) (validate: (
     | Success model ->
       let! result = insert model
       return! Successful.OK result next ctx
-    | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx    
+    | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx
   }
 
 let handlePut (get: ('a -> Task<Option<'b>> )) (update: ('b -> Task<'a>)) (transform: ('b*'c -> 'b )) (validate: ('b -> Result<'b, string>)) id next (ctx: HttpContext) =
@@ -107,5 +106,5 @@ let handlePut (get: ('a -> Task<Option<'b>> )) (update: ('b -> Task<'a>)) (trans
       | Success model ->
         let! result = update (model)
         return! Successful.OK result next ctx
-      | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx    
+      | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx
   }
