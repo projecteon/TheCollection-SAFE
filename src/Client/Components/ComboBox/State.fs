@@ -65,7 +65,6 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
     let nextModel = { currentModel with Value = x }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | SetErrors errors ->
-    printf "update %O" (errors |> List.ofSeq)
     let nextModel = { currentModel with Errors = errors }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | OnFocused ->
