@@ -1,6 +1,7 @@
 namespace Domain.Types
 
 open NodaTime
+open Domain.SharedTypes
 
 type BrandName  = BrandName of string
     with
@@ -13,3 +14,9 @@ type CountryName  = CountryName of string
     member this.String = let (CountryName s) = this in s
 
 type CreatedDate = Instant
+
+type User = {
+  Id: DbId
+  Email : EmailAddress
+  Password : Password
+}

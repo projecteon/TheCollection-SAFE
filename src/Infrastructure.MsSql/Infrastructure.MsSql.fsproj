@@ -15,6 +15,8 @@
     <Compile Include="Types.fs" />
     <Compile Include="Util.fs" />
     <Compile Include="Mapping.fs" />
+    <Compile Include="UserRepository.fs" />
+    <Compile Include="FileRepository.fs" />
     <Compile Include="BagtypeRepository.fs" />
     <Compile Include="BrandRepository.fs" />
     <Compile Include="CountryRepository.fs" />

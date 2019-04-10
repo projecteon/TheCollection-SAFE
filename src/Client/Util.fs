@@ -9,7 +9,8 @@ open Thoth.Json
 open Services.Dtos
 
 module Util =
-  open Fable.Core
+  let isLeftButtonClick (ev: Fable.Import.React.MouseEvent) =
+    ev.button <> 0.0
 
   let inline httpPost2<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
       let body = Encode.Auto.toString(0, data)
@@ -56,6 +57,5 @@ module FulmaHelpers =
   open Fulma
 
   let inputError errorList =
-    printf "inputError %O" errorList
     errorList
     |> List.map (fun x -> Help.help [ Help.Color IsDanger ] [ str x ])

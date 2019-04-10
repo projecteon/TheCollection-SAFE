@@ -3,13 +3,31 @@ namespace Api
 module FileUpload =
   open Microsoft.AspNetCore.Http
   open System.IO
+  open FSharp.Control.Tasks.V2
+  
+  open Domain.SharedTypes
+  open System.Threading.Tasks
+
+  // https://theburningmonk.com/2012/10/f-helper-functions-to-convert-between-asyncunit-and-task/
+  let inline startAsPlainTask (work : Async<'a>) = System.Threading.Tasks.Task.Factory.StartNew(fun () -> work |> Async.RunSynchronously)
 
   // https://stackoverflow.com/questions/39322085/how-to-save-iformfile-to-disk
   let uploadSingle (file: IFormFile) =
-    async {
+    task {
       let filePath = sprintf "c:\\temp\\%s" file.FileName
       use fileStream = new FileStream(filePath, FileMode.Create)
-      do! file.CopyToAsync(fileStream) |> Async.AwaitTask
+      do! file.CopyToAsync(fileStream) 
+      return (filePath, file.FileName)
+    }
+
+  let uploadFiles (files: IFormFileCollection) (fileRepository: string*string -> Task<DbId option>) =
+    task {
+      if files.Count > 1 then
+        return Failure "Only supports uploading one file at a time"
+      else 
+        let! result = files.[0] |> uploadSingle
+        let! id = fileRepository result
+        return Success id
     }
 
   // https://codereview.stackexchange.com/questions/90569/saving-an-uploaded-file-and-returning-form-data

@@ -10,12 +10,14 @@ open Client.FileUrlHandler
 open Client.Teabag.Types
 open Services.Dtos
 open HtmlProps
+open Client
+open Client.Teabag
 
 module R = Fable.Helpers.React
 
 
 let teabagForm (teabag: Teabag) (model:Model) dispatch =
-  form [AutoComplete Off] [
+  form [AutoComplete Off; Disabled model.isWorking] [
     (ComboBox.View.viewWithoutButtons model.brandCmp (BrandCmp >> dispatch))
     Field.div [ ] [
       Label.label [ Label.Option.For "flavour" ] [
@@ -53,10 +55,13 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
     ]
     Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
       Control.div [ ] [
-        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [ str "Submit" ]
+        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false || model.isWorking); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
+          if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
+          else yield str "Submit"
+        ]
       ]
       Control.div [ ] [
-        Button.button [ Button.Color IsDanger; Button.IsFullWidth; Button.Disabled true ] [ str "Cancel" ]
+        Button.button [ Button.Color IsDanger; Button.IsFullWidth; Button.Disabled (model.isWorking); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Reload) ] [ str "Cancel" ]
       ]
     ]
   ]

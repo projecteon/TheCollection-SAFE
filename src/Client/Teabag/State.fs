@@ -12,15 +12,18 @@ open Client.Util
 open Services
 open Services.Dtos
 open Domain.SharedTypes
+open Fable.PowerPack.Keyboard
 
-let mapValidationErrors validationError =
+let private valueOrDefault (value: RefValue option): RefValue =
+  match value with
+  | Some x -> x
+  | None -> EmptyRefValue
+
+let private mapValidationErrors validationError =
   match validationError with
   | ValidationErrors.BrandError x -> x
   | ValidationErrors.BagtypeError x -> x
   | ValidationErrors.FlavourError x -> x
-
-let isValid (validationErrors: ValidationErrors seq) =
-  validationErrors |> Seq.isEmpty
 
 let private validateAndMapResult (doValidation: bool, errorType: (string -> ValidationErrors), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
   if doValidation then
@@ -38,19 +41,23 @@ let private validate (doValidation: bool, teabag: Teabag) =
   validationErrors |> Seq.choose id
 
 // https://stackoverflow.com/questions/3363184/f-how-to-elegantly-select-and-group-discriminated-unions
-let fetchAndMapError (model: Model) (matcher: (ValidationErrors -> bool)) =
+let private fetchAndMapError (model: Model) (matcher: (ValidationErrors -> bool)) =
   model.validationErrors
   |> Seq.filter matcher
   |> Seq.map mapValidationErrors
 
-let fetchBrandErrors (model: Model) =
+let private fetchBrandErrors (model: Model) =
   fetchAndMapError model (fun x -> match x with | BrandError y -> true | _ -> false)
 
-let fetchBagtypeErrors (model: Model) =
+let private fetchBagtypeErrors (model: Model) =
   fetchAndMapError model (fun x -> match x with | BagtypeError y -> true | _ -> false)
 
+
+let isValid (validationErrors: ValidationErrors seq) =
+  validationErrors |> Seq.isEmpty
+
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
-let getTeabagCmd (id: int option) (token: JWT) =
+let private getTeabagCmd (id: int option) (token: JWT) =
   match id with
   | Some id ->
     Cmd.ofPromise
@@ -63,49 +70,75 @@ let getTeabagCmd (id: int option) (token: JWT) =
       GetError
   | None -> Cmd.ofMsg (GetSuccess NewTeabag)
 
-let uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
-    let formData = Fable.Import.Browser.FormData.Create()
-    formData.append(file.name, file)
-    let defaultProps =
-        [ RequestProperties.Method HttpMethod.POST
-          RequestProperties.Body (formData |> unbox)
-          Fetch.requestHeaders [
-              HttpRequestHeaders.Authorization ("Bearer " + token.String)
-              HttpRequestHeaders.ContentType "multipart/form-data; charset=utf-8"
-          ]]
-    let decoder = (Decode.Auto.generateDecoder<string>())
-    Cmd.ofPromise (Fetch.fetchAs "/api/teabags/upload" decoder) defaultProps
-      UploadSuccess
-      UploadError
+let private reloadTeabagCmd (teabag: Teabag option) (token: JWT) =
+  match teabag with
+  | None -> getTeabagCmd None token
+  | Some x -> getTeabagCmd (Some x.id.Int) token
+
+// https://github.com/fable-compiler/fable-powerpack/blob/master/src/Fetch.fs
+// https://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-js-fetch-api
+let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
+  let formData = Fable.Import.Browser.FormData.Create()
+  formData.append(file.name, file)
+  let defaultProps =
+    [ RequestProperties.Method HttpMethod.POST
+      RequestProperties.Body (formData |> unbox)
+      Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+      ]]
+  let decoder = (Decode.Auto.generateDecoder<string>())
+  Cmd.ofPromise (Fetch.fetchAs "/api/teabags/upload" decoder) defaultProps
+    UploadSuccess
+    UploadError
+
+
+let private saveTeabagCmd (teabag: Teabag) (token: JWT) =
+  let (requestMethod, url) =
+    match teabag.id with
+    | DbId 0 -> (HttpMethod.POST, "/api/teabags")
+    | _ -> (HttpMethod.PUT, sprintf "/api/teabags/%i" teabag.id.Int)
+  let fetchProperties =
+    [ RequestProperties.Method requestMethod
+      RequestProperties.Body !^(Encode.Auto.toString(0, teabag))
+      Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+        //HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+      ]]
+  let decoder = (Decode.Auto.generateDecoder<int>())
+  Cmd.ofPromise (Fetch.fetchAs url decoder) fetchProperties
+    SaveSuccess
+    SaveFailure
+  
+  
+let private trySave (model: Model) =
+  match (isValid model.validationErrors), model.data with
+  | true, Some teabag -> Cmd.ofMsg (Msg.Save teabag)
+  | _, _-> Cmd.none
 
 let init (userData: UserData option) =
-    let brandCmp = ComboBox.State.init("Brand", RefValueTypes.Brand, userData)
-    let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype, userData)
-    let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country, userData)
-    let initialModel = {
-      data = None
-      brandCmp = brandCmp
-      bagtypeCmp = bagtypeCmp
-      countryCmp = countryCmp
-      userData = userData
-      fetchError = None
-      doValidation = false
-      validationErrors = Seq.empty
-    }
-    initialModel, getTeabagCmd
-
-let valueOrDefault (value: RefValue option): RefValue =
-  match value with
-  | Some x -> x
-  | None -> EmptyRefValue
+  let brandCmp = ComboBox.State.init("Brand", RefValueTypes.Brand, userData)
+  let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype, userData)
+  let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country, userData)
+  let initialModel = {
+    data = None
+    brandCmp = brandCmp
+    bagtypeCmp = bagtypeCmp
+    countryCmp = countryCmp
+    userData = userData
+    fetchError = None
+    doValidation = false
+    validationErrors = Seq.empty
+    isWorking = true
+  }
+  initialModel, getTeabagCmd
 
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
   | GetSuccess data ->
-    { model with data = Some data; doValidation = true }, Cmd.batch [ Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> Some))
-                                                                      Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> Some))
-                                                                      Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
-  | GetError exn -> { model with fetchError = Some exn }, Cmd.none
+    { model with data = Some data; doValidation = true; isWorking = false }, Cmd.batch [Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> Some))
+                                                                                        Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> Some))
+                                                                                        Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
+  | GetError exn -> { model with fetchError = Some exn; isWorking = false }, Cmd.none
   | FlavourChanged flavour ->
     match model.data with
     | Some x -> { model with data = Some { x with flavour = flavour } }, Cmd.none
@@ -165,11 +198,16 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     model, tryAuthorizationRequest (input |> uploadImage) model.userData
   | UploadSuccess returnMsg -> model, Cmd.none
   | UploadError exn -> { model with fetchError = Some exn }, Cmd.none
+  | Save teabag -> model, tryAuthorizationRequest (saveTeabagCmd teabag) model.userData
+  | SaveSuccess id -> 
+    let updatedTeabag = Some { model.data.Value with id = DbId id }
+    { model with data = updatedTeabag }, Cmd.none
+  | SaveFailure exn -> { model with fetchError = Some exn }, Cmd.none
   | Validate ->
     let validatedModel =
-      match model.data with
-        | Some x -> { model with validationErrors = validate (model.doValidation, x)}
-        | None -> model
+      match model.data, model.doValidation with
+        | Some x, true -> { model with validationErrors = validate (model.doValidation, x)}
+        | _, _ -> model
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)  ]
   | ValidateAndSave ->
@@ -179,4 +217,6 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
         | Some x -> { model with validationErrors = validate (newModel.doValidation, x)}
         | None -> newModel
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
-                                Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors) ]
+                                Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)
+                                trySave validatedModel]
+  | Reload -> model, tryAuthorizationRequest (reloadTeabagCmd model.data) model.userData

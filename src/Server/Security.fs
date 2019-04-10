@@ -12,6 +12,7 @@ open Giraffe
 
 open Domain.SharedTypes
 open Services.Dtos
+open Domain.Types
 
 
 // https://medium.com/@dsincl12/json-web-token-with-giraffe-and-f-4cebe1c3ef3b
@@ -53,16 +54,27 @@ let handleGetSecured =
         let email = ctx.User.FindFirst ClaimTypes.NameIdentifier
         text ("User " + email.Value + " is authorized to access this resource.") next ctx
 
-let loginUser loginModel =
-  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then (generateToken loginModel.Email) |> Some
-  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then (generateToken loginModel.Email) |> Some
-  else None
+//let loginUser (loginModel: LoginViewModel) =
+//  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then (generateToken loginModel.Email) |> Some
+//  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then (generateToken loginModel.Email) |> Some
+//  else None
 
-let handlePostToken =
+let loginUserCmd (userRepository: (EmailAddress) -> System.Threading.Tasks.Task<User option>) (loginModel: LoginViewModel) =
+  task {
+    let! dbUser = userRepository loginModel.Email 
+    match dbUser with
+    | None -> return None
+    | Some user ->
+      if user.Password = loginModel.Password then return ((generateToken user.Email) |> Some) 
+      else return None
+  }
+
+let handlePostToken userRepository =
   fun (next : HttpFunc) (ctx : HttpContext) ->
     task {
       let! model = ctx.BindJsonAsync<LoginViewModel>()
-      match (loginUser model) with
+      let! user = loginUserCmd userRepository model
+      match user with
       | Some tokenResult -> 
         return! Successful.OK tokenResult next ctx
       | None -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" "Invalid username or password!") next ctx 

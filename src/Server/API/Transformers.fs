@@ -81,3 +81,15 @@ let transformDtoToInsertTeabag (teabag: Services.Dtos.Teabag) : Domain.Tea.Teaba
     imageid = teabag.imageid
     created = created
   }
+
+let transformDtoToUpdateTeabag (current: Domain.Tea.Teabag, teabag: Services.Dtos.Teabag) : Domain.Tea.Teabag =
+  {current with
+    brand = { id = teabag.brand.id; description = teabag.brand.description }
+    serie = teabag.serie |> Serie |> Some
+    flavour = teabag.flavour |> Flavour
+    hallmark = teabag.hallmark |> Hallmark |> Some
+    bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
+    country = teabag.country |> transformDomainRefValue 
+    serialnumber = teabag.serialnumber |> SerialNumber |> Some
+    imageid = teabag.imageid
+  }

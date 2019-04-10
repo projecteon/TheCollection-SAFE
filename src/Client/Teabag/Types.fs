@@ -18,6 +18,7 @@ type Model = {
   fetchError: exn option
   doValidation: bool
   validationErrors: ValidationErrors seq
+  isWorking: bool
 }
 
 let EmptyRefValue: RefValue = {
@@ -26,15 +27,15 @@ let EmptyRefValue: RefValue = {
 }
 
 let NewTeabag = {
-    id = DbId 0
-    brand = EmptyRefValue
-    serie = ""
-    flavour = ""
-    hallmark = ""
-    bagtype = EmptyRefValue
-    country = Some EmptyRefValue
-    serialnumber = ""
-    imageid = ImageId None;
+  id = DbId 0
+  brand = EmptyRefValue
+  serie = ""
+  flavour = ""
+  hallmark = ""
+  bagtype = EmptyRefValue
+  country = Some EmptyRefValue
+  serialnumber = ""
+  imageid = ImageId None;
 }
 
 type Msg =
@@ -50,5 +51,9 @@ type Msg =
   | ImageChanged of Fable.Import.Browser.File
   | UploadError of exn
   | UploadSuccess of string
+  | Save of Teabag
+  | SaveSuccess of int
+  | SaveFailure of exn
   | Validate
-  | ValidateAndSave 
+  | ValidateAndSave
+  | Reload

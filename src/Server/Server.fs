@@ -25,8 +25,10 @@ let getByIdCountries = CountryRepository.getById DbContext.ConnectionString
 let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
 let getCountByInserted = (TeabagRepository.insertedCount DbContext.ConnectionString)
 let getAllRefValues = RefValueRepository.getAll DbContext.ConnectionString
+let getUserByEmail = UserRepository.getByEmail DbContext.ConnectionString
 
-let createTeabagCommand = TeabagRepository.insert DbContext.ConnectionString
+let insertTeabag = TeabagRepository.insert DbContext.ConnectionString
+let updateTeabag = TeabagRepository.update DbContext.ConnectionString
 
 let validate (model: 'a) =
   Domain.SharedTypes.Result.Success model
@@ -50,15 +52,15 @@ let fileUploadHandler =
     task {
       let formFeature = ctx.Features.Get<Http.Features.IFormFeature>()
       let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
-      return!
-        (form.Files
-        |> Seq.fold (fun acc file -> sprintf "%s\n%s" acc file.FileName) ""
-        |> text) next ctx
+      let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DbContext.ConnectionString
+      match result with
+      | Domain.SharedTypes.Result.Success x -> return! (Successful.OK id) next ctx
+      | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
     }
 
 let webApp =
   choose [
-    POST >=> route "/api/token" >=> handlePostToken
+    POST >=> route "/api/token" >=> (handlePostToken getUserByEmail)
     GET >=> routef "/api/thumbnails/%i" thumbnailHandler
     subRoute "/api"
       (choose [
@@ -75,7 +77,10 @@ let webApp =
         ]
         POST >=> authorize >=> choose [
           route "/teabags/upload" >=> fileUploadHandler
-          route "/teabags" >=> (API.Generic.handlePost createTeabagCommand Transformers.transformDtoToInsertTeabag validate)
+          route "/teabags" >=> (API.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
+        ]
+        PUT >=> authorize >=> choose [
+          routef "/teabags/%i" (API.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
         ]
       ])
     RequestErrors.NOT_FOUND "Not found"

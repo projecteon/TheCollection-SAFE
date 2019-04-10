@@ -27,7 +27,7 @@ module SharedTypes =
 
   type Hallmark = Hallmark of string
     with
-    member this.String = let (Hallmark s) = this in s     
+    member this.String = let (Hallmark s) = this in s
     static member From (value: string option) = match value with | None -> None | Some x -> x |> Hallmark |> Some
 
   type Serie = Serie of string
@@ -63,7 +63,7 @@ module SharedTypes =
   let (>>=) twoTrackInput switchFunction =
     bind switchFunction twoTrackInput
 
-  let (>=>) switch1 switch2 = 
+  let (>=>) switch1 switch2 =
     switch1 >> (bind switch2)
 
 

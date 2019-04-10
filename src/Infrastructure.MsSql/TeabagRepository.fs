@@ -63,6 +63,40 @@ module TeabagRepository =
       }
 
     [<Literal>]
+    let  UpdateSQL = "
+        UPDATE tcd_teabag SET
+           ro_brand = @ro_brand
+           ,ro_bagtype = @ro_bagtype
+           ,rs_country = @rs_country
+           ,rf_image = @rf_image
+           ,s_flavour = @s_flavour
+           ,s_hallmark = @s_hallmark
+           ,s_serie = @s_serie
+           ,s_serialnumber = @s_serialnumber
+           ,s_search_terms = @s_search_terms
+        WHERE id = @id
+    "
+
+    type UpdateTeabag = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+
+    let update (connectiongString: string) (teabag: Domain.Tea.Teabag) =
+      task {
+        let cmd = new UpdateTeabag(connectiongString)
+        let searchString = teabag |> getSearchStrings |> String.Concat |> GenerateSearchString |> String.Concat
+        let! id = cmd.AsyncExecute( teabag.brand.id.Int
+                                    , teabag.bagtype.id.Int
+                                    , teabag.country |> ToDbValue.RefValueOption |> toDbIntValue
+                                    , teabag.imageid.Option |> ToDbValue.DbIdOption|> toDbIntValue
+                                    , teabag.flavour.String
+                                    , teabag.hallmark |> toDbStringValue
+                                    , teabag.serie |> toDbStringValue
+                                    , teabag.serialnumber  |> toDbStringValue
+                                    , searchString
+                                    , teabag.id.Int)
+        return id
+      }
+
+    [<Literal>]
     let  ByIdSQL = "
         SELECT a.*
             , dbo.xf_get_brand_text(a.ro_brand) as t_ro_brand
