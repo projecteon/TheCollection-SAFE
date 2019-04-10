@@ -11,11 +11,11 @@ module SearchStringGenerator =
     let private invalidChars = [| 'à'; 'á'; 'â'; 'ã'; 'ä'; 'å'; 'ç'; 'é'; 'è'; 'ê'; 'ë'; 'ì'; 'í'; 'î'; 'ï'; 'ñ'; 'ò'; 'ó'; 'ô'; 'ö'; 'õ'; 'ß';  'ù'; 'ú'; 'û'; 'ü'; 'ý'; 'ÿ' |]
 
     // https://stackoverflow.com/questions/34985836/index-of-element-in-array-f
-    let private findIndex arr elem = arr |> Array.findIndex ((=) elem)
+    let private findIndex arr elem = arr |> Array.tryFindIndex ((=) elem)
     // https://stackoverflow.com/questions/18595597/is-using-a-stringbuilder-a-right-thing-to-do-in-f
     let private ReplaceInvalidChar (c: char) =
         match (findIndex invalidChars c) with
-        | index when index > 0 -> replacement.[index]
+        | index when index.IsSome && index.Value > 0 -> replacement.[index.Value]
         | _ -> c.ToString()
 
     let private ReplaceInvalidChars (s: string) =
