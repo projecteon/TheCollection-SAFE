@@ -10,6 +10,7 @@ type ValidationErrors =
   | FlavourError of string
 
 type Model = {
+  originaldata: Option<Teabag>
   data: Option<Teabag>
   brandCmp: ComboBox.Types.Model
   bagtypeCmp: ComboBox.Types.Model

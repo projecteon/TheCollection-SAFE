@@ -121,6 +121,7 @@ let init (userData: UserData option) =
   let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype, userData)
   let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country, userData)
   let initialModel = {
+    originaldata = None
     data = None
     brandCmp = brandCmp
     bagtypeCmp = bagtypeCmp
@@ -136,9 +137,10 @@ let init (userData: UserData option) =
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
   | GetSuccess data ->
-    { model with data = Some data; doValidation = false; isWorking = false }, Cmd.batch [ Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> refValueToOptional))
-                                                                                          Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> refValueToOptional))
-                                                                                          Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
+    let newModel = { model with originaldata = Some data; data = Some data; doValidation = false; isWorking = false }
+    newModel, Cmd.batch [ Cmd.map BrandCmp (ComboBox.State.setValueCmd (data.brand |> refValueToOptional))
+                          Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (data.bagtype |> refValueToOptional))
+                          Cmd.map CountryCmp (ComboBox.State.setValueCmd data.country) ]
   | GetError exn -> { model with fetchError = Some exn; isWorking = false }, Cmd.none
   | FlavourChanged flavour ->
     match model.data with
@@ -202,7 +204,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | Save teabag -> model, tryAuthorizationRequest (saveTeabagCmd teabag) model.userData
   | SaveSuccess id -> 
     let updatedTeabag = Some { model.data.Value with id = DbId id }
-    { model with data = updatedTeabag }, Cmd.none
+    { model with data = updatedTeabag; originaldata = updatedTeabag }, Cmd.none
   | SaveFailure exn -> { model with fetchError = Some exn }, Cmd.none
   | Validate ->
     let validatedModel =

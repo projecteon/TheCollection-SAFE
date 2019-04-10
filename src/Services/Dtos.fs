@@ -33,11 +33,13 @@ module Dtos =
   type UtcDateTimeString = UtcDateTimeString of string with
     member this.String = let (UtcDateTimeString s) = this in s
 
+  [<ReferenceEquality>]
   type RefValue = {
     id: DbId;
     description: string;
   };
 
+  [<ReferenceEquality>]
   type Teabag = {
     id: DbId;
     brand: RefValue;
