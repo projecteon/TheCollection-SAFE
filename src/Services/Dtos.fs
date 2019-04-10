@@ -11,7 +11,7 @@ module Dtos =
     with
     member this.String = let (Name s) = this in s
     static member Create(s : string)=
-        if (s <> "" || s <> null ) then Ok s
+        if (s <> "" || (not (isNull s)) ) then Ok s
         else Error "Invalid string"
 
   [<CLIMutable>]
