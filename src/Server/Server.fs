@@ -60,10 +60,9 @@ let fileUploadHandler =
 
 let webApp =
   choose [
-    POST >=> route "/api/token" >=> (handlePostToken getUserByEmail)
-    GET >=> routef "/api/thumbnails/%i" thumbnailHandler
     subRoute "/api"
       (choose [
+        GET >=> routef "/thumbnails/%i" thumbnailHandler
         GET >=> authorize >=> choose [
           route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
           routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
@@ -75,6 +74,7 @@ let webApp =
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
           route "/refvalues" >=> (API.Generic.handleGetAllQuery getAllRefValues)
         ]
+        POST >=> route "/token" >=> (handlePostToken getUserByEmail)
         POST >=> authorize >=> choose [
           route "/teabags/upload" >=> fileUploadHandler
           route "/teabags" >=> (API.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
@@ -83,8 +83,8 @@ let webApp =
           routef "/teabags/%i" (API.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
         ]
       ])
+    GET >=> routex "(/*)" >=> redirectTo false "/"
     RequestErrors.NOT_FOUND "Not found"
-    //setStatusCode 404 >=> text "Not Found"
   ]
 
 let configureSerialization (services:IServiceCollection) =
