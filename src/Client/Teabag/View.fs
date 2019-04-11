@@ -10,11 +10,9 @@ open Client.FileUrlHandler
 open Client.Teabag.Types
 open Services.Dtos
 open HtmlProps
-open Client
 open Client.Teabag
 
 module R = Fable.Helpers.React
-
 
 let teabagForm (teabag: Teabag) (model:Model) dispatch =
   form [AutoComplete Off; Disabled model.isWorking] [
@@ -55,7 +53,7 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
     ]
     Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
       Control.div [ ] [
-        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false || model.isWorking || model.data <> model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
+        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
           if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
           else yield str "Submit"
         ]
