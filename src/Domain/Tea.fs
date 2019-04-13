@@ -1,6 +1,7 @@
 namespace Domain.Tea
 
 open Domain.Searchable
+open Domain.SharedTypes
 open Domain.Types
 
 type Brand = {
@@ -25,13 +26,13 @@ type RefValue = {
 
 type Teabag = {
   id: DbId;
-  [<Searchable()>] brand: RefValue option;
-  [<Searchable()>] serie: Serie;
+  [<Searchable()>] brand: RefValue;
+  [<Searchable()>] serie: Serie option;
   [<Searchable()>] flavour: Flavour;
-  [<Searchable()>] hallmark: Hallmark;
-  [<Searchable()>] bagtype: RefValue option;
+  [<Searchable()>] hallmark: Hallmark option;
+  [<Searchable()>] bagtype: RefValue;
   [<Searchable()>] country: RefValue option;
-  [<Searchable()>] serialnumber: SerialNumber;
+  [<Searchable()>] serialnumber: SerialNumber option;
   imageid: ImageId;
   created: CreatedDate;
 }

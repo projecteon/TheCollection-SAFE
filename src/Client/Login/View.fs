@@ -8,6 +8,17 @@ open Fulma
 
 open Types
 open HtmlProps
+open Client.Login
+open Domain.SharedTypes
+
+let private loginBtnContent model =
+      if model.isWorking then Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
+      else str "Login"
+
+let private loginError model =
+  match model.loginError with
+  | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
+  | None -> Fable.Helpers.React.nothing
 
 let view  (model : Model) (dispatch : Msg -> unit) =
     [ Hero.hero [
@@ -21,30 +32,47 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                 Image.image [ Image.CustomClass "avatar" ] [
                   img [ Src "/svg/teapot.svg" ]
                 ]
+                loginError model
                 form [AutoComplete Off] [
                   Field.div [] [
                     Control.p [ Control.HasIconLeft ] [
                       Input.email [
-                        Input.Option.Id "email"
-                        Input.Placeholder "your@email.com"
+                        yield Input.Option.Id "email"
+                        yield Input.Placeholder "your@email.com"
+                        yield Input.Value model.userName.String
+                        yield Input.OnChange (fun ev -> dispatch (ChangeUserName (EmailAddress ev.Value)))
+                        if (List.isEmpty model.userNameError = false) then
+                          yield Input.Color IsDanger
+                        else if model.hasTriedToLogin then
+                          yield Input.Color IsSuccess
                       ]
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Envelope ] [ ]
                       ]
+                      (Client.FulmaHelpers.inputError model.userNameError) |> ofList
                     ]
                   ]
                   Field.div [] [
                     Control.p [ Control.HasIconLeft ] [
                       Input.password [
-                        Input.Option.Id "password"
-                        Input.Placeholder (sprintf "password")
+                        yield Input.Option.Id "password"
+                        yield Input.Placeholder (sprintf "password")
+                        yield Input.Value model.password.String
+                        yield Input.OnChange (fun ev -> dispatch (ChangePassword (Password ev.Value)))
+                        if (List.isEmpty model.passwordError = false) then
+                          yield Input.Color IsDanger
+                        else if model.hasTriedToLogin then
+                          yield Input.Color IsSuccess
                       ]
                       Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
                         Fa.i [ Fa.Solid.Key ] [ ]
                       ]
+                      (Client.FulmaHelpers.inputError model.passwordError) |> ofList
                     ]
                   ]
-                  Button.button [ Button.Color IsInfo; Button.IsFullWidth; Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Login) ][ str "Login"]
+                  Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model = false || model.isWorking); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ][
+                    loginBtnContent model
+                  ]
                 ]
               ]
             ]

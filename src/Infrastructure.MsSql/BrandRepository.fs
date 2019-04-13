@@ -5,11 +5,14 @@ open FSharp.Control.Tasks.V2
 
 open FSharp.Data
 open DbContext
+open Domain.SharedTypes
+open Domain.Types
 open Domain.Tea
 open Search
 open Util
 
 module BrandRepository =
+
     [<Literal>]
     let  QrySQL = "
         DECLARE @sName varchar(50)
@@ -23,18 +26,17 @@ module BrandRepository =
 
     type BrandQry = SqlCommandProvider<QrySQL, ConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchTerm) : Task<Brand list> =
+    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
       task {
         let cmd = new BrandQry(connectiongString)
-        return cmd.Execute(nameFilter |> extractSearchTerm)
+        return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
-            id = x.id
-            Brand.name = x.s_name
+            id = DbId x.id
+            Brand.name = x.s_name |> BrandName
         })
         |> Seq.toList
       }
-
 
     [<Literal>]
     let  ByIdSQL = "
@@ -50,8 +52,8 @@ module BrandRepository =
         cmd.Execute(id)
         |> function
             | Some x -> Some {
-                    id = x.id
-                    Brand.name = x.s_name
+                    id = DbId x.id
+                    Brand.name = x.s_name |> BrandName
                 }
             | _ -> None
 
@@ -67,8 +69,8 @@ module BrandRepository =
     let insert (connectiongString: string) (brand : Brand) =
       task {
         let cmd = new InsertBrand(connectiongString)
-        return cmd.Execute(brand.name)
+        return cmd.Execute(brand.name.String)
         |> function
-            | Some x -> Some { brand with id = x }
+            | Some x -> Some { brand with id = DbId x }
             | _ -> None
       }

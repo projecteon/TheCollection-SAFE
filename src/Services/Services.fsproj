@@ -7,6 +7,7 @@
       <ProjectReference Include="../Domain/Domain.fsproj" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="Dtos.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />

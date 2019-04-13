@@ -4,11 +4,13 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Include="SharedTypes.fs" />
         <Compile Include="ReflectionUtil.fs" />
         <Compile Include="Searchable.fs" />
         <Compile Include="SearchStringGenerator.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="Tea.fs" />
+        <Compile Include="Validation.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -8,14 +8,16 @@ type Page =
   | Dashboard
   | Login
   | Teabags
-  | Teabag of string
+  | Teabag of int
+  | TeabagNew of string
 
 let toPath =
   function
   | Page.Dashboard -> "/"
   | Page.Login -> "/login"
   | Page.Teabags -> "/teabags"
-  | Page.Teabag id -> "/teabags/" + id
+  | Page.Teabag id -> sprintf "/teabags/%i" id
+  | Page.TeabagNew str -> "/teabags/new"
 
 /// https://elmish.github.io/browser/routing.html
 /// https://github.com/elmish/sample-react-navigation/blob/master/src/app.fs
@@ -27,7 +29,9 @@ let pageParser : Parser<Page -> Page,_> =
       map Page.Dashboard (s "")
       map Page.Login (s "login")
       map Page.Teabags (s "teabags")
-      map Page.Teabag (s "teabags" </> str)
+      map Page.Teabag (s "teabags" </> i32)
+      map Page.TeabagNew (s "teabags" </> str)
     ]
 
-let urlParser location = parsePath pageParser location
+let urlParser location =
+  parsePath pageParser location

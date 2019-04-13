@@ -1,15 +1,14 @@
 open System.IO
-open System.Threading.Tasks
-
 open Microsoft.AspNetCore
-open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
-open Services.Dtos
+open Thoth.Json
 
+//open Services.Dtos
 open TeaCollection.Infrastructure.MsSql
+open Security
 
 open Giraffe.Serialization
 
@@ -24,6 +23,15 @@ let getByIdBagtypes = BagtypeRepository.getById DbContext.ConnectionString
 let getAllBagtypes = BagtypeRepository.getAll DbContext.ConnectionString
 let getByIdCountries = CountryRepository.getById DbContext.ConnectionString
 let getAllCountries = CountryRepository.getAll DbContext.ConnectionString
+let getCountByInserted = (TeabagRepository.insertedCount DbContext.ConnectionString)
+let getAllRefValues = RefValueRepository.getAll DbContext.ConnectionString
+let getUserByEmail = UserRepository.getByEmail DbContext.ConnectionString
+
+let insertTeabag = TeabagRepository.insert DbContext.ConnectionString
+let updateTeabag = TeabagRepository.update DbContext.ConnectionString
+
+let validate (model: 'a) =
+  Domain.SharedTypes.Result.Success model
 
 // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
@@ -39,28 +47,48 @@ let thumbnailHandler imageId : HttpHandler =
       return! ctx.WriteBytesAsync bytes
     }
 
+let fileUploadHandler =
+  fun (next : HttpFunc) (ctx : Http.HttpContext) ->
+    task {
+      let formFeature = ctx.Features.Get<Http.Features.IFormFeature>()
+      let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
+      let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DbContext.ConnectionString
+      match result with
+      | Domain.SharedTypes.Result.Success x -> return! (Successful.OK id) next ctx
+      | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
+    }
+
 let webApp =
   choose [
     subRoute "/api"
       (choose [
-        GET >=> choose [
-          routef "/thumbnails/%i" thumbnailHandler
-          route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags)
-          routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags)
+        GET >=> routef "/thumbnails/%i" thumbnailHandler
+        GET >=> authorize >=> choose [
+          route "/teabags" >=> (API.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
+          routef "/teabags/%i" (API.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
           route "/teabags/countby/brands" >=> (API.Generic.handleGetAll (TeabagRepository.brandCount DbContext.ConnectionString))
           route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.ConnectionString))
+          route "/teabags/countby/inserteddate" >=> API.Generic.handleGetTransformAll getCountByInserted Transformers.transform
           route "/brands" >=> (API.Generic.handleGetAllSearch getAllBrands)
           route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
+          route "/refvalues" >=> (API.Generic.handleGetAllQuery getAllRefValues)
+        ]
+        POST >=> route "/token" >=> (handlePostToken getUserByEmail)
+        POST >=> authorize >=> choose [
+          route "/teabags/upload" >=> fileUploadHandler
+          route "/teabags" >=> (API.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
+        ]
+        PUT >=> authorize >=> choose [
+          routef "/teabags/%i" (API.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
         ]
       ])
-    setStatusCode 404 >=> text "Not Found"
+    GET >=> routex "(/*)" >=> redirectTo false "/"
+    RequestErrors.NOT_FOUND "Not found"
   ]
 
 let configureSerialization (services:IServiceCollection) =
-  let fableJsonSettings = Newtonsoft.Json.JsonSerializerSettings()
-  fableJsonSettings.Converters.Add(Fable.JsonConverter())
-  services.AddSingleton<IJsonSerializer>(NewtonsoftJsonSerializer fableJsonSettings)
+  services.AddSingleton<IJsonSerializer>(Thoth.Json.Giraffe.ThothSerializer())
 
 let app = application {
   url ("http://0.0.0.0:" + port.ToString() + "/")
@@ -69,6 +97,10 @@ let app = application {
   use_static publicPath
   service_config configureSerialization
   use_gzip
+  use_jwt_authentication secret "thecollection.net"
 }
 
 run app
+
+// https://dev.to/samueleresca/build-web-service-using-f-and-aspnet-core-52l8
+// https://vtquan.github.io/fsharp/creating-api-with-giraffe/

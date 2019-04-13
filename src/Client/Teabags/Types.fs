@@ -1,8 +1,7 @@
 module Client.Teabags.Types
 
-open Domain.Types
+open Domain.SharedTypes
 open Services.Dtos
-open Fable.Import
 
 type SearchResult = {
   data: Teabag list
@@ -17,6 +16,7 @@ type Model = {
   zoomImageId: ImageId option
   page: int64
   isLoading: bool
+  userData: UserData option
 }
 
 type Msg =
@@ -28,6 +28,9 @@ type Msg =
 | SearchTermError
 | ZoomImageToggle of ImageId option
 
+type Result<'TSuccess,'TFailure> =
+    | Success of 'TSuccess
+    | Failure of 'TFailure
 
 let validateSearchTerm model =
   match model.searchedTerms with

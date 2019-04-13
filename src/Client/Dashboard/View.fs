@@ -27,15 +27,15 @@ let renderPieChart data =
 
 let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
   match chart with
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
   | Some chartConfig ->
     match chartConfig.data.``type`` with
-    | None -> null
+    | None -> Fable.Helpers.React.nothing
     | Some chartType ->
       match chartType with
       | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]][Fa.i [ Fa.Solid.ChartPie ][]])
       | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]][Fa.i [ Fa.Solid.ChartBar ][]])
-      | _ -> null
+      | _ -> Fable.Helpers.React.nothing
       
 
 let view (model:Model) dispatch =
@@ -72,7 +72,7 @@ let view (model:Model) dispatch =
             Panel.block [ ] [
               match model.countBrands with
                 | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-                | None -> yield null
+                | None -> yield Fable.Helpers.React.nothing
             ]
           ]
         ]
@@ -89,7 +89,22 @@ let view (model:Model) dispatch =
             Panel.block [ ] [
               match model.countBagtypes with
               | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-              | None -> yield null
+              | None -> yield Fable.Helpers.React.nothing
+            ]
+          ]
+        ]
+        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+          Panel.panel [] [
+            Panel.heading [ ] [
+              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
+                str "Inserted"
+                div [][]
+              ]
+            ]
+            Panel.block [ ] [
+              match model.countInserted with
+              | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
+              | None -> yield Fable.Helpers.React.nothing
             ]
           ]
         ]

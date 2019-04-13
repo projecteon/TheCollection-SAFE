@@ -636,6 +636,8 @@ GITHUB
   remote: projecteon/Fable.C3
     src/Fable.C3.React/Chart.fs (e4428c3fa6a22ee49cc062a5d46ac1b83404cb00)
     src/Fable.C3/Fable.C3.fs (e4428c3fa6a22ee49cc062a5d46ac1b83404cb00)
+  remote: Prolucid/fable-import-momentjs
+    Fable.Import.Moment.fs (45c0d02503543064ba44337685038e6fb933fd64)
 GROUP Domain
 STORAGE: NONE
 RESTRICTION: == netstandard2.0
@@ -1061,6 +1063,7 @@ NUGET
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
     Newtonsoft.Json (12.0.1)
+    NodaTime (2.4.4)
     runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.debian.9-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
     runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3.3)
@@ -1569,6 +1572,13 @@ NUGET
       FSharp.Core (>= 4.1.17)
       NETStandard.Library (>= 1.6.1)
       System.ValueTuple (>= 4.4)
+    Thoth.Json.Giraffe (1.1)
+      FSharp.Core (>= 4.5.2)
+      Giraffe (>= 3.1)
+      Thoth.Json.Net (>= 2.0)
+    Thoth.Json.Net (2.5)
+      FSharp.Core (>= 4.5.2)
+      Newtonsoft.Json (>= 11.0.2)
     Utf8Json (1.3.7)
       System.Reflection.Emit (>= 4.3)
       System.Reflection.Emit.Lightweight (>= 4.3)

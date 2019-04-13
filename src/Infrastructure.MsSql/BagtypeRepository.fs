@@ -5,6 +5,8 @@ open FSharp.Control.Tasks.V2
 
 open FSharp.Data
 open DbContext
+open Domain.SharedTypes
+open Domain.Types
 open Domain.Tea
 open Search
 open Util
@@ -14,7 +16,7 @@ module BagtypeRepository =
     let  QrySQL = "
         DECLARE @sName varchar(50)
         SET @sName = @name
-        
+
         SELECT a.id, a.s_name
         FROM tco_bagtype a
         WHERE 1=1
@@ -23,14 +25,14 @@ module BagtypeRepository =
 
     type BagtypeQry = SqlCommandProvider<QrySQL, ConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchTerm) : Task<Bagtype list> =
+    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Bagtype list> =
       task {
         let cmd = new BagtypeQry(connectiongString)
-        return cmd.Execute(nameFilter |> extractSearchTerm)
+        return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
-            id = x.id
-            Bagtype.name = x.s_name
+            id = DbId x.id
+            Bagtype.name = x.s_name |> BagtypeName
           })
         |> Seq.toList
       }
@@ -51,8 +53,8 @@ module BagtypeRepository =
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
-              id = x.id
-              Bagtype.name = x.s_name
+              id = DbId x.id
+              Bagtype.name = x.s_name |> BagtypeName
             }
           | _ -> None
       }
@@ -68,7 +70,7 @@ module BagtypeRepository =
 
     let insert (connectiongString: string) (bagtype : Bagtype) =
       let cmd = new InsertBagtype(connectiongString)
-      cmd.Execute(bagtype.name)
+      cmd.Execute(bagtype.name.String)
       |> function
-        | Some x -> Some { bagtype with id = x }
+        | Some x -> Some { bagtype with id = DbId x }
         | _ -> None

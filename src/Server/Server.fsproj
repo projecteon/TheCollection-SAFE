@@ -8,10 +8,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.fsproj" />
     <ProjectReference Include="..\Infrastructure.MsSql\Infrastructure.MsSql.fsproj" />
-    <ProjectReference Include="..\Services\Services.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../Services/Dtos.fs" />
+    <Compile Include="NodaTimeHelper.fs" />
+    <Compile Include="API\FileUpload.fs" />
+    <Compile Include="API\Transformers.fs" />
     <Compile Include="API\Generic.fs" />
+    <Compile Include="Security.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />

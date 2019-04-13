@@ -17,7 +17,7 @@ let getDisplayValue (model: Model) =
     | _ -> ""
 
 let resultItem (teabag: Teabag) dispatch =
-  Column.column [ Column.Props [Key (teabag.id.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
+  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
         figure [] [
@@ -25,18 +25,18 @@ let resultItem (teabag: Teabag) dispatch =
         ]
       ]
       Card.content [] [
-        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.Value.description ]
+        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.description ]
         Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ][ str teabag.flavour ]
         Content.content [ ] [
           div [] [ small [] [ str teabag.serie ] ]
           div [] [ small [] [ str teabag.hallmark ] ]
           div [] [ small [] [ str teabag.serialnumber ] ]
-          div [] [ small [] [ str teabag.bagtype.Value.description ] ]
+          div [] [ small [] [ str teabag.bagtype.description ] ]
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
       ]
       Card.footer [] [
-        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.ToString()))); OnClick goToUrl ] ][
+        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))); OnClick goToUrl ] ][
           Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
         ]
         Card.Footer.a [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
@@ -54,6 +54,7 @@ let searchResult (model:Model) dispatch =
 let inputElement model dispatch =
   Input.text [
     yield Input.Option.Id "searchterm"
+    yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
     yield Input.Value (getDisplayValue model)
     yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
@@ -64,13 +65,13 @@ let inputElement model dispatch =
 let searchError model =
   match model.searchError with
   | Some x -> Help.help [ Help.Color IsDanger ] [ str x ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
                 [ str <| (sprintf "Resultcount: %i" <| x) ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let searchBar (model:Model) dispatch =
   Field.div [ ] [
@@ -82,7 +83,7 @@ let searchBar (model:Model) dispatch =
       ]
       Control.p [ ] [
         Button.button [
-          Button.Disabled (model.searchedTerms.IsNone)
+          Button.Disabled (model.searchedTerms.IsNone || model.isLoading)
           Button.Color IsPrimary
           Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Search)
         ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Search ][] ] ]
@@ -98,7 +99,7 @@ let zoomImage model dispatch =
         Modal.content [ ] [ img [ Src (getUrl x) ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
-  | None -> null
+  | None -> Fable.Helpers.React.nothing
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [

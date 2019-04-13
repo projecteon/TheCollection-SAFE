@@ -1,30 +1,22 @@
 namespace Domain.Types
 
 open NodaTime
+open Domain.SharedTypes
 
-type DbId = int
+type BrandName  = BrandName of string
+    with
+    member this.String = let (BrandName s) = this in s
+type BagtypeName  = BagtypeName of string
+    with
+    member this.String = let (BagtypeName s) = this in s
+type CountryName  = CountryName of string
+    with
+    member this.String = let (CountryName s) = this in s
 
-type ImageId =  DbId option
-type Flavour = string option
-type Hallmark = string option
-type Serie = string option
-type SerialNumber = string option
-type BrandName = string
-type BagtypeName = string
-type CountryName = string
 type CreatedDate = Instant
 
-type CountBy<'a> = {
-  count: int
-  description: 'a
+type User = {
+  Id: DbId
+  Email : EmailAddress
+  Password : Password
 }
-
-type Result<'TSuccess,'TFailure> =
-    | Success of 'TSuccess
-    | Failure of 'TFailure
-
- module ROP =
-   let bind switchFunction twoTrackInput =
-     match twoTrackInput with
-     | Success s -> switchFunction s
-     | Failure f -> Failure f

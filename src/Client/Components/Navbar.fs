@@ -59,6 +59,7 @@ let navMenu =
       div [ Class "navbar-end" ] [
         viewLink Page.Dashboard "Dashboard"
         viewLink Page.Teabags "Teabags"
+        viewLink (Page.TeabagNew "") "New"
         viewLink Page.Login "Logout"
       ]
     ]
