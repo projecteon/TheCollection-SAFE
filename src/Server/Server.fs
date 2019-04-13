@@ -97,7 +97,7 @@ let app = application {
   use_static publicPath
   service_config configureSerialization
   use_gzip
-  use_jwt_authentication secret "jwtwebapp.net"
+  use_jwt_authentication secret "thecollection.net"
 }
 
 run app

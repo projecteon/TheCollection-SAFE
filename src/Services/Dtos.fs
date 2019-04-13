@@ -7,6 +7,10 @@ module Dtos =
     with
     member this.String = let (JWT s) = this in s
 
+  type RefreshToken = RefreshToken of string
+    with
+    member this.String = let (RefreshToken s) = this in s
+
   type Name = private | Name of string
     with
     member this.String = let (Name s) = this in s
@@ -16,13 +20,14 @@ module Dtos =
 
   [<CLIMutable>]
   type LoginViewModel = {
-      Email : EmailAddress
-      Password : Password
+      Email     : EmailAddress
+      Password  : Password
   }
 
   type UserData = {
-    UserName : EmailAddress
-    Token    : JWT
+    UserName    : EmailAddress
+    Token       : JWT
+    RefreshToken: RefreshToken
   }
 
   type SearchResult<'a> = {
