@@ -49,9 +49,9 @@ type Msg =
   | BrandCmp of ComboBox.Types.Msg
   | BagtypeCmp of ComboBox.Types.Msg
   | CountryCmp of ComboBox.Types.Msg
-  | ImageChanged of Fable.Import.Browser.File
+  | ImageChanged of ImageId
+  | Upload of Fable.Import.Browser.File
   | UploadError of exn
-  | UploadSuccess of string
   | Save of Teabag
   | SaveSuccess of int
   | SaveFailure of exn

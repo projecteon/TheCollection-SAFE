@@ -7,10 +7,10 @@ open Fulma
 
 open Client.Components
 open Client.FileUrlHandler
+open Client.Teabag
 open Client.Teabag.Types
 open Services.Dtos
 open HtmlProps
-open Client.Teabag
 
 module R = Fable.Helpers.React
 
@@ -69,7 +69,7 @@ let fileUploadForm dispatch =
     Field.div [ ]
       [ File.file [ File.IsBoxed; File.Color IsPrimary; File.Size IsLarge; File.IsCentered ]
           [ File.label [ ]
-              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.Util.convertToFile |> ImageChanged |> dispatch); Accept "image/png, image/jpeg" ] ]
+              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.Util.convertToFile |> Upload |> dispatch); Accept "image/png, image/jpeg" ] ]
                 File.cta [ ]
                   [ File.icon [ ]
                       [ Icon.icon [ ]
@@ -87,6 +87,12 @@ let uploadFormOrBan (teabag: Teabag) dispatch =
     ]
   | _ -> fileUploadForm dispatch
 
+let viewImage x dispatch =
+  div [ ClassName "block"; Style [ Position "relative" ] ] [
+    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position "absolute"; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
+    img [ Src (getUrlDbId x) ]
+  ]
+
 let view (model:Model) (dispatch: Msg -> unit) =
   [
     yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsVCentered ] [
@@ -95,12 +101,14 @@ let view (model:Model) (dispatch: Msg -> unit) =
         yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
           Content.content [] [
             match x.imageid.Option with
-            | Some x -> yield img [ Src (getUrlDbId x) ]
+            | Some x -> yield viewImage x dispatch
             | None -> yield uploadFormOrBan x dispatch
           ]
         ]
         yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-          Card.card [] [ Card.content [] [ teabagForm x model dispatch ] ]
+          Card.card [] [
+            Card.content [] [ teabagForm x model dispatch ]
+          ]
         ]
       | _ ->
         yield Column.column [ ] [

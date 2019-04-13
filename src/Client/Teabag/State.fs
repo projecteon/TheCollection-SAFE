@@ -87,9 +87,9 @@ let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
       Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
       ]]
-  let decoder = (Decode.Auto.generateDecoder<string>())
+  let decoder = (Decode.Auto.generateDecoder<ImageId>())
   Cmd.ofPromise (Fetch.fetchAs "/api/teabags/upload" decoder) defaultProps
-    UploadSuccess
+    ImageChanged
     UploadError
 
 
@@ -197,9 +197,12 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     
     let nextModel = { model with countryCmp = res; data = nextTeabag }
     nextModel, Cmd.map CountryCmp cmd
-  | ImageChanged input ->
+  | ImageChanged id ->
+    match model.data with
+    | Some x -> { model with data = Some { x with imageid = id } }, Cmd.none
+    | _ -> { model with data = Some { NewTeabag with imageid = id } }, Cmd.none
+  | Upload input ->
     model, tryAuthorizationRequest (input |> uploadImage) model.userData
-  | UploadSuccess returnMsg -> model, Cmd.none
   | UploadError exn -> { model with fetchError = Some exn }, Cmd.none
   | Save teabag -> model, tryAuthorizationRequest (saveTeabagCmd teabag) model.userData
   | SaveSuccess id -> 
