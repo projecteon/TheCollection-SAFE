@@ -6,6 +6,7 @@ open Fable.PowerPack
 open Fable.PowerPack.Fetch
 open Thoth.Json
 
+open Domain.SharedTypes
 open Services.Dtos
 
 module Util =
@@ -51,6 +52,16 @@ module Util =
     match userData with
     | Some x -> cmd x.Token
     | _ -> Cmd.none
+
+  let validateAndMapResult<'a, 'b> (errorType: (string -> 'b), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
+    match (validateFunc value) with
+    | Success x -> None
+    | Failure y -> y |> errorType |> Some
+
+module ReactHelpers =
+  open Fable.Helpers.React
+  open Fable.Helpers.React.Props
+  let getValue (ev: Fable.Import.React.FormEvent) = ev.Value
 
 module FulmaHelpers =
   open Fable.Helpers.React

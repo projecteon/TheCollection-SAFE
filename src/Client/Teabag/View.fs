@@ -14,25 +14,45 @@ open HtmlProps
 
 module R = Fable.Helpers.React
 
+let customComp (refValue: RefValue) msg dispatch =
+  Control.p [ ] [
+    Button.button [
+      if refValue.id.Int = 0 then
+        yield Button.Color IsSuccess
+      else
+        yield Button.Color IsInfo
+      yield Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (msg true)) ] [
+        if refValue.id.Int = 0 then
+          yield Icon.icon [ ] [ Fa.i [ Fa.Solid.Plus ] [] ]
+        else
+          yield Icon.icon [ ] [ Fa.i [ Fa.Solid.EllipsisH ] [] ]
+    ]
+  ]
+
+let customCompOptional (refValue: RefValue option) msg dispatch =
+  match refValue with
+  | Some x -> customComp x msg dispatch
+  | None -> Fable.Helpers.React.nothing
+
 let teabagForm (teabag: Teabag) (model:Model) dispatch =
   form [AutoComplete Off; Disabled model.isWorking] [
-    (ComboBox.View.viewWithoutButtons model.brandCmp (BrandCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.brand DisplayAddBrandModal dispatch) model.brandCmp (BrandCmp >> dispatch))
     Field.div [ ] [
       Label.label [ Label.Option.For "flavour" ] [
         str "Flavour"
       ]
       Control.div [ ] [
-          Input.text [ Input.Placeholder "Ex: English breakfast"; Input.Value teabag.flavour; Input.Option.Id "flavour"; Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value)) ]
+          Input.text [ Input.Placeholder "Ex: English breakfast"; Input.ValueOrDefault teabag.flavour; Input.Option.Id "flavour"; Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value)) ]
       ]
     ]
-    (ComboBox.View.viewWithoutButtons model.bagtypeCmp (BagtypeCmp >> dispatch))
-    (ComboBox.View.viewWithButtons model.countryCmp (CountryCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype DisplayAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customCompOptional teabag.country DisplayAddCountryModal dispatch) model.countryCmp (CountryCmp >> dispatch))
     Field.div [ ] [
       Label.label [ Label.Option.For "hallmark" ] [
         str "Hallmark"
       ]
       Control.div [ ] [
-        Textarea.textarea [ Textarea.Placeholder "Ex: Hallmark"; Textarea.Value teabag.hallmark; Textarea.Option.Id "hallmark"; Textarea.OnChange (fun ev -> dispatch (HallmarkChanged ev.Value)) ] []
+        Textarea.textarea [ Textarea.Placeholder "Ex: Hallmark"; Textarea.ValueOrDefault teabag.hallmark; Textarea.Option.Id "hallmark"; Textarea.OnChange (fun ev -> dispatch (HallmarkChanged ev.Value)) ] []
       ]
     ]
     Field.div [ ] [
@@ -40,7 +60,7 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
         str "Serialnumber"
       ]
       Control.div [ ] [
-        Input.text [ Input.Placeholder "Ex: 0123456789"; Input.Value teabag.serialnumber; Input.Option.Id "serialnumber"; Input.OnChange (fun ev -> dispatch (SerialnumberChanged ev.Value)) ]
+        Input.text [ Input.Placeholder "Ex: 0123456789"; Input.ValueOrDefault teabag.serialnumber; Input.Option.Id "serialnumber"; Input.OnChange (fun ev -> dispatch (SerialnumberChanged ev.Value)) ]
       ]
     ]
     Field.div [ ] [
@@ -48,18 +68,18 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
         str "Serie"
       ]
       Control.div [ ] [
-        Input.text [ Input.Placeholder "Ex: With logo"; Input.Value teabag.serie; Input.Option.Id "serie"; Input.OnChange (fun ev -> dispatch (SerieChanged ev.Value)) ]
+        Input.text [ Input.Placeholder "Ex: With logo"; Input.ValueOrDefault teabag.serie; Input.Option.Id "serie"; Input.OnChange (fun ev -> dispatch (SerieChanged ev.Value)) ]
       ]
     ]
     Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
       Control.div [ ] [
-        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (State.isValid model.validationErrors = false || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
+        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
           if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
           else yield str "Submit"
         ]
       ]
       Control.div [ ] [
-        Button.button [ Button.Color IsDanger; Button.IsFullWidth; Button.Disabled (model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Reload) ] [ str "Cancel" ]
+        Button.button [ Button.Color IsWarning; Button.IsFullWidth; Button.Disabled (model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Reload) ] [ str "Undo" ]
       ]
     ]
   ]
@@ -114,5 +134,17 @@ let view (model:Model) (dispatch: Msg -> unit) =
         yield Column.column [ ] [
           div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
         ]
+      if model.editBagtypeCmp.IsSome then
+        yield Client.Teabag.Bagtype.View.cardModal model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddBagtypeModal false))
+      else
+        yield Fable.Helpers.React.nothing
+      if model.editBrandCmp.IsSome then
+        yield Client.Teabag.Brand.View.cardModal model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddBrandModal false))
+      else
+        yield Fable.Helpers.React.nothing
+      if model.editCountryCmp.IsSome then
+        yield Client.Teabag.Country.View.cardModal model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddCountryModal false))
+      else
+        yield Fable.Helpers.React.nothing
     ]
   ]

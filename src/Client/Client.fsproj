@@ -31,6 +31,15 @@
         <Compile Include="Teabags/Types.fs" />
         <Compile Include="Teabags/State.fs" />
         <Compile Include="Teabags/View.fs" />
+        <Compile Include="Teabag/Bagtype/Types.fs" />
+        <Compile Include="Teabag/Bagtype/State.fs" />
+        <Compile Include="Teabag/Bagtype/View.fs" />
+        <Compile Include="Teabag/Brand/Types.fs" />
+        <Compile Include="Teabag/Brand/State.fs" />
+        <Compile Include="Teabag/Brand/View.fs" />
+        <Compile Include="Teabag/Country/Types.fs" />
+        <Compile Include="Teabag/Country/State.fs" />
+        <Compile Include="Teabag/Country/View.fs" />
         <Compile Include="Teabag/Types.fs" />
         <Compile Include="Teabag/State.fs" />
         <Compile Include="Teabag/View.fs" />

@@ -4,6 +4,7 @@ open NodaTime
 open Domain.SharedTypes
 open Services.Dtos
 open Domain.Tea
+open Domain.Types
 
 
 let transform (data: CountBy<Instant> list): CountBy<UtcDateTimeString> list =
@@ -34,6 +35,60 @@ let transformBrandToRefValue (brand: Brand): Services.Dtos.RefValue = {
 let transformBrandsToRefValues (brands: Brand list): Services.Dtos.RefValue list =
   brands
   |> List.map transformBrandToRefValue
+
+let transformBagtype (bagtype: Domain.Tea.Bagtype): Services.Dtos.Bagtype = {
+  id = bagtype.id
+  name = Name bagtype.name.String
+ }
+
+let transformDtoToInsertBagtype (bagtype: Services.Dtos.Bagtype) : Domain.Tea.Bagtype =
+  let created = System.DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc
+  {
+    id = DbId 0
+    name = BagtypeName bagtype.name.String
+    //created = created
+  }
+
+let transformDtoToUpdateBagtype (current: Domain.Tea.Bagtype, bagtype: Services.Dtos.Bagtype) : Domain.Tea.Bagtype =
+  {current with
+    name = BagtypeName bagtype.name.String
+  }
+
+let transformBrand (brand: Domain.Tea.Brand): Services.Dtos.Brand = {
+  id = brand.id
+  name = Name brand.name.String
+ }
+
+let transformDtoToInsertBrand (brand: Services.Dtos.Brand) : Domain.Tea.Brand =
+  let created = System.DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc
+  {
+    id = DbId 0
+    name = BrandName brand.name.String
+    //created = created
+  }
+
+let transformDtoToUpdateBrand (current: Domain.Tea.Brand, brand: Services.Dtos.Brand) : Domain.Tea.Brand =
+  {current with
+    name = BrandName brand.name.String
+  }
+
+let transformCountry (country: Domain.Tea.Country): Services.Dtos.Country = {
+  id = country.id
+  name = Name country.name.String
+ }
+
+let transformDtoToInsertCountry (country: Services.Dtos.Country) : Domain.Tea.Country =
+  let created = System.DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc
+  {
+    id = DbId 0
+    name = CountryName country.name.String
+    //created = created
+  }
+
+let transformDtoToUpdateCountry (current: Domain.Tea.Country, country: Services.Dtos.Country) : Domain.Tea.Country =
+  {current with
+    name = CountryName country.name.String
+  }
 
 let inline transformOption (x : ^T option) =
   match x with
@@ -76,7 +131,7 @@ let transformDtoToInsertTeabag (teabag: Services.Dtos.Teabag) : Domain.Tea.Teaba
     flavour = teabag.flavour |> Flavour
     hallmark = teabag.hallmark |> Hallmark |> Some
     bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
-    country = teabag.country |> transformDomainRefValue 
+    country = teabag.country |> transformDomainRefValue
     serialnumber = teabag.serialnumber |> SerialNumber |> Some
     imageid = teabag.imageid
     created = created
@@ -89,7 +144,7 @@ let transformDtoToUpdateTeabag (current: Domain.Tea.Teabag, teabag: Services.Dto
     flavour = teabag.flavour |> Flavour
     hallmark = teabag.hallmark |> Hallmark |> Some
     bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
-    country = teabag.country |> transformDomainRefValue 
+    country = teabag.country |> transformDomainRefValue
     serialnumber = teabag.serialnumber |> SerialNumber |> Some
     imageid = teabag.imageid
   }

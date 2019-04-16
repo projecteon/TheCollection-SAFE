@@ -69,8 +69,21 @@ module BagtypeRepository =
     type InsertBagtype = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
 
     let insert (connectiongString: string) (bagtype : Bagtype) =
-      let cmd = new InsertBagtype(connectiongString)
-      cmd.Execute(bagtype.name.String)
-      |> function
-        | Some x -> Some { bagtype with id = DbId x }
-        | _ -> None
+      task {
+        let cmd = new InsertBagtype(connectiongString)
+        return cmd.AsyncExecute(bagtype.name.String)
+      }
+
+    [<Literal>]
+    let  UpdateSQL = "
+        UPDATE tco_bagtype SET
+          s_name = @s_name
+        WHERE id = @id;
+    "
+
+    type UpdateBagtype = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    let update (connectiongString: string) (bagtype : Bagtype) =
+      task {
+        let cmd = new UpdateBagtype(connectiongString)
+        return! cmd.AsyncExecute(bagtype.name.String, bagtype.id.Int)
+      }

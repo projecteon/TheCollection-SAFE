@@ -56,7 +56,7 @@ let inputElement model dispatch =
     yield Input.Option.Id "searchterm"
     yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
-    yield Input.Value (getDisplayValue model)
+    yield Input.ValueOrDefault (getDisplayValue model)
     yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
     if model.searchError.IsSome then
       yield Input.Color IsDanger

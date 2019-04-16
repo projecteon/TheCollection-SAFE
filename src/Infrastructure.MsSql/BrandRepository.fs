@@ -25,7 +25,6 @@ module BrandRepository =
     "
 
     type BrandQry = SqlCommandProvider<QrySQL, ConnectionString>
-
     let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
       task {
         let cmd = new BrandQry(connectiongString)
@@ -46,16 +45,17 @@ module BrandRepository =
     "
 
     type BrandById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
-
     let getById (connectiongString: string) id =
+      task {
         let cmd = new BrandById(connectiongString)
-        cmd.Execute(id)
-        |> function
-            | Some x -> Some {
+        let! brand = cmd.AsyncExecute(id)
+        return match brand with
+                | Some x -> Some {
                     id = DbId x.id
                     Brand.name = x.s_name |> BrandName
-                }
-            | _ -> None
+                  }
+                | _ -> None
+      }
 
     [<Literal>]
     let  InsertSQL = "
@@ -65,12 +65,23 @@ module BrandRepository =
     "
 
     type InsertBrand = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
-
     let insert (connectiongString: string) (brand : Brand) =
       task {
         let cmd = new InsertBrand(connectiongString)
         return cmd.Execute(brand.name.String)
-        |> function
-            | Some x -> Some { brand with id = DbId x }
-            | _ -> None
       }
+
+    [<Literal>]
+    let  UpdateSQL = "
+        UPDATE tco_brand SET
+          s_name = @s_name
+        WHERE id = @id;
+    "
+
+    type UpdateBrand = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    let update (connectiongString: string) (brand : Brand) =
+      task {
+        let cmd = new UpdateBrand(connectiongString)
+        return! cmd.AsyncExecute(brand.name.String, brand.id.Int)
+      }
+

@@ -39,7 +39,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Input.email [
                         yield Input.Option.Id "email"
                         yield Input.Placeholder "your@email.com"
-                        yield Input.Value model.userName.String
+                        yield Input.ValueOrDefault model.userName.String
                         yield Input.OnChange (fun ev -> dispatch (ChangeUserName (EmailAddress ev.Value)))
                         if (List.isEmpty model.userNameError = false) then
                           yield Input.Color IsDanger
@@ -57,7 +57,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                       Input.password [
                         yield Input.Option.Id "password"
                         yield Input.Placeholder (sprintf "password")
-                        yield Input.Value model.password.String
+                        yield Input.ValueOrDefault model.password.String
                         yield Input.OnChange (fun ev -> dispatch (ChangePassword (Password ev.Value)))
                         if (List.isEmpty model.passwordError = false) then
                           yield Input.Color IsDanger

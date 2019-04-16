@@ -14,7 +14,7 @@ let CarrigeReturnKeyCode = 13.0
 let ArrowUpKeyCode = 38.0
 let ArrowDownKeyCode = 40.0
 
-let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) = 
+let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) =
   let isLeftButtonClick = ev.button = 0.0;
   if isLeftButtonClick then
     dispatch (OnChange newValue)
@@ -65,7 +65,7 @@ let private getHoveredStyle index  searchResultHoverIndex =
     [ CSSProp.BackgroundColor "whitesmoke"; CSSProp.Color "#0a0a0a" ]
   else
     []
-  
+
 let viewChoices (model: Model) (dispatch : Msg -> unit) =
   match model.HasFocus with
   | true when model.Value.IsSome || model.SearchResult.IsSome ->
@@ -102,7 +102,7 @@ let inputIcon model =
                 | true, false -> yield Fa.Solid.Search
                 | true, true -> yield Fa.Solid.CircleNotch
                 | _ -> yield Fa.Solid.Check ] [ ]
-      
+
     ]
   | None -> Fable.Helpers.React.nothing
 
@@ -110,14 +110,14 @@ let inputElement model dispatch =
   Input.text [
     yield Input.Option.Id (model.Label |> lowercase |> ReplaceWhitespace)
     yield Input.Placeholder (sprintf "Ex: Some %s" (model.Label |> lowercase |> ReplaceWhitespace))
-    yield Input.Value (getDisplayValue model)
+    yield Input.ValueOrDefault (getDisplayValue model)
     yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
     yield Input.Props [
       DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
       DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
       DOMAttr.OnKeyDown (fun ev -> onKeyDown model dispatch ev)
     ]
-    if (Seq.isEmpty model.Errors = false) then
+    if (not (Seq.isEmpty model.Errors)) then
       yield Input.Color IsDanger
     else if model.Value |> hasValue then
       yield Input.Color IsSuccess
@@ -157,3 +157,21 @@ let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
   ]
 
 let lazyViewWithoutButtons = Common.lazyView2 lazyViewWithButtons
+
+let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
+  Field.div [ ] [
+    Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
+      str model.Label
+    ]
+    Field.div [ Field.IsGrouped ] [
+      Control.div [ Control.IsExpanded; Control.HasIconRight ] [
+        inputElement model dispatch
+        inputIcon model
+        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+        viewChoices model dispatch
+      ]
+      customComp
+    ]
+  ]
+
+let lazyViewWithCustomGrouped customComp = Common.lazyView2 (viewWithCustomGrouped customComp)

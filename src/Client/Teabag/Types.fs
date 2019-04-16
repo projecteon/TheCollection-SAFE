@@ -20,6 +20,9 @@ type Model = {
   doValidation: bool
   validationErrors: ValidationErrors seq
   isWorking: bool
+  editBagtypeCmp: Client.Teabag.Bagtype.Types.Model option
+  editBrandCmp: Client.Teabag.Brand.Types.Model option
+  editCountryCmp: Client.Teabag.Country.Types.Model option
 }
 
 let EmptyRefValue: RefValue = {
@@ -58,3 +61,9 @@ type Msg =
   | Validate
   | ValidateAndSave
   | Reload
+  | DisplayAddBagtypeModal of bool
+  | DisplayAddBrandModal of bool
+  | DisplayAddCountryModal of bool
+  | EditBagtypeCmp of Bagtype.Types.Msg
+  | EditBrandCmp of Brand.Types.Msg
+  | EditCountryCmp of Country.Types.Msg

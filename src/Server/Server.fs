@@ -29,6 +29,13 @@ let getUserByEmail = UserRepository.getByEmail DbContext.ConnectionString
 
 let insertTeabag = TeabagRepository.insert DbContext.ConnectionString
 let updateTeabag = TeabagRepository.update DbContext.ConnectionString
+let insertBagtype = BagtypeRepository.insert DbContext.ConnectionString
+let updateBagtype = BagtypeRepository.update DbContext.ConnectionString
+let insertBrand = BrandRepository.insert DbContext.ConnectionString
+let updateBrand = BrandRepository.update DbContext.ConnectionString
+let insertCountry = CountryRepository.insert DbContext.ConnectionString
+let updateCountry = CountryRepository.update DbContext.ConnectionString
+
 
 let validate (model: 'a) =
   Domain.SharedTypes.Result.Success model
@@ -54,7 +61,7 @@ let fileUploadHandler =
       let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
       let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DbContext.ConnectionString
       match result with
-      | Domain.SharedTypes.Result.Success x -> return! (Successful.OK id) next ctx
+      | Domain.SharedTypes.Result.Success x -> return! (Successful.OK (Domain.SharedTypes.ImageId x)) next ctx
       | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
     }
 
@@ -70,17 +77,26 @@ let webApp =
           route "/teabags/countby/bagtypes" >=> (API.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.ConnectionString))
           route "/teabags/countby/inserteddate" >=> API.Generic.handleGetTransformAll getCountByInserted Transformers.transform
           route "/brands" >=> (API.Generic.handleGetAllSearch getAllBrands)
+          routef "/brands/%i" (API.Generic.handleGet getByIdBrands Transformers.transformBrand)
           route "/bagtypes" >=> (API.Generic.handleGetAllSearch getAllBagtypes)
+          routef "/bagtypes/%i" (API.Generic.handleGet getByIdBagtypes Transformers.transformBagtype)
           route "/country" >=> (API.Generic.handleGetAllSearch getAllCountries)
+          routef "/country/%i" (API.Generic.handleGet getByIdCountries Transformers.transformCountry)
           route "/refvalues" >=> (API.Generic.handleGetAllQuery getAllRefValues)
         ]
         POST >=> route "/token" >=> (handlePostToken getUserByEmail)
         POST >=> authorize >=> choose [
           route "/teabags/upload" >=> fileUploadHandler
           route "/teabags" >=> (API.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
+          route "/bagtypes" >=> (API.Generic.handlePost insertBagtype Transformers.transformDtoToInsertBagtype validate)
+          route "/brands" >=> (API.Generic.handlePost insertBrand Transformers.transformDtoToInsertBrand validate)
+          route "/country" >=> (API.Generic.handlePost insertCountry Transformers.transformDtoToInsertCountry validate)
         ]
         PUT >=> authorize >=> choose [
           routef "/teabags/%i" (API.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
+          routef "/bagtypes/%i" (API.Generic.handlePut getByIdBagtypes updateBagtype Transformers.transformDtoToUpdateBagtype validate)
+          routef "/brands/%i" (API.Generic.handlePut getByIdBrands updateBrand Transformers.transformDtoToUpdateBrand validate)
+          routef "/country/%i" (API.Generic.handlePut getByIdCountries updateCountry Transformers.transformDtoToUpdateCountry validate)
         ]
       ])
     GET >=> routex "(/*)" >=> redirectTo false "/"

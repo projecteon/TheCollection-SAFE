@@ -59,6 +59,7 @@ module CountryRepository =
           | _ -> None
       }
 
+
     [<Literal>]
     let  InsertSQL = "
         INSERT INTO tcs_country (s_name)
@@ -67,10 +68,22 @@ module CountryRepository =
     "
 
     type InsertCountry = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
-
     let insert (connectiongString: string) (country : Country) =
+      task {
         let cmd = new InsertCountry(connectiongString)
-        cmd.Execute(country.name.String)
-        |> function
-            | Some x -> Some { country with id = DbId x }
-            | _ -> None
+        return cmd.AsyncExecute(country.name.String)
+      }
+
+    [<Literal>]
+    let  UpdateSQL = "
+        UPDATE tcs_country SET
+          s_name = @s_name
+        WHERE id = @id;
+    "
+
+    type UpdateCountry = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    let update (connectiongString: string) (country : Country) =
+      task {
+        let cmd = new UpdateCountry(connectiongString)
+        return! cmd.AsyncExecute(country.name.String, country.id.Int)
+      }

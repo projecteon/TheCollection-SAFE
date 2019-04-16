@@ -11,12 +11,16 @@ module Dtos =
     with
     member this.String = let (RefreshToken s) = this in s
 
-  type Name = private | Name of string
+  type Name = Name of string
     with
     member this.String = let (Name s) = this in s
-    static member Create(s : string)=
-        if (s <> "" || (not (isNull s)) ) then Ok s
-        else Error "Invalid string"
+
+  //type Name = private | Name of string
+  //  with
+  //  member this.String = let (Name s) = this in s
+  //  static member Create(s : string)=
+  //      if (s <> "" || (not (isNull s)) ) then Ok s
+  //      else Error "Invalid string"
 
   [<CLIMutable>]
   type LoginViewModel = {
@@ -42,6 +46,24 @@ module Dtos =
   type RefValue = {
     id: DbId;
     description: string;
+  };
+
+  [<ReferenceEquality>]
+  type Bagtype = {
+    id: DbId;
+    name: Name;
+  };
+
+  [<ReferenceEquality>]
+  type Brand = {
+    id: DbId;
+    name: Name;
+  };
+
+  [<ReferenceEquality>]
+  type Country = {
+    id: DbId;
+    name: Name;
   };
 
   [<ReferenceEquality>]
@@ -80,6 +102,24 @@ module RefValueValidation =
   let validate (refValue: RefValue) =
     refValue
     |> validateHasValue
+
+
+
+module NameValidation =
+  open Dtos
+  open Domain.Validation
+
+  let private validateLength (name: Name) =
+    let isValid =
+      name.String
+      |> Domain.Validation.StringValidations.minimumLength 1
+      >>= Domain.Validation.StringValidations.maximumLength 255
+
+    Helpers.reMapResult name isValid
+
+  let validate (name: Name) =
+    name
+    |> validateLength
 
 
 module FlavourValidation =
