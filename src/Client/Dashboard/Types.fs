@@ -24,6 +24,7 @@ type Model = {
   countBagtypes: ChartConfig option
   countInserted: ChartConfig option
   userData: UserData option
+  displayedBrands: int
 }
 
 type Msg =
@@ -35,4 +36,5 @@ type Msg =
 | GetCountByInsertedSuccess of CountBy<UtcDateTimeString> list
 | TransformCountByBrand of ChartTransformation
 | TransformCountByBagtype of ChartTransformation
-| ReloadBrands
+| ExpandBrands
+| CollapseBrands

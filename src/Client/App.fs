@@ -45,7 +45,7 @@ open Elmish.Debug
 open Elmish.HMR
 #endif
 
-Program.mkProgram init update (lazyView2 view)
+Program.mkProgram init update view //(lazyView2 view)
 |> Program.toNavigable urlParser urlUpdate
 #if DEBUG
 |> Program.withConsoleTrace

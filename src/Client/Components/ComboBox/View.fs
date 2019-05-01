@@ -23,7 +23,7 @@ let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) =
     ev.preventDefault() |> ignore
 
 let onKeyDown (model: Model) dispatch (ev: Fable.Import.React.KeyboardEvent) =
-  if model.HasFocus = false && model.SearchResult.IsNone && model.Value.IsNone then
+  if (not model.HasFocus) && model.SearchResult.IsNone && model.Value.IsNone then
     ev |> ignore
   else
     let isUpOrDownArrow = [|ArrowDownKeyCode; ArrowUpKeyCode|] |> Array.tryFindIndex ((=) ev.keyCode) |> function | None -> false | _ -> true
@@ -89,7 +89,7 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
         ]
       ]
     ]
-  | _ -> span [] []
+  | _ -> Fable.Helpers.React.nothing
 
 let inputIcon model =
   match model.Value with

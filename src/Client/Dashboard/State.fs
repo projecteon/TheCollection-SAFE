@@ -40,7 +40,7 @@ let splitData (model: CountBy<Moment> list) =
   |> splitPeriodData
   |> List.map (fun x -> x |> createChartData)
   |> Array.ofList
-    
+
 let createXAxis (model: CountBy<Moment> list) =
   model
   |> Seq.ofList
@@ -148,6 +148,7 @@ let init (userData: UserData option) =
       countBagtypes = None
       countInserted = None
       userData = userData
+      displayedBrands = 10
     }
     initialModel, tryAuthorizationRequest getCountByBrandsCmd userData, getCountByBagtypesCmd userData, getCountByInsertedCmd userData
 
@@ -169,6 +170,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     {model with countBrands = (transform model.countBrands transformation)}, Cmd.none
   | TransformCountByBagtype transformation ->
     {model with countBagtypes = (transform model.countBagtypes transformation)}, Cmd.none
-  | ReloadBrands -> model, tryAuthorizationRequest getCountByBrandsCmd model.userData
+  | ExpandBrands -> {model with displayedBrands = model.displayedBrands + 10}, Cmd.none
+  | CollapseBrands -> {model with displayedBrands = model.displayedBrands - 10}, Cmd.none
 
 

@@ -29,11 +29,6 @@ let private mapValidationErrors validationError =
   | ValidationErrors.BagtypeError x -> x
   | ValidationErrors.FlavourError x -> x
 
-//let private validateAndMapResult (errorType: (string -> ValidationErrors), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
-//  match (validateFunc value) with
-//  | Success x -> None
-//  | Failure y -> y |> errorType |> Some
-
 let private validate (teabag: Teabag) =
   let validationErrors = seq [
     validateAndMapResult (ValidationErrors.BrandError, teabag.brand, RefValueValidation.validate)
@@ -227,21 +222,21 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)
                                 trySave validatedModel]
   | Reload -> model, tryAuthorizationRequest (reloadTeabagCmd model.data) model.userData
-  | DisplayAddBagtypeModal display ->
+  | ToggleAddBagtypeModal display ->
     if display then
       let bagtypeModel, cmd = Client.Teabag.Bagtype.State.init model.userData
       let bagtypeId = match model.data with | Some x -> Some x.bagtype.id | None -> None
       {model with editBagtypeCmp = Some bagtypeModel}, Cmd.map EditBagtypeCmp (cmd bagtypeId model.userData.Value.Token)
     else
       {model with editBagtypeCmp = None}, Cmd.none
-  | DisplayAddBrandModal display ->
+  | ToggleAddBrandModal display ->
     if display then
       let brandModel, cmd = Client.Teabag.Brand.State.init model.userData
       let brandId = match model.data with | Some x -> Some x.brand.id | None -> None
       {model with editBrandCmp = Some brandModel}, Cmd.map EditBrandCmp (cmd brandId model.userData.Value.Token)
     else
       {model with editBrandCmp = None}, Cmd.none
-  | DisplayAddCountryModal display ->
+  | ToggleAddCountryModal display ->
     if display then
       let countryModel, cmd = Client.Teabag.Country.State.init model.userData
       let countryId = match model.data with | Some x when x.country.IsSome -> Some x.country.Value.id | _ -> None

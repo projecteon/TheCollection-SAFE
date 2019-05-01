@@ -46,17 +46,11 @@ let view (model:Model) (dispatch: Msg -> unit) =
   | Some x ->
     viewForm x model dispatch
   | None ->
-    div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
+    div [ClassName "pageloader is-white is-active"; Style [Position "absolute"]] []
 
-let cardModal (model:Model) (dispatch: Msg -> unit) closeDisplay =
-  let headerText = if model.data.IsSome && model.data.Value.id.Int > 0 then "Edit Bagtype" else "New Bagtype"
-  Modal.modal [ Modal.IsActive true ]
-    [ Modal.background [ Props [ OnClick closeDisplay ] ] [ ]
-      Modal.Card.card [ ]
-        [ Modal.Card.head [ ]
-            [ Modal.Card.title [ ]
-                [ str headerText ]
-              Delete.delete [ Delete.OnClick closeDisplay ] [ ] ]
-          Modal.Card.body [ ]
-            [ view model dispatch ] ] ]
+let headerText (model: Model) =
+  if model.data.IsSome && model.data.Value.id.Int > 0 then
+    "Edit Bagtype"
+  else
+    "New Bagtype"
 

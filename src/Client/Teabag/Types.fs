@@ -37,7 +37,7 @@ let NewTeabag = {
   flavour = ""
   hallmark = ""
   bagtype = EmptyRefValue
-  country = Some EmptyRefValue
+  country = None
   serialnumber = ""
   imageid = ImageId None;
 }
@@ -61,9 +61,9 @@ type Msg =
   | Validate
   | ValidateAndSave
   | Reload
-  | DisplayAddBagtypeModal of bool
-  | DisplayAddBrandModal of bool
-  | DisplayAddCountryModal of bool
+  | ToggleAddBagtypeModal of bool
+  | ToggleAddBrandModal of bool
+  | ToggleAddCountryModal of bool
   | EditBagtypeCmp of Bagtype.Types.Msg
   | EditBrandCmp of Brand.Types.Msg
   | EditCountryCmp of Country.Types.Msg

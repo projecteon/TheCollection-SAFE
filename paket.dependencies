@@ -48,8 +48,8 @@ group Client
     nuget Fable.Elmish.HMR ~> 2
     nuget Fable.FontAwesome
     nuget Fable.FontAwesome.Free
-    nuget Fable.React ~> 4
-    nuget Fable.Recharts
+    nuget Fable.React ~> 4.1
+    nuget Fable.Recharts = 0.1.0-beta-003
     nuget Fulma ~> 1
     github CompositionalIT/fshelpers src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs
     github projecteon/Fable.C3 src/Fable.C3/Fable.C3.fs

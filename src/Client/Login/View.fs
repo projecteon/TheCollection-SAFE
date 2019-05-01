@@ -41,7 +41,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                         yield Input.Placeholder "your@email.com"
                         yield Input.ValueOrDefault model.userName.String
                         yield Input.OnChange (fun ev -> dispatch (ChangeUserName (EmailAddress ev.Value)))
-                        if (List.isEmpty model.userNameError = false) then
+                        if (not (List.isEmpty model.userNameError)) then
                           yield Input.Color IsDanger
                         else if model.hasTriedToLogin then
                           yield Input.Color IsSuccess
@@ -59,7 +59,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                         yield Input.Placeholder (sprintf "password")
                         yield Input.ValueOrDefault model.password.String
                         yield Input.OnChange (fun ev -> dispatch (ChangePassword (Password ev.Value)))
-                        if (List.isEmpty model.passwordError = false) then
+                        if (not (List.isEmpty model.passwordError)) then
                           yield Input.Color IsDanger
                         else if model.hasTriedToLogin then
                           yield Input.Color IsSuccess

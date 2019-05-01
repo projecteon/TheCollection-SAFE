@@ -32,11 +32,11 @@ let customComp (refValue: RefValue) msg dispatch =
 let customCompOptional (refValue: RefValue option) msg dispatch =
   match refValue with
   | Some x -> customComp x msg dispatch
-  | None -> Fable.Helpers.React.nothing
+  | None -> customComp EmptyRefValue msg dispatch
 
 let teabagForm (teabag: Teabag) (model:Model) dispatch =
   form [AutoComplete Off; Disabled model.isWorking] [
-    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.brand DisplayAddBrandModal dispatch) model.brandCmp (BrandCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.brand ToggleAddBrandModal dispatch) model.brandCmp (BrandCmp >> dispatch))
     Field.div [ ] [
       Label.label [ Label.Option.For "flavour" ] [
         str "Flavour"
@@ -45,8 +45,8 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
           Input.text [ Input.Placeholder "Ex: English breakfast"; Input.ValueOrDefault teabag.flavour; Input.Option.Id "flavour"; Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value)) ]
       ]
     ]
-    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype DisplayAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
-    (ComboBox.View.lazyViewWithCustomGrouped (customCompOptional teabag.country DisplayAddCountryModal dispatch) model.countryCmp (CountryCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype ToggleAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
+    (ComboBox.View.lazyViewWithCustomGrouped (customCompOptional teabag.country ToggleAddCountryModal dispatch) model.countryCmp (CountryCmp >> dispatch))
     Field.div [ ] [
       Label.label [ Label.Option.For "hallmark" ] [
         str "Hallmark"
@@ -132,18 +132,18 @@ let view (model:Model) (dispatch: Msg -> unit) =
         ]
       | _ ->
         yield Column.column [ ] [
-          div [ classList [ "is-active", 1 = 1 ] ] [ str "unloaded" ]
+          div [ClassName "pageloader is-white is-active"; Style [Position "absolute"; Height "calc(100vh - 60px)"]] []
         ]
       if model.editBagtypeCmp.IsSome then
-        yield Client.Teabag.Bagtype.View.cardModal model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddBagtypeModal false))
+        yield Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
       else
         yield Fable.Helpers.React.nothing
       if model.editBrandCmp.IsSome then
-        yield Client.Teabag.Brand.View.cardModal model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddBrandModal false))
+        yield Client.Components.ModalCard.view model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBrandModal false)) Client.Teabag.Brand.View.headerText Client.Teabag.Brand.View.view
       else
         yield Fable.Helpers.React.nothing
       if model.editCountryCmp.IsSome then
-        yield Client.Teabag.Country.View.cardModal model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (DisplayAddCountryModal false))
+        yield Client.Components.ModalCard.view model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddCountryModal false)) Client.Teabag.Country.View.headerText Client.Teabag.Country.View.view
       else
         yield Fable.Helpers.React.nothing
     ]
