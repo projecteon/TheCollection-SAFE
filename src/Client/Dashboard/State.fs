@@ -10,6 +10,7 @@ open Fable.C3
 open Fable.Import.Moment.Moment
 open Thoth.Json
 
+open Client
 open Client.Extensions
 open Client.Util
 open Client.Dashboard.Types
@@ -84,9 +85,10 @@ let getCountByInsertedCmd (userData: UserData option) =
       GetCountByInsertedError
     | _ -> Cmd.none
 
-let mapToData (countBy: CountBy<string> list) =
+open Client.Components.BarChart
+let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) =
   countBy
-  |> List.truncate 20
+  |> List.truncate (int count)
   |> List.map (fun x -> [| Some (U3.Case1 x.description); Some (U3.Case3 (float x.count)) |] )
   |> Array.ofList
   |> ResizeArray
@@ -139,6 +141,12 @@ let transform (chart: ChartConfig option) (tranformation: ChartTransformation) =
     | BarToPie -> toPieChart x.data.columns
   | None -> None
 
+let dataCountToggle previousCount =
+  match previousCount with
+  | ReChartHelpers.DataCount.Ten -> ReChartHelpers.DataCount.Twenty
+  | ReChartHelpers.DataCount.Twenty -> ReChartHelpers.DataCount.Ten
+  | _ -> ReChartHelpers.DataCount.Ten
+
 let init (userData: UserData option) =
     let initialModel = {
       countByBrands = None
@@ -148,7 +156,8 @@ let init (userData: UserData option) =
       countBagtypes = None
       countInserted = None
       userData = userData
-      displayedBrands = 10
+      displayedByBrands = ReChartHelpers.DataCount.Ten
+      displayedBrands = ReChartHelpers.DataCount.Ten
     }
     initialModel, tryAuthorizationRequest getCountByBrandsCmd userData, getCountByBagtypesCmd userData, getCountByInsertedCmd userData
 
@@ -156,10 +165,10 @@ let moment: Fable.Import.Moment.IExports = importAll "moment"
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
   | GetCountByBrandsSuccess data ->
-    { model with countByBrands = Some data; countBrands = (mapToData data |> toBarChart (Some (ResizeArray [| "brands" |]))) }, Cmd.none
+    { model with countByBrands = Some data; countBrands = (mapToData data model.displayedBrands |> toBarChart (Some (ResizeArray [| "brands" |]))) }, Cmd.none
   | GetCountByBrandsError exn -> model, Cmd.none
   | GetCountByBagtypesSuccess data ->
-    { model with countByBagtypes = Some data; countBagtypes = (mapToData data |> toPieChart)}, Cmd.none
+    { model with countByBagtypes = Some data; countBagtypes = (mapToData data ReChartHelpers.DataCount.Ten |> toPieChart)}, Cmd.none
   | GetCountByInsertedSuccess data ->
     let dashboardData = data |> List.map(fun x -> {count = x.count; description = moment(U7.Case3 x.description.String)})
     let config =  dashboardData |> toPeriodMonthChart2
@@ -170,7 +179,9 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     {model with countBrands = (transform model.countBrands transformation)}, Cmd.none
   | TransformCountByBagtype transformation ->
     {model with countBagtypes = (transform model.countBagtypes transformation)}, Cmd.none
-  | ExpandBrands -> {model with displayedBrands = model.displayedBrands + 10}, Cmd.none
-  | CollapseBrands -> {model with displayedBrands = model.displayedBrands - 10}, Cmd.none
+  | ExpandByBrands -> {model with displayedByBrands = dataCountToggle model.displayedByBrands}, Cmd.none
+  | CollapseByBrands -> {model with displayedByBrands = dataCountToggle model.displayedByBrands}, Cmd.none
+  | ExpandBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
+  | CollapseBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
 
 

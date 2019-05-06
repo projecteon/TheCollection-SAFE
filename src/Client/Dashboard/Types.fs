@@ -5,7 +5,7 @@ open Services.Dtos
 open Domain.SharedTypes
 open Fable.Import.Moment.Moment
 
-type DataCount = Ten=10 | Twenty=20
+open Client
 
 type ChartConfig = {
   data: Data
@@ -24,7 +24,8 @@ type Model = {
   countBagtypes: ChartConfig option
   countInserted: ChartConfig option
   userData: UserData option
-  displayedBrands: int
+  displayedByBrands: ReChartHelpers.DataCount
+  displayedBrands: ReChartHelpers.DataCount
 }
 
 type Msg =
@@ -36,5 +37,7 @@ type Msg =
 | GetCountByInsertedSuccess of CountBy<UtcDateTimeString> list
 | TransformCountByBrand of ChartTransformation
 | TransformCountByBagtype of ChartTransformation
+| ExpandByBrands
+| CollapseByBrands
 | ExpandBrands
 | CollapseBrands

@@ -1,27 +1,20 @@
 module Client.Components.PieChart
 
 open Fable.Helpers.React
+open Fable.Helpers.React.Props
 open Fable.Recharts
 open Fable.Recharts.Props
+
+open Client
 
 module R = Fable.Helpers.React
 module P = R.Props
 
 let private margin t r b l =
     Chart.Margin { top = t; bottom = b; right = r; left = l }
-
-let private BarColors = [|"#0088FE"; "#00C49F"; "#FFBB28"; "#FF8042"; "#8884d8"|];
-let private colorIndex x =
-    let colorCount = BarColors |> Array.length
-    let rec tailRecursiveFactorial acc =
-        if acc < colorCount then
-            BarColors.[acc]
-        else
-            tailRecursiveFactorial (acc - colorCount)
-    tailRecursiveFactorial x
-
+    
 let private cells data =
-  data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (colorIndex i)] []) |> ofArray
+  data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (ReChartHelpers.getColor ReChartHelpers.C3Colors i)] []) |> ofArray
 
 type PieLabelProps = {
   fill: string
@@ -65,7 +58,7 @@ let private renderChart data =
 let private renderData data =
   match data with
   | Some x -> x |> renderChart
-  | None -> div [] [ str "No data" ]
+  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 320]] []
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: 'a[] option) =
