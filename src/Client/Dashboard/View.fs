@@ -26,6 +26,8 @@ let renderPieChart data =
   | Some x -> x |> Array.ofList |> Array.truncate 10 |> Some |> PieChart.view
   | None -> None |> PieChart.view
 
+let lineChartHoverLegend dispatch key =
+  dispatch (ToggleCountByInsertedHoveredKey key)
   
 let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
   match chart with
@@ -38,6 +40,12 @@ let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
       | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]][Fa.i [ Fa.Solid.ChartPie ][]])
       | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]][Fa.i [ Fa.Solid.ChartBar ][]])
       | _ -> Fable.Helpers.React.nothing
+  
+let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
+  if currentCount = ReChartHelpers.DataCount.Ten then
+    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ][Fa.i [ Fa.Solid.ExpandArrowsAlt ][]]
+  else
+    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ][Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ][]]
 
 
 let view (model:Model) dispatch =
@@ -50,10 +58,7 @@ let view (model:Model) dispatch =
               div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
                 str "Brands ReChart"
                 div [][
-                  if model.displayedByBrands = ReChartHelpers.DataCount.Ten then
-                    yield Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (ExpandByBrands)) ] ][Fa.i [ Fa.Solid.ExpandArrowsAlt ][]]
-                  else
-                    yield Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (CollapseByBrands)) ] ][Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ][]]
+                  ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
                 ]
               ]
             ]
@@ -76,11 +81,8 @@ let view (model:Model) dispatch =
               div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
                 str "Brands C3"
                 div [][
-                  yield (TransformationsIcon model.countBrands dispatch TransformCountByBrand)
-                  if model.displayedBrands = ReChartHelpers.DataCount.Ten then
-                    yield Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (ExpandBrands)) ] ][Fa.i [ Fa.Solid.ExpandArrowsAlt ][]]
-                  else
-                    yield Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (CollapseBrands)) ] ][Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ][]]
+                  TransformationsIcon model.countBrands dispatch TransformCountByBrand
+                  ExpandCollapseIcon  model.displayedBrands dispatch ExpandBrands CollapseBrands
                 ]
               ]
             ]
@@ -131,7 +133,7 @@ let view (model:Model) dispatch =
               ]
             ]
             Panel.block [ ] [
-              PeriodLinehart.view model.countByInserted
+              PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
             ]
           ]
         ]

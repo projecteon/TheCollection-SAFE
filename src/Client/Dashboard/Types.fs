@@ -12,6 +12,22 @@ type ChartConfig = {
   axis: Axis option
 }
 
+type PieChartData<'a> = {
+  data: 'a list option
+  hoveredIndex: int option
+  count: ReChartHelpers.DataCount
+}
+
+type BarChartData<'a> = {
+  data: 'a list option
+  count: ReChartHelpers.DataCount
+}
+
+type LineChartData<'a> = {
+  data: 'a list option
+  hoveredLegendKey: string option
+}
+
 type ChartTransformation =
 | PieToBar
 | BarToPie
@@ -20,6 +36,7 @@ type Model = {
   countByBrands: CountBy<string> list option
   countByBagtypes: CountBy<string> list option
   countByInserted: CountBy<Moment> list option
+  countByInsertedHoveredKey: string option
   countBrands: ChartConfig option
   countBagtypes: ChartConfig option
   countInserted: ChartConfig option
@@ -41,3 +58,4 @@ type Msg =
 | CollapseByBrands
 | ExpandBrands
 | CollapseBrands
+| ToggleCountByInsertedHoveredKey of string option

@@ -130,7 +130,7 @@ let toPeriodMonthChart2 (data: CountBy<Moment> list) =
       columns =   (data |> periodMonthData |> ResizeArray |> Some)
       ``type`` = Some ChartType.Line
     }
-    axis = Some ( { x = { ``type``= Some "timeseries"; categories = None; tick = Some({ values = None; format = Some !^"%m-%d" }) }; rotated = None })
+    axis = Some ( { x = { ``type``= Some "timeseries"; categories = None; tick = Some({ values = None; format = Some !^"%B"; culling = false |> U2.Case1 |> Some })}; rotated = None }) // https://github.com/d3/d3-time-format/blob/v2.1.3/README.md#timeFormat
   }
 
 let transform (chart: ChartConfig option) (tranformation: ChartTransformation) =
@@ -152,6 +152,7 @@ let init (userData: UserData option) =
       countByBrands = None
       countByBagtypes = None
       countByInserted = None
+      countByInsertedHoveredKey = None
       countBrands = None
       countBagtypes = None
       countInserted = None
@@ -183,5 +184,6 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | CollapseByBrands -> {model with displayedByBrands = dataCountToggle model.displayedByBrands}, Cmd.none
   | ExpandBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
   | CollapseBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
+  | ToggleCountByInsertedHoveredKey key -> {model with countByInsertedHoveredKey = key}, Cmd.none
 
 

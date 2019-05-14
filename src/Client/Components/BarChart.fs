@@ -9,9 +9,6 @@ open Client
 
 module R = Fable.Helpers.React
 module P = R.Props
-
-let private margin t r b l =
-    Chart.Margin { top = t; bottom = b; right = r; left = l }
     
 let private cells data =
   data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (ReChartHelpers.getColor ReChartHelpers.C3Colors i)] []) |> ofArray
@@ -19,7 +16,7 @@ let private cells data =
 // https://github.com/recharts/recharts/issues/466
 let private renderChart data =
     barChart
-        [ margin 5. 20. 55. 0.
+        [ ReChartHelpers.margin 5. 20. 55. 0.
           Chart.Data data ]
         [ xaxis [Cartesian.DataKey "description"; Cartesian.Interval 0; Fable.Recharts.Props.Text.Angle -45.0; Fable.Recharts.Props.Text.TextAnchor "end"] []
           yaxis [] []
