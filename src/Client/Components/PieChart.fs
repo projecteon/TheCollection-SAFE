@@ -1,7 +1,9 @@
 module Client.Components.PieChart
 
+open Fable.Core.JsInterop
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
+open Fable.Import
 open Fable.Recharts
 open Fable.Recharts.Props
 
@@ -10,42 +12,60 @@ open Client
 module R = Fable.Helpers.React
 module P = R.Props
 
-let private margin t r b l =
-    Chart.Margin { top = t; bottom = b; right = r; left = l }
+type SliceHoveredId = SliceHoveredId of int
+
+//let renderActiveShape props =
+//  //printf "%s" (Thoth.Json.Encode.toString 4 props)
+//  g [][
+//    sector[
+//      Cx props?cx
+//      Cy props?cy
+//      Polar.InnerRadius props?innerRadius
+//      Polar.OuterRadius (props?outerRadius + 3.0)
+//      Polar.StartAngle props?startAngle
+//      Polar.EndAngle props?endAngle
+//      P.Fill props?fill
+//    ]
+//  ]
     
 let private cells data =
   data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (ReChartHelpers.getColor ReChartHelpers.C3Colors i)] []) |> ofArray
 
-type PieLabelProps = {
-  fill: string
-  cx: float
-  cy: float
-  x: float
-  y: float
-  percent: float
-  name: string
-}
+let RADIAN = JS.Math.PI / 180.0;
+let private renderLabel props =
+  if props?percent > 0.05 then
+    let radius = props?innerRadius + (props?outerRadius - props?innerRadius) * 0.5;
+    let x = props?cx + radius * JS.Math.cos(-props?midAngle * RADIAN);
+    let y = props?cy + radius * JS.Math.sin(-props?midAngle * RADIAN);
 
-let private renderLabel (props: PieLabelProps) =
-  Fable.Import.Browser.console.log props
-  text [ Cartesian.X props.x; Cartesian.Y props.y; Text.TextAnchor (if props.x > props.cx then "start" else "end"); ] [
-    //div [][ str props.name ]
-    //div [][ str (sprintf "%g" (props.percent * 100.0)) ]
-    str (sprintf "%s: %.2f" props.name (props.percent * 100.0))
-  ]
+    text [ Cartesian.X x; Cartesian.Y y; P.Fill "#fff"; Text.TextAnchor (if x > props?cx then "start" else "end"); SVGAttr.Custom("DominantBaseline", "central")] [
+      //div [][ str props.name ]
+      //div [][ str (sprintf "%g" (props.percent * 100.0)) ]
+      str (sprintf "%.1f%%" (props?percent * 100.0))
+    ]
+  else
+    Fable.Helpers.React.nothing
 
+let private onPieEnter data = // should have sig (evt, activeIndex)
+  printf "mouse"
+  printf "%s" (Thoth.Json.Encode.toString 4 data)
+  
 // https://github.com/recharts/recharts/issues/466
 let private renderChart data =
     pieChart
-        [ margin 15. 20. 5. 0. ] [
-          tooltip [] []
+        [ ReChartHelpers.margin 15. 20. 5. 0. ] [
+          tooltip [][]
+          legend [ Legend.IconType ShapeType.Square ][]
           pie [
             Polar.Data data;
             Polar.DataKey "count";
             Polar.NameKey "description";
-            // Polar.Label renderLabel;
-            Polar.Label true;
-            Polar.LabelLine true;
+            Polar.Label renderLabel;
+            //Polar.Label true;
+            Polar.LabelLine false;
+            //Polar.ActiveIndex 1
+            //Polar.ActiveShape renderActiveShape
+            Polar.OnMouseEnter onPieEnter
             P.Fill "#8884d8"
           ] [
             cells data
