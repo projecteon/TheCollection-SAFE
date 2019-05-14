@@ -52,10 +52,10 @@ display: flex;
 justify-content: center;
 }
 
-.modal-content img {
-max-width: 90vw;
-max-height: calc(100vh - 60px);
-}
+// .modal-content img {
+//   width: auto;
+//   max-height: calc(100vh - 60px);
+// }
 
 .avatar {
 margin-top: -70px;

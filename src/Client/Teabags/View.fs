@@ -94,7 +94,7 @@ let searchBar (model:Model) dispatch =
 let zoomImage model dispatch =
   match model.zoomImageId with
   | Some x ->
-    Modal.modal [ Modal.IsActive true ]
+    Modal.modal [ Modal.IsActive true; Modal.Props [ Style [ MaxWidth "100vw"] ] ]
       [ Modal.background [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] ] [ ]
         Modal.content [ ] [ img [ Src (getUrl x) ] ]
         Modal.close [ Modal.Close.Size IsLarge
@@ -105,7 +105,7 @@ let view (model:Model) (dispatch: Msg -> unit) =
   [
     div [] [
       searchBar model dispatch
-      Columns.columns [ Columns.IsMultiline; Columns.IsMobile ] [
+      Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsCentered ] [
          searchResult model dispatch
       ]
       zoomImage model dispatch
