@@ -50,7 +50,9 @@ let brand =
           span [AriaHidden true] []
       ]
   ]
-
+  
+// https://github.com/Fulma/Fulma/issues/46
+// https://github.com/MangelMaxime/fulma-demo/blob/master/src/App.fs#L16-L65
 let navMenu =
   div [
       Id "navMenu"
