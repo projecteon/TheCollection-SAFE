@@ -8,7 +8,8 @@ open Thoth.Json
 
 //open Services.Dtos
 open TeaCollection.Infrastructure.MsSql
-open Security
+open Security.JsonWebToken
+open Security.Authorization
 
 open Giraffe.Serialization
 

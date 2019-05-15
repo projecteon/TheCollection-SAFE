@@ -15,7 +15,8 @@
     <Compile Include="API\FileUpload.fs" />
     <Compile Include="API\Transformers.fs" />
     <Compile Include="API\Generic.fs" />
-    <Compile Include="Security.fs" />
+    <Compile Include="Security\JsonWebToken.fs" />
+    <Compile Include="Security\Authorization.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />
