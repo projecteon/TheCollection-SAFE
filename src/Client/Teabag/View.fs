@@ -9,7 +9,7 @@ open Client.Components
 open Client.FileUrlHandler
 open Client.Teabag
 open Client.Teabag.Types
-open Services.Dtos
+open Server.Api.Dtos
 open HtmlProps
 
 module R = Fable.Helpers.React

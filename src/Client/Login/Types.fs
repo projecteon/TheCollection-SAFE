@@ -1,7 +1,7 @@
 module Client.Login.Types
 
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 type Model = {
   userName: EmailAddress

@@ -5,7 +5,7 @@ open Fable.Helpers.React.Props
 open Fable.FontAwesome
 open Fulma
 
-open Services.Dtos
+open Server.Api.Dtos
 open Domain.SharedTypes
 open Client.Components.ComboBox.Types
 open Elmish.React

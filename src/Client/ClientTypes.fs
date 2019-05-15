@@ -1,6 +1,6 @@
 module ClientTypes
 
-open Services.Dtos
+open Server.Api.Dtos
 
 type PageModel =
     | DashboardPageModel of Client.Dashboard.Types.Model

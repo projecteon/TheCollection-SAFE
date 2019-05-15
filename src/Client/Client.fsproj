@@ -9,7 +9,7 @@
         <Compile Include="..\..\paket-files\client\projecteon\Fable.C3\src\Fable.C3.React\Chart.fs" Link="Chart.fs" />
         <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="../Domain/Validation.fs" />
-        <Compile Include="../Services/Dtos.fs" />
+        <Compile Include="../Server/API/Dtos.fs" />
         <Compile Include="Fable.Import.Moment.fs" />
         <Compile Include="Extensions.fs" />
         <Compile Include="LocalStorage.fs" />

@@ -15,7 +15,7 @@ open Client.Extensions
 open Client.Util
 open Client.Dashboard.Types
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 let fetchYear (yearData: CountBy<Moment> list) =
   (Seq.head yearData).description.format("YYYY")

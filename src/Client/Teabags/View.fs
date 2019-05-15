@@ -9,7 +9,7 @@ open Client.Navigation
 open Client.Components.Navbar
 open Client.FileUrlHandler
 open Client.Teabags.Types
-open Services.Dtos
+open Server.Api.Dtos
 
 let getDisplayValue (model: Model) =
   match model.searchedTerms with

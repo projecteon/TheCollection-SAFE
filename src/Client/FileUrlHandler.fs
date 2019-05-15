@@ -1,7 +1,6 @@
 module Client.FileUrlHandler
 
 open Domain.SharedTypes
-open Services
 
 type FileUrl = string
 

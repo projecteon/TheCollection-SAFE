@@ -1,7 +1,7 @@
 module Client.Teabag.Bagtype.Types
 
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 type ValidationErrors =
   | NameError of string

@@ -9,8 +9,8 @@ open Thoth.Json
 open Domain.SharedTypes
 open Client.Teabag.Bagtype.Types
 open Client.Util
-open Services
-open Services.Dtos
+open Server.Api
+open Server.Api.Dtos
 
 let areEqual original current =
   match original, current with

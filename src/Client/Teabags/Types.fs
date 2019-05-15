@@ -1,7 +1,7 @@
 module Client.Teabags.Types
 
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 type SearchResult = {
   data: Teabag list

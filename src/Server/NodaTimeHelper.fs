@@ -2,7 +2,7 @@ module NodaTimeHelper
 
 open NodaTime
 open NodaTime.Text
-open Services.Dtos
+open Server.Api.Dtos
 
 // https://stackoverflow.com/questions/23250129/how-to-parse-an-iso-string-value-to-a-nodatime-instant
 // https://github.com/nodatime/nodatime.serialization/blob/edf88349e54ab63f06266a9c864edfa1ba6503cb/src/NodaTime.Serialization.JsonNet/NodaConverters.cs

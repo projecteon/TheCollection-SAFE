@@ -1,4 +1,4 @@
-module API.Generic
+module Server.Api.Generic
 
 open System.Threading.Tasks
 open Microsoft.AspNetCore.Http

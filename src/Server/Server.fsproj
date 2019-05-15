@@ -10,14 +10,15 @@
     <ProjectReference Include="..\Infrastructure.MsSql\Infrastructure.MsSql.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../Services/Dtos.fs" />
+    <Compile Include="API\Dtos.fs" />
     <Compile Include="NodaTimeHelper.fs" />
     <Compile Include="API\FileUpload.fs" />
     <Compile Include="API\Transformers.fs" />
     <Compile Include="API\Generic.fs" />
     <Compile Include="Security\JsonWebToken.fs" />
     <Compile Include="Security\Authorization.fs" />
-    <Compile Include="Server.fs" />
+    <Compile Include="WebServer.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />
   <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent">

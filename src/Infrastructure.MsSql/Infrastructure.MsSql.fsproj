@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <Compile Include="..\..\paket-files\infrastructure.mssql\rspeele\TaskBuilder.fs\TaskBuilder.fs" Link="TaskBuilder.fs" />
-    <Compile Include="../Services/Dtos.fs" />
+    <Compile Include="../Server/API/Dtos.fs" />
     <Compile Include="DbContext.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Util.fs" />

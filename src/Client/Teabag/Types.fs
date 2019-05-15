@@ -2,7 +2,7 @@ module Client.Teabag.Types
 
 open Client.Components
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 type ValidationErrors =
   | BrandError of string

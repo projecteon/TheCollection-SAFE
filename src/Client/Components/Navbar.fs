@@ -8,7 +8,7 @@ open Fable.Helpers.Isomorphic
 open Fable.Import
 
 open Client.Navigation
-open Services.Dtos
+open Server.Api.Dtos
 
 module R = Fable.Helpers.React
 

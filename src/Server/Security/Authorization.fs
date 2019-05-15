@@ -10,7 +10,7 @@ module Authorization =
 
   open Domain.SharedTypes
   open Domain.Types
-  open Services.Dtos
+  open Server.Api.Dtos
   open Security.JsonWebToken
 
   let authorize: HttpHandler =
@@ -48,6 +48,7 @@ module Authorization =
   let handlePostToken userRepository =
     fun (next : HttpFunc) (ctx : HttpContext) ->
       task {
+        printf "handlePostToken"
         let! model = ctx.BindJsonAsync<LoginViewModel>()
         let! user = loginUserCmd userRepository model
         match user with

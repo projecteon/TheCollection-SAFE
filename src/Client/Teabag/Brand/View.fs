@@ -6,7 +6,7 @@ open Fable.FontAwesome
 open Fulma
 
 open Client.Teabag.Brand.Types
-open Services.Dtos
+open Server.Api.Dtos
 open HtmlProps
 open Client.ReactHelpers
 

@@ -3,7 +3,7 @@ module Client.Components.ComboBox.Types
 open System.Text.RegularExpressions
 open Elmish
 
-open Services.Dtos
+open Server.Api.Dtos
 open Domain.SharedTypes
 
 let ReplaceWhiteSpaceRegex = new Regex(@"\s+")

@@ -10,8 +10,8 @@ open Thoth.Json
 open Client.Components
 open Client.Teabag.Types
 open Client.Util
-open Services
-open Services.Dtos
+open Server.Api
+open Server.Api.Dtos
 open Domain.SharedTypes
 
 let private valueOrDefault (value: RefValue option): RefValue =

@@ -7,7 +7,7 @@ open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Domain.SharedTypes
-open Services.Dtos
+open Server.Api.Dtos
 
 module Util =
   let isLeftButtonClick (ev: Fable.Import.React.MouseEvent) =

@@ -6,7 +6,7 @@ open Elmish.Browser.Navigation
 open Client.Util
 open Client.Login.Types
 open Client.Navigation
-open Services.Dtos
+open Server.Api.Dtos
 open Domain.SharedTypes
 open Domain.Validation
 

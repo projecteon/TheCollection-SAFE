@@ -4,7 +4,7 @@ open Elmish
 open Elmish.Browser.Navigation
 open Fable.Import
 
-open Services.Dtos
+open Server.Api.Dtos
 open ClientTypes
 open Client.Util
 open Client.Navigation

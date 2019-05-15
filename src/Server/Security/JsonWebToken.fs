@@ -9,7 +9,7 @@ module JsonWebToken =
   open Microsoft.IdentityModel.Tokens
 
   open Domain.SharedTypes
-  open Services.Dtos
+  open Server.Api.Dtos
 
   // https://medium.com/@dsincl12/json-web-token-with-giraffe-and-f-4cebe1c3ef3b
   // https://github.com/giraffe-fsharp/Giraffe/blob/master/samples/JwtApp/JwtApp/Program.fs

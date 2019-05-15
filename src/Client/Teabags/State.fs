@@ -7,7 +7,7 @@ open Thoth.Json
 
 open Client.Util
 open Client.Teabags.Types
-open Services.Dtos
+open Server.Api.Dtos
 
 let queryString model =
     match model.searchedTerms with

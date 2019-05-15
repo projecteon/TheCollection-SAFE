@@ -6,7 +6,7 @@ open Fable.PowerPack
 open Fable.PowerPack.Fetch
 open Thoth.Json
 
-open Services.Dtos
+open Server.Api.Dtos
 open Client.Util
 open Client.Components.ComboBox.Types
 open Domain.SharedTypes
