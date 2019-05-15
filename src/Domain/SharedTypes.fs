@@ -20,6 +20,10 @@ module SharedTypes =
     with
     member this.String = let (Password s) = this in s
     static member Empty = Password ""
+  
+  type RefreshToken = RefreshToken of string
+    with
+    member this.String = let (RefreshToken s) = this in s
 
   type Flavour = Flavour of string
     with

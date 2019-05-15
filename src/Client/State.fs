@@ -46,10 +46,25 @@ let urlUpdate (result: Page option) (model: Model) =
                                                                     Cmd.map DashboardMsg cmd2
                                                                     Cmd.map DashboardMsg cmd3 ]
 
+
+let loadUser () : UserData option =
+    let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
+    match Client.LocalStorage.load userDecoder "thecollectionUser" with
+    | Ok user -> Some user
+    | Error _ -> None
+
+
 let init page =
-  let m, cmd = Client.Login.State.init()
-  let model = { User = None; PageModel = LoginPageModel m }
-  urlUpdate page model
+  let userData = loadUser()
+  match userData with
+  | Some x ->
+    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init(Some x)
+    let model = { User = Some x; PageModel = DashboardPageModel m }
+    urlUpdate page model
+  | None ->
+    let m, cmd = Client.Login.State.init()
+    let model = { User = None; PageModel = LoginPageModel m }
+    urlUpdate page model
 
 let update msg model =
   match msg, model.PageModel with

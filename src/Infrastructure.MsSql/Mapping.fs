@@ -7,17 +7,17 @@ open Domain.SharedTypes
 open Domain.Tea
 
 module Mapping =
-  let mapRefValue id text : RefValue option =
+  let toRefValue id text : RefValue option =
     match  id, text with
     | Some id, Some text -> Some {id = DbId id; description = text}
     | _, _ -> None
 
-  let mapDbId id : DbId option =
+  let toDbId id : DbId option =
     match  id with
     | Some id -> Some (DbId id)
     | _ -> None
 
-  let mapInstant (utcDateTime: DateTime) : Instant =
+  let toInstant (utcDateTime: DateTime) : Instant =
     utcDateTime.ToUniversalTime()
     |> Instant.FromDateTimeUtc
 
@@ -30,6 +30,16 @@ module Mapping =
     match x with
     | Some x -> (^T : (member String : string) (x))
     | None -> null
+    
+  let inline toDbDateTimeValue (x : ^T option) =
+    match x with
+    | Some x -> (^T : (member DateTime : DateTime) (x))
+    | None -> DateTime.MinValue
+    
+  let inline instantToDbDateTimeValue (x : ^T option) =
+    match x with
+    | Some x -> (^T : (member instant : Instant) (x)).ToDateTimeUtc()
+    | None -> Instant.MinValue.ToDateTimeUtc()
 
   type ToDbValue =
   | DbId of DbId

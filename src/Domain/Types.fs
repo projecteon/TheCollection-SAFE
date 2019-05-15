@@ -1,6 +1,8 @@
 namespace Domain.Types
 
+open System
 open NodaTime
+
 open Domain.SharedTypes
 
 type BrandName  = BrandName of string
@@ -15,8 +17,14 @@ type CountryName  = CountryName of string
 
 type CreatedDate = Instant
 
+type RefreshTokenExpire = RefreshTokenExpire of DateTime
+  with
+  member this.DateTime = let (RefreshTokenExpire dt) = this in dt
+
 type User = {
   Id: DbId
   Email : EmailAddress
   Password : Password
+  RefreshToken: RefreshToken option
+  RefreshTokenExpire: RefreshTokenExpire option
 }

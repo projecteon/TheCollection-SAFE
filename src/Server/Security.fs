@@ -69,7 +69,7 @@ let getPrincipalFromExpiredToken (token: JWT) =
                                                                   ValidateIssuer = false,
                                                                   ValidateIssuerSigningKey = true,
                                                                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("the server key used to sign the JWT token is here, use more than 16 chars")),
-                                                                  ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
+                                                                  ValidateLifetime = true //here we are saying that we don't care about the token's expiration date
                                                                 )
   let tokenHandler = new JwtSecurityTokenHandler()
   let (principal, securityToken) = tokenHandler.ValidateToken(token.String, tokenValidationParameters)
@@ -98,19 +98,14 @@ let handleGetSecured =
         let email = ctx.User.FindFirst ClaimTypes.NameIdentifier
         text ("User " + email.Value + " is authorized to access this resource.") next ctx
 
-//let loginUser (loginModel: LoginViewModel) =
-//  if loginModel.Email.String = "spro@outlook.com" && loginModel.Password.String = "appmaster" then (generateToken loginModel.Email) |> Some
-//  else if loginModel.Email.String = "l.wolterink@hotmail.com" && loginModel.Password.String = "teamaster" then (generateToken loginModel.Email) |> Some
-//  else None
-
 let loginUserCmd (userRepository: (EmailAddress) -> System.Threading.Tasks.Task<User option>) (loginModel: LoginViewModel) =
   task {
     let! dbUser = userRepository loginModel.Email 
     match dbUser with
-    | None -> return None
+    | None -> return Failure "Invalid username or password!"
     | Some user ->
-      if user.Password = loginModel.Password then return ((generateToken user.Email) |> Some) 
-      else return None
+      if user.Password = loginModel.Password then return ((generateToken user.Email) |> Success) 
+      else return Failure "Invalid username or password!"
   }
 
 let handlePostToken userRepository =
@@ -119,8 +114,8 @@ let handlePostToken userRepository =
       let! model = ctx.BindJsonAsync<LoginViewModel>()
       let! user = loginUserCmd userRepository model
       match user with
-      | Some tokenResult -> 
-        return! Successful.OK tokenResult next ctx
-      | None -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" "Invalid username or password!") next ctx 
+      | Success loginResult -> 
+        return! Successful.OK loginResult next ctx
+      | Failure msg -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" msg) next ctx 
     }
 

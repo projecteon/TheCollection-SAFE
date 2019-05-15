@@ -3,14 +3,12 @@ namespace Services
 open Domain.SharedTypes
 
 module Dtos =
+  open System
+
   type JWT = JWT of string
     with
     member this.String = let (JWT s) = this in s
-
-  type RefreshToken = RefreshToken of string
-    with
-    member this.String = let (RefreshToken s) = this in s
-
+    
   type Name = Name of string
     with
     member this.String = let (Name s) = this in s
@@ -29,9 +27,9 @@ module Dtos =
   }
 
   type UserData = {
-    UserName    : EmailAddress
-    Token       : JWT
-    RefreshToken: RefreshToken
+    UserName      : EmailAddress
+    Token         : JWT
+    RefreshToken  : RefreshToken
   }
 
   type SearchResult<'a> = {

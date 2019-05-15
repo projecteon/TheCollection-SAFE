@@ -12,6 +12,7 @@
         <Compile Include="../Services/Dtos.fs" />
         <Compile Include="Fable.Import.Moment.fs" />
         <Compile Include="Extensions.fs" />
+        <Compile Include="LocalStorage.fs" />
         <Compile Include="HtmlProps.fs" />
         <Compile Include="Util.fs" />
         <Compile Include="FileUrlHandler.fs" />

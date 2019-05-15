@@ -11,7 +11,7 @@ open Domain.Types
 module UserRepository =
     [<Literal>]
     let  ByIdSQL = "
-        SELECT a.id, a.s_email, a.s_password
+        SELECT a.id, a.s_email, a.s_password, a.s_refreshtoken, a.dt_refreshtoken_expire
         FROM tcuac_users a
         WHERE id = @id
     "
@@ -26,13 +26,15 @@ module UserRepository =
               Id = DbId x.id
               Email = EmailAddress x.s_email
               Password = Password x.s_password
+              RefreshToken = match x.s_refreshtoken with | Some token -> token |> RefreshToken |> Some | None -> None
+              RefreshTokenExpire = match x.dt_refreshtoken_expire with | Some token -> token |> RefreshTokenExpire |> Some | None -> None
             }
           | _ -> None
       }
 
     [<Literal>]
     let  ByEmailSQL = "
-        SELECT a.id, a.s_email, a.s_password
+        SELECT a.id, a.s_email, a.s_password, a.s_refreshtoken, a.dt_refreshtoken_expire
         FROM tcuac_users a
         WHERE a.s_email = @email
     "
@@ -47,6 +49,26 @@ module UserRepository =
               Id = DbId x.id
               Email = EmailAddress x.s_email
               Password = Password x.s_password
+              RefreshToken = match x.s_refreshtoken with | Some token -> token |> RefreshToken |> Some | None -> None
+              RefreshTokenExpire = match x.dt_refreshtoken_expire with | Some token -> token |> RefreshTokenExpire |> Some | None -> None
             }
           | _ -> None
+      }
+
+    [<Literal>]
+    let  UpdateUserSQL = "
+        UPDATE tcuac_users
+          SET s_refreshtoken = @refreshToken
+              , dt_refreshtoken_expire = @refreshTokenExpire
+        WHERE id = @id
+    "
+
+    type UpdateUser = SqlCommandProvider<UpdateUserSQL, ConnectionString, SingleRow = true>
+    let update (connectiongString: string) (user: User) =
+      task {
+        let cmd = new UpdateUser(connectiongString)
+        return! cmd.AsyncExecute(
+          user.RefreshToken |> Mapping.toDbStringValue
+          , user.RefreshTokenExpire |> Mapping.toDbDateTimeValue
+          , user.Id.Int)
       }

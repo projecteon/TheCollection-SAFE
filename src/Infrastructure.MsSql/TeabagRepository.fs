@@ -41,7 +41,7 @@ module TeabagRepository =
            ,@s_serie
            ,@s_serialnumber
            ,@s_search_terms
-           , GETDATE())
+           ,GETDATE())
     "
 
     type InsertTeabag = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
@@ -113,13 +113,13 @@ module TeabagRepository =
         id = DbId record.id
         brand =  {id = DbId record.ro_brand; description = record.t_ro_brand.Value}
         bagtype = {id = DbId record.ro_bagtype; description = record.t_ro_bagtype.Value}
-        country =  (mapRefValue record.rs_country record.t_rs_country)
+        country =  (toRefValue record.rs_country record.t_rs_country)
         flavour = record.s_flavour |> Flavour
         hallmark = record.s_hallmark |> Hallmark.From
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
-        imageid = ImageId (mapDbId record.rf_image)
-        created = mapInstant <| record.d_created
+        imageid = ImageId (toDbId record.rf_image)
+        created = toInstant <| record.d_created
       }
 
     let getById (connectiongString: string) id =
@@ -162,13 +162,13 @@ module TeabagRepository =
         id = DbId record.id
         brand =  {id = DbId record.ro_brand; description = record.t_ro_brand.Value}
         bagtype = {id = DbId record.ro_bagtype; description = record.t_ro_bagtype.Value}
-        country =  (mapRefValue record.rs_country record.t_rs_country)
+        country =  (toRefValue record.rs_country record.t_rs_country)
         flavour = record.s_flavour |> Flavour
         hallmark = record.s_hallmark |> Hallmark.From
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
-        imageid = ImageId (mapDbId record.rf_image)
-        created = mapInstant <| record.d_created
+        imageid = ImageId (toDbId record.rf_image)
+        created = toInstant <| record.d_created
       }
 
     let mapTotalCount (record: TeabagQry.Record option) =
@@ -290,7 +290,7 @@ module TeabagRepository =
         |> List.ofSeq
         |> Seq.map (fun x -> {
             count = x.i_count
-            description = mapInstant <| (mapOptionalDateTimeValue <| x.d_inserted)
+            description = toInstant <| (mapOptionalDateTimeValue <| x.d_inserted)
           })
         |> Seq.toList
       }

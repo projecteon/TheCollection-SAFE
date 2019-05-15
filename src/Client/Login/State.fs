@@ -48,17 +48,21 @@ let private updateValidationErrorsCmd (model: Model) =
   let passwordErrors = validatePassword model
   { model with userNameError = userNameErrors; passwordError = passwordErrors; }
 
+let private saveUserData userData =
+  (Client.LocalStorage.save "thecollectionUser") userData
+
 let init () =
-    let initialModel = {
-      userName = EmailAddress.Empty
-      userNameError = []
-      password = Password.Empty
-      passwordError = []
-      isWorking = false
-      loginError = None
-      hasTriedToLogin = false
-    }
-    initialModel, Cmd.none
+  Client.LocalStorage.delete "thecollectionUser"
+  let initialModel = {
+    userName = EmailAddress.Empty
+    userNameError = []
+    password = Password.Empty
+    passwordError = []
+    isWorking = false
+    loginError = None
+    hasTriedToLogin = false
+  }
+  initialModel, Cmd.none
 
 let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   match msg with
@@ -76,6 +80,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   | Login ->
     { model with isWorking = true; loginError = None }, loginCmd { Email = model.userName; Password = model.password}, NoOp
   | LoginSuccess userData ->
+    saveUserData userData
     { model with isWorking = false }, ((Navigation.newUrl (toPath Page.Dashboard))), SignedIn userData
   | LoginFailure exn ->
     { model with isWorking = false; loginError = Some "Wrong username or password" }, Cmd.none, NoOp
