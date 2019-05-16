@@ -10,7 +10,7 @@ type Model = {
   passwordError: string list
   isWorking: bool
   loginError: string option
-  hasTriedToLogin: bool 
+  hasTriedToLogin: bool
 }
 
 type ExternalMsg =
@@ -25,3 +25,4 @@ type Msg =
   | Login
   | LoginSuccess of UserData
   | LoginFailure of exn
+  | RefreshToken of RefreshTokenViewModel

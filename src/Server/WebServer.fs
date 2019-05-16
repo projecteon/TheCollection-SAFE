@@ -21,6 +21,7 @@ module WebServer =
   let getAllRefValues = RefValueRepository.getAll DbContext.ConnectionString
   let getUserByEmail = UserRepository.getByEmail DbContext.ConnectionString
 
+  let updateUser = UserRepository.update DbContext.ConnectionString
   let insertTeabag = TeabagRepository.insert DbContext.ConnectionString
   let updateTeabag = TeabagRepository.update DbContext.ConnectionString
   let insertBagtype = BagtypeRepository.insert DbContext.ConnectionString
@@ -78,7 +79,8 @@ module WebServer =
             routef "/country/%i" (Api.Generic.handleGet getByIdCountries Transformers.transformCountry)
             route "/refvalues" >=> (Api.Generic.handleGetAllQuery getAllRefValues)
           ]
-          POST >=> route "/token" >=> (handlePostToken getUserByEmail)
+          POST >=> route "/token" >=> (handlePostToken getUserByEmail updateUser)
+          POST >=> route "/refreshtoken" >=> (handlePostRefreshToken getUserByEmail updateUser)
           POST >=> authorize >=> choose [
             route "/teabags/upload" >=> fileUploadHandler
             route "/teabags" >=> (Api.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)

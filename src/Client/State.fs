@@ -20,13 +20,19 @@ let urlUpdate (result: Page option) (model: Model) =
   | None ->
     handleNotFound model
 
+  | Some Page.Logout ->
+    Client.Login.State.clearUserData()
+    let m, cmd = Client.Login.State.init()
+    { model with User = None; PageModel = LoginPageModel m }, (Navigation.modifyUrl (toPath Page.Login))
+
   | Some Page.Login ->
     let m, cmd = Client.Login.State.init()
-    { model with PageModel = LoginPageModel m }, Cmd.none
+    { model with PageModel = LoginPageModel m }, Cmd.map LoginMsg cmd
 
   | _ when model.User.IsNone ->
     let m, cmd = Client.Login.State.init()
-    { model with PageModel = LoginPageModel m }, (Navigation.modifyUrl (toPath Page.Login))
+    { model with PageModel = LoginPageModel m }, Cmd.batch [  (Navigation.modifyUrl (toPath Page.Login))
+                                                              Cmd.map LoginMsg cmd ]
 
   | Some Page.Teabags ->
     let m = Client.Teabags.State.init(model.User)
@@ -46,25 +52,11 @@ let urlUpdate (result: Page option) (model: Model) =
                                                                     Cmd.map DashboardMsg cmd2
                                                                     Cmd.map DashboardMsg cmd3 ]
 
-
-let loadUser () : UserData option =
-    let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
-    match Client.LocalStorage.load userDecoder "thecollectionUser" with
-    | Ok user -> Some user
-    | Error _ -> None
-
-
 let init page =
-  let userData = loadUser()
-  match userData with
-  | Some x ->
-    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init(Some x)
-    let model = { User = Some x; PageModel = DashboardPageModel m }
-    urlUpdate page model
-  | None ->
-    let m, cmd = Client.Login.State.init()
-    let model = { User = None; PageModel = LoginPageModel m }
-    urlUpdate page model
+  let m, cmd = Client.Login.State.init()
+  let model = { User = None; PageModel = LoginPageModel m }
+  urlUpdate page model
+    
 
 let update msg model =
   match msg, model.PageModel with

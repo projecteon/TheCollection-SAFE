@@ -20,6 +20,7 @@ type CreatedDate = Instant
 type RefreshTokenExpire = RefreshTokenExpire of DateTime
   with
   member this.DateTime = let (RefreshTokenExpire dt) = this in dt
+  member this.IsBefore (dateTime: System.DateTime) = this.DateTime < dateTime
 
 type User = {
   Id: DbId

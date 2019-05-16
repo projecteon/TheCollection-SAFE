@@ -25,6 +25,13 @@ module Dtos =
       Email     : EmailAddress
       Password  : Password
   }
+  
+  [<CLIMutable>]
+  type RefreshTokenViewModel = {
+    Token         : JWT
+    RefreshToken  : RefreshToken
+  }
+
 
   type UserData = {
     UserName      : EmailAddress

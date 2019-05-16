@@ -7,6 +7,7 @@ open Elmish.Browser.UrlParser
 type Page =
   | Dashboard
   | Login
+  | Logout
   | Teabags
   | Teabag of int
   | TeabagNew of string
@@ -15,6 +16,7 @@ let toPath =
   function
   | Page.Dashboard -> "/"
   | Page.Login -> "/login"
+  | Page.Logout -> "/logout"
   | Page.Teabags -> "/teabags"
   | Page.Teabag id -> sprintf "/teabags/%i" id
   | Page.TeabagNew str -> "/teabags/new"
@@ -28,6 +30,7 @@ let pageParser : Parser<Page -> Page,_> =
     [
       map Page.Dashboard (s "")
       map Page.Login (s "login")
+      map Page.Logout (s "logout")
       map Page.Teabags (s "teabags")
       map Page.Teabag (s "teabags" </> i32)
       map Page.TeabagNew (s "teabags" </> str)

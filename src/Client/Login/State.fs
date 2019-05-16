@@ -16,6 +16,34 @@ let isValid (model: Model) =
   && model.userName.String.Length > 0
   && model.password.String.Length > 0
 
+[<Literal>]
+let private UserDataKey = "thecollection:Userdata"
+
+let private loadUser () : UserData option =
+    let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
+    match Client.LocalStorage.load userDecoder UserDataKey with
+    | Ok user -> Some user
+    | Error _ -> None
+
+let private saveUserData userData =
+  (Client.LocalStorage.save UserDataKey) userData
+
+let clearUserData () =
+  Client.LocalStorage.delete UserDataKey
+
+let private refreshTokenCmd (model: RefreshTokenViewModel) =
+  Cmd.ofPromise
+    httpPost ("/api/refreshtoken", None, model)
+    LoginSuccess
+    LoginFailure
+
+let private tryRefreshTokenCmd =
+  let userData = loadUser();
+  match userData with
+  | Some x -> Cmd.ofMsg (Msg.RefreshToken {Token = x.Token; RefreshToken = x.RefreshToken})
+  | None -> Cmd.none
+
+
 let private loginCmd (model: LoginViewModel) =
   Cmd.ofPromise
     httpPost ("/api/token", None, model)
@@ -48,11 +76,7 @@ let private updateValidationErrorsCmd (model: Model) =
   let passwordErrors = validatePassword model
   { model with userNameError = userNameErrors; passwordError = passwordErrors; }
 
-let private saveUserData userData =
-  (Client.LocalStorage.save "thecollectionUser") userData
-
 let init () =
-  Client.LocalStorage.delete "thecollectionUser"
   let initialModel = {
     userName = EmailAddress.Empty
     userNameError = []
@@ -62,7 +86,7 @@ let init () =
     loginError = None
     hasTriedToLogin = false
   }
-  initialModel, Cmd.none
+  initialModel, tryRefreshTokenCmd
 
 let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   match msg with
@@ -83,4 +107,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
     saveUserData userData
     { model with isWorking = false }, ((Navigation.newUrl (toPath Page.Dashboard))), SignedIn userData
   | LoginFailure exn ->
+    clearUserData()
     { model with isWorking = false; loginError = Some "Wrong username or password" }, Cmd.none, NoOp
+  | Msg.RefreshToken viewModel ->
+    { model with isWorking = true; loginError = None }, refreshTokenCmd viewModel, NoOp

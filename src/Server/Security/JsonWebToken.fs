@@ -54,13 +54,13 @@ module JsonWebToken =
 
       tokenResult
 
-  let getPrincipalFromExpiredToken (token: JWT) =
+  let getJwtSecturityTokenFromExpiredToken (token: JWT) =
     let tokenValidationParameters = new TokenValidationParameters(
                                                                     ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
                                                                     ValidateIssuer = false,
                                                                     ValidateIssuerSigningKey = true,
-                                                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("the server key used to sign the JWT token is here, use more than 16 chars")),
-                                                                    ValidateLifetime = true //here we are saying that we don't care about the token's expiration date
+                                                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+                                                                    ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
                                                                   )
     let tokenHandler = new JwtSecurityTokenHandler()
     let (principal, securityToken) = tokenHandler.ValidateToken(token.String, tokenValidationParameters)
@@ -68,4 +68,4 @@ module JsonWebToken =
     if (jwtSecurityToken = null || (String.Compare(jwtSecurityToken.Header.Alg, SecurityAlgorithms.HmacSha256, StringComparison.CurrentCultureIgnoreCase) <> 0)) then
         raise (new SecurityTokenException("Invalid token"))
     else
-      principal
+      jwtSecurityToken

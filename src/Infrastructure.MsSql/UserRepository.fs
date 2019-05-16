@@ -60,6 +60,7 @@ module UserRepository =
         UPDATE tcuac_users
           SET s_refreshtoken = @refreshToken
               , dt_refreshtoken_expire = @refreshTokenExpire
+              , dt_modified = GETDATE()
         WHERE id = @id
     "
 

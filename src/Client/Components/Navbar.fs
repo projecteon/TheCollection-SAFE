@@ -62,7 +62,7 @@ let navMenu =
         viewLink Page.Dashboard "Dashboard"
         viewLink Page.Teabags "Teabags"
         viewLink (Page.TeabagNew "") "New"
-        viewLink Page.Login "Logout"
+        viewLink Page.Logout "Logout"
       ]
     ]
 
