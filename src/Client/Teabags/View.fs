@@ -52,7 +52,7 @@ let searchResult (model:Model) dispatch =
   |> ofList
 
 let inputElement model dispatch =
-  Input.text [
+  Input.search [
     yield Input.Props [AutoComplete "off"]
     yield Input.Option.Id "searchterm"
     yield Input.Disabled model.isLoading
