@@ -108,8 +108,6 @@ module RefValueValidation =
     refValue
     |> validateHasValue
 
-
-
 module NameValidation =
   open Dtos
   open Domain.Validation
@@ -119,7 +117,6 @@ module NameValidation =
       name.String
       |> Domain.Validation.StringValidations.minimumLength 1
       >>= Domain.Validation.StringValidations.maximumLength 255
-
     Helpers.reMapResult name isValid
 
   let validate (name: Name) =
@@ -135,7 +132,6 @@ module FlavourValidation =
       flavour.String
       |> Domain.Validation.StringValidations.minimumLength 1
       >>= Domain.Validation.StringValidations.maximumLength 255
-
     Helpers.reMapResult flavour isValid
 
   let validate (flavour: Flavour) =
