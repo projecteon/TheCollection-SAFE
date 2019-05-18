@@ -53,6 +53,7 @@ let searchResult (model:Model) dispatch =
 
 let inputElement model dispatch =
   Input.text [
+    yield Input.Props [AutoComplete "off"]
     yield Input.Option.Id "searchterm"
     yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
