@@ -12,8 +12,8 @@ type Page =
   | Teabag of int
   | TeabagNew of string
 
-let toPath =
-  function
+let toPath page =
+  match page with
   | Page.Dashboard -> "/"
   | Page.Login -> "/login"
   | Page.Logout -> "/logout"
