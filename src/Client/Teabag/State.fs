@@ -54,7 +54,7 @@ let isValid (validationErrors: ValidationErrors seq) =
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
 let private getTeabagCmd (id: int option) (token: JWT) =
   match id with
-  | Some id ->
+  | Some id when id > 0 ->
     Cmd.ofPromise
       (Fetch.fetchAs<Teabag> (sprintf "/api/teabags/%i" id) (Decode.Auto.generateDecoder<Teabag>()) )
       [Fetch.requestHeaders [
@@ -63,7 +63,7 @@ let private getTeabagCmd (id: int option) (token: JWT) =
       ]]
       GetSuccess
       GetError
-  | None -> Cmd.ofMsg (GetSuccess NewTeabag)
+  | _ -> Cmd.ofMsg (GetSuccess NewTeabag)
 
 let private reloadTeabagCmd (teabag: Teabag option) (token: JWT) =
   match teabag with
