@@ -5,6 +5,7 @@ open Server.Api.Dtos
 
 type ValidationErrors =
   | NameError of string
+  | UnknownError of string
 
 type Model = {
   originaldata: Option<Country>
@@ -26,6 +27,7 @@ type ExternalMsg =
   | OnChange of RefValue
 
 type Msg =
+  | New
   | GetError of exn
   | GetSuccess of Country
   | NameChanged of string

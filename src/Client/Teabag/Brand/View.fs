@@ -25,13 +25,20 @@ let viewForm (brand: Brand) (model:Model) dispatch  =
           yield Input.ValueOrDefault brand.name.String;
           yield Input.Option.Id "name";
           yield Input.OnChange (getValue >> NameChanged >> dispatch)
-          if (not (Seq.isEmpty model.validationErrors)) then
+          if (not (model.validationErrors |> State.getNameErrors |> Seq.isEmpty)) then
             yield Input.Color IsDanger
           else if model.doValidation then
             yield Input.Color IsSuccess ]
       ]
+      Client.FulmaHelpers.inputError (model.validationErrors |> State.getNameErrors |> List.ofSeq) |> ofList
     ]
     Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
+      Control.div [ ] [
+        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled (model.data.IsSome && model.data.Value.id.Int = 0); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch New) ] [
+          if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
+          else yield str "New"
+        ]
+      ]
       Control.div [ ] [
         Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
           if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]

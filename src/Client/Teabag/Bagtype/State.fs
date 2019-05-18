@@ -33,6 +33,13 @@ let private validate (bagtype: Bagtype) =
 let isValid (validationErrors: ValidationErrors seq) =
   validationErrors |> Seq.isEmpty
 
+let getNameErrors validationErrors =
+  validationErrors
+  |> Seq.choose
+    (function
+    | ValidationErrors.NameError err -> Some err
+    | _ -> None)
+
 let private getBagtypeCmd (id: DbId option) (token: JWT) =
   match id with
   | Some id when id.Int > 0 ->
@@ -83,6 +90,7 @@ let init (userData: UserData option) =
 
 let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   match msg with
+  | New -> {model with data = Some NewBagtype}, Cmd.none, ExternalMsg.UnChanged
   | GetSuccess data ->
     let newModel = { model with originaldata = Some data; data = Some data; doValidation = false; isWorking = false }
     newModel, Cmd.none, ExternalMsg.UnChanged

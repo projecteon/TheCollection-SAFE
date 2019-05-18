@@ -32,6 +32,13 @@ let private validate (country: Country) =
 
 let isValid (validationErrors: ValidationErrors seq) =
   validationErrors |> Seq.isEmpty
+  
+let getNameErrors validationErrors =
+  validationErrors
+  |> Seq.choose
+    (function
+    | ValidationErrors.NameError err -> Some err
+    | _ -> None)
 
 let private getCountryCmd (id: DbId option) (token: JWT) =
   match id with
@@ -83,6 +90,7 @@ let init (userData: UserData option) =
 
 let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
   match msg with
+  | New -> {model with data = Some NewCountry}, Cmd.none, ExternalMsg.UnChanged
   | GetSuccess data ->
     let newModel = { model with originaldata = Some data; data = Some data; doValidation = false; isWorking = false }
     newModel, Cmd.none, ExternalMsg.UnChanged
