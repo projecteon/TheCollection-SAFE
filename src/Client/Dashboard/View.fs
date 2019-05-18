@@ -12,7 +12,6 @@ open Fable.C3
 
 open Fulma
 
-
 module P = Fable.Helpers.React.Props
 module C3 = Fable.C3.React
 
@@ -75,6 +74,18 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
+        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+          Panel.panel [] [
+            Panel.heading [ ] [
+              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
+                str "Inserted ReChart"
+              ]
+            ]
+            Panel.block [ ] [
+              PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+            ]
+          ]
+        ]
         Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [
@@ -122,18 +133,6 @@ let view (model:Model) dispatch =
               match model.countInserted with
               | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
               | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 200]] []
-            ]
-          ]
-        ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
-                str "Inserted ReChart"
-              ]
-            ]
-            Panel.block [ ] [
-              PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
             ]
           ]
         ]
