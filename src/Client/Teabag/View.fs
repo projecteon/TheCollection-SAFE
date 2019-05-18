@@ -75,7 +75,7 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
       Control.div [ ] [
         Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
           if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
-          else yield str "Submit"
+          else yield str "Save"
         ]
       ]
       Control.div [ ] [
