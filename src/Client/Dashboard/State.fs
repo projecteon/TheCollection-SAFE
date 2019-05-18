@@ -85,7 +85,6 @@ let getCountByInsertedCmd (userData: UserData option) =
       GetCountByInsertedError
     | _ -> Cmd.none
 
-open Client.Components.BarChart
 let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) =
   countBy
   |> List.truncate (int count)
