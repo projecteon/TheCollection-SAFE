@@ -71,7 +71,7 @@ let searchError model =
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
-                [ str <| (sprintf "Resultcount: %i" <| x) ]
+                [ str <| (sprintf "Result count: %i" <| x) ]
   | None -> Fable.Helpers.React.nothing
 
 let searchBar (model:Model) dispatch =
