@@ -51,25 +51,25 @@ module Dtos =
   type RefValue = {
     id: DbId;
     description: string;
-  };
+  }
 
   [<ReferenceEquality>]
   type Bagtype = {
     id: DbId;
     name: Name;
-  };
+  }
 
   [<ReferenceEquality>]
   type Brand = {
     id: DbId;
     name: Name;
-  };
+  }
 
   [<ReferenceEquality>]
   type Country = {
     id: DbId;
     name: Name;
-  };
+  }
 
   [<ReferenceEquality>]
   type Teabag = {
