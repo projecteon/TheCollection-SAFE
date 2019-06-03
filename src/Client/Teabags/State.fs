@@ -5,7 +5,7 @@ open Fable.PowerPack
 open Fable.PowerPack.Fetch
 open Thoth.Json
 
-open Client.Util
+open Client.ElmishHelpers
 open Client.Teabags.Types
 open Server.Api.Dtos
 
@@ -24,7 +24,7 @@ let getTeabagsCmd model (token: JWT) =
         SearchSuccess
         SearchError
 
-let init (userData: UserData option) =
+let init () =
     let initialModel = {
       result = []
       resultCount=None
@@ -33,11 +33,10 @@ let init (userData: UserData option) =
       zoomImageId = None
       page = int64 0
       isLoading = false
-      userData = userData
     }
     initialModel
 
-let update (msg:Msg) model : Model*Cmd<Msg> =
+let update (msg:Msg) model userData : Model*Cmd<Msg> =
     printfn "teabags update"
     match msg with
     | OnSearchTermChange searchTerms ->
@@ -45,7 +44,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     | Search ->
       let result = validateSearchTerm model
       match result with
-      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryAuthorizationRequest (getTeabagsCmd model) model.userData
+      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryJwtCmd (getTeabagsCmd model) userData
       | Failure x -> {model with searchError = Some x}, Cmd.none
     | SearchSuccess result ->
         printfn "teabags update"

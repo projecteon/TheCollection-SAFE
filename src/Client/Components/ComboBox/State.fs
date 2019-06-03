@@ -7,7 +7,7 @@ open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Server.Api.Dtos
-open Client.Util
+open Client.ElmishHelpers
 open Client.Components.ComboBox.Types
 open Domain.SharedTypes
 
@@ -28,7 +28,7 @@ let getCmd model (token: JWT) =
     ]]
     SearchSuccess
     SearchError
-    
+
 let setValueCmd (refValue: RefValue option) =
   Cmd.ofMsg (SetValue refValue)
 
@@ -61,7 +61,7 @@ let tryIncreaseSearchResultHover (model: Model) =
   else
     model
 
-let init (label: string, refValueType: RefValueTypes, userData: UserData option) =
+let init (label: string, refValueType: RefValueTypes) =
   let initialModel = {
     Value = None
     Label = label
@@ -72,12 +72,11 @@ let init (label: string, refValueType: RefValueTypes, userData: UserData option)
     DebouncedTerm = Debounce.init (TimeSpan.FromMilliseconds 300.) ""
     IsSearching = false
     RefValueType = refValueType
-    userData = userData
     Errors = []
   }
   initialModel
 
-let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
+let update (msg : Msg) (currentModel : Model) userData : Model * Cmd<Msg> * ExternalMsg =
   match msg with
   | Clear ->
     let nextModel = { currentModel with Value = None; SearchTerm = None; SearchResult = None; HasFocus = false }
@@ -107,7 +106,7 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
       match currentModel.Value with
       | Some currentValue -> x |> List.filter (fun z -> z.id <> currentValue.id)
       | None -> x
-    
+
     let nextModel = { currentModel with SearchResult = Some results; IsSearching = false }
     nextModel, Cmd.none, ExternalMsg.UnChanged
   | SearchError x ->
@@ -137,4 +136,4 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> * ExternalMsg =
     dModel, dMsg, ExternalMsg.UnChanged
   | FetchSuggestions text ->
     let nextModel = { currentModel with IsSearching = true }
-    nextModel, tryAuthorizationRequest (getCmd currentModel) currentModel.userData, ExternalMsg.UnChanged
+    nextModel, tryJwtCmd (getCmd currentModel) userData, ExternalMsg.UnChanged

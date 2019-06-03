@@ -40,7 +40,6 @@ type Model = {
   countBrands: ChartConfig option
   countBagtypes: ChartConfig option
   countInserted: ChartConfig option
-  userData: UserData option
   displayedByBrands: ReChartHelpers.DataCount
   displayedBrands: ReChartHelpers.DataCount
 }

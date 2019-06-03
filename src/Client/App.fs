@@ -45,7 +45,14 @@ open Elmish.Debug
 open Elmish.HMR
 #endif
 
+let sessionHandler initial =
+  let sub (dispatch: Msg -> unit) =
+    Fable.Import.Browser.window.addEventListener(Client.Auth.SessionExpiredEvent, !^(fun e -> e |> printf "SessionExpiredEvent %O" )) |> ignore
+    Fable.Import.Browser.window.addEventListener(Client.Auth.SessionUpdatedEvent, !^(fun e -> e |> printf "SessionUpdatedEvent %O" )) |> ignore
+  Cmd.ofSub sub
+
 Program.mkProgram init update view //(lazyView2 view)
+|> Program.withSubscription sessionHandler // https://elmish.github.io/elmish/subscriptions.html
 |> Program.toNavigable urlParser urlUpdate
 #if DEBUG
 |> Program.withConsoleTrace

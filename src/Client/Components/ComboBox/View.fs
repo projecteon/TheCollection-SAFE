@@ -9,6 +9,7 @@ open Server.Api.Dtos
 open Domain.SharedTypes
 open Client.Components.ComboBox.Types
 open Elmish.React
+open Fulma
 
 let CarrigeReturnKeyCode = 13.0
 let ArrowUpKeyCode = 38.0
@@ -163,7 +164,10 @@ let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
     Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
       str model.Label
     ]
-    Field.div [ Field.IsGrouped ] [
+    Field.div [ Field.HasAddons ] [
+      Control.p [ ] [
+        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ][] ] ]
+      ]
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
         inputElement model dispatch
         inputIcon model
@@ -174,4 +178,5 @@ let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
     ]
   ]
 
-let lazyViewWithCustomGrouped customComp = Common.lazyView2 (viewWithCustomGrouped customComp)
+//let lazyViewWithCustomGrouped customComp = Common.lazyView2 (viewWithCustomGrouped customComp)
+let lazyViewWithCustomGrouped customComp = Client.ElmishHelpers.prodLazyView (viewWithCustomGrouped customComp)

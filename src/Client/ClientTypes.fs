@@ -17,3 +17,4 @@ type Msg =
     | TeabagsMsg of Client.Teabags.Types.Msg
     | TeabagMsg of Client.Teabag.Types.Msg
     | LoginMsg of Client.Login.Types.Msg
+    | LogOut

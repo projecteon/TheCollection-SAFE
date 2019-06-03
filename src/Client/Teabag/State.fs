@@ -9,7 +9,8 @@ open Thoth.Json
 
 open Client.Components
 open Client.Teabag.Types
-open Client.Util
+open Client.ElmishHelpers
+open Client.Validation
 open Server.Api
 open Server.Api.Dtos
 open Domain.SharedTypes
@@ -110,16 +111,15 @@ let private trySave (model: Model) =
   | _, _-> Cmd.none
 
 let init (userData: UserData option) =
-  let brandCmp = ComboBox.State.init("Brand", RefValueTypes.Brand, userData)
-  let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype, userData)
-  let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country, userData)
+  let brandCmp = ComboBox.State.init("Brand", RefValueTypes.Brand)
+  let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype)
+  let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country)
   let initialModel = {
     originaldata = None
     data = None
     brandCmp = brandCmp
     bagtypeCmp = bagtypeCmp
     countryCmp = countryCmp
-    userData = userData
     fetchError = None
     doValidation = false
     validationErrors = Seq.empty
@@ -130,7 +130,7 @@ let init (userData: UserData option) =
   }
   initialModel, getTeabagCmd
 
-let update (msg:Msg) model : Model*Cmd<Msg> =
+let update (msg:Msg) model userData : Model*Cmd<Msg> =
   match msg with
   | GetSuccess data ->
     let newModel = { model with originaldata = Some data; data = Some data; doValidation = false; isWorking = false }
@@ -155,7 +155,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     | Some x -> { model with data = Some { x with serie = serie } }, Cmd.none
     | _ -> { model with data = Some { NewTeabag with serie = serie } }, Cmd.none
   | BrandCmp msg ->
-    let res, cmd, exMsg = ComboBox.State.update msg model.brandCmp
+    let res, cmd, exMsg = ComboBox.State.update msg model.brandCmp userData
     let nextTeabag, nextCmd =
       match exMsg with
       | ComboBox.Types.ExternalMsg.UnChanged-> model.data, Cmd.map BrandCmp cmd
@@ -168,7 +168,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     let nextModel = { model with brandCmp = res; data = nextTeabag }
     nextModel, nextCmd
   | BagtypeCmp msg ->
-    let res, cmd, exMsg = ComboBox.State.update msg model.bagtypeCmp
+    let res, cmd, exMsg = ComboBox.State.update msg model.bagtypeCmp userData
     let nextTeabag, nextCmd =
       match exMsg with
       | ComboBox.Types.ExternalMsg.UnChanged-> model.data, Cmd.map BagtypeCmp cmd
@@ -181,7 +181,7 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     let nextModel = { model with bagtypeCmp = res; data = nextTeabag }
     nextModel, nextCmd
   | CountryCmp msg ->
-    let res, cmd, exMsg = ComboBox.State.update msg model.countryCmp
+    let res, cmd, exMsg = ComboBox.State.update msg model.countryCmp userData
     let nextTeabag =
       match exMsg with
       | ComboBox.Types.ExternalMsg.UnChanged-> model.data
@@ -198,9 +198,9 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     | Some x -> { model with data = Some { x with imageid = id } }, Cmd.none
     | _ -> { model with data = Some { NewTeabag with imageid = id } }, Cmd.none
   | Upload input ->
-    model, tryAuthorizationRequest (input |> uploadImage) model.userData
+    model, tryJwtCmd (input |> uploadImage) userData
   | UploadError exn -> { model with fetchError = Some exn }, Cmd.none
-  | Save teabag -> model, tryAuthorizationRequest (saveTeabagCmd teabag) model.userData
+  | Save teabag -> model, tryJwtCmd (saveTeabagCmd teabag) userData
   | SaveSuccess id ->
     let updatedTeabag = Some { model.data.Value with id = DbId id }
     { model with data = updatedTeabag; originaldata = updatedTeabag }, Cmd.none
@@ -221,26 +221,26 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)
                                 trySave validatedModel]
-  | Reload -> model, tryAuthorizationRequest (reloadTeabagCmd model.data) model.userData
+  | Reload -> model, tryJwtCmd (reloadTeabagCmd model.data) userData
   | ToggleAddBagtypeModal display ->
     if display then
-      let bagtypeModel, cmd = Client.Teabag.Bagtype.State.init model.userData
+      let bagtypeModel, cmd = Client.Teabag.Bagtype.State.init userData
       let bagtypeId = match model.data with | Some x -> Some x.bagtype.id | None -> None
-      {model with editBagtypeCmp = Some bagtypeModel}, Cmd.map EditBagtypeCmp (cmd bagtypeId model.userData.Value.Token)
+      {model with editBagtypeCmp = Some bagtypeModel}, Cmd.map EditBagtypeCmp (cmd bagtypeId userData.Value.Token)
     else
       {model with editBagtypeCmp = None}, Cmd.none
   | ToggleAddBrandModal display ->
     if display then
-      let brandModel, cmd = Client.Teabag.Brand.State.init model.userData
+      let brandModel, cmd = Client.Teabag.Brand.State.init userData
       let brandId = match model.data with | Some x -> Some x.brand.id | None -> None
-      {model with editBrandCmp = Some brandModel}, Cmd.map EditBrandCmp (cmd brandId model.userData.Value.Token)
+      {model with editBrandCmp = Some brandModel}, Cmd.map EditBrandCmp (cmd brandId userData.Value.Token)
     else
       {model with editBrandCmp = None}, Cmd.none
   | ToggleAddCountryModal display ->
     if display then
-      let countryModel, cmd = Client.Teabag.Country.State.init model.userData
+      let countryModel, cmd = Client.Teabag.Country.State.init userData
       let countryId = match model.data with | Some x when x.country.IsSome -> Some x.country.Value.id | _ -> None
-      {model with editCountryCmp = Some countryModel}, Cmd.map EditCountryCmp (cmd countryId model.userData.Value.Token)
+      {model with editCountryCmp = Some countryModel}, Cmd.map EditCountryCmp (cmd countryId userData.Value.Token)
     else
       {model with editCountryCmp = None}, Cmd.none
   | EditBagtypeCmp msg ->

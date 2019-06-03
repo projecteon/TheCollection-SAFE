@@ -12,10 +12,11 @@ open Thoth.Json
 
 open Client
 open Client.Extensions
-open Client.Util
+open Client.ElmishHelpers
 open Client.Dashboard.Types
 open Domain.SharedTypes
 open Server.Api.Dtos
+open Client
 
 let fetchYear (yearData: CountBy<Moment> list) =
   (Seq.head yearData).description.format("YYYY")
@@ -59,31 +60,25 @@ let getCountByBrandsCmd (token: JWT) =
     GetCountByBrandsSuccess
     GetCountByBrandsError
 
-let getCountByBagtypesCmd (userData: UserData option) =
-  match userData with
-  | Some x ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
-      [Fetch.requestHeaders [
-          HttpRequestHeaders.Authorization ("Bearer " + x.Token.String)
-          HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-      ]]
-      GetCountByBagtypesSuccess
-      GetCountByBagtypesError
-    | _ -> Cmd.none
+let getCountByBagtypesCmd (token: JWT) =
+  Cmd.ofPromise
+    (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
+    [Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+    ]]
+    GetCountByBagtypesSuccess
+    GetCountByBagtypesError
 
-let getCountByInsertedCmd (userData: UserData option) =
-  match userData with
-  | Some x ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<CountBy<UtcDateTimeString> list> "/api/teabags/countby/inserteddate" (Decode.Auto.generateDecoder<CountBy<UtcDateTimeString> list>()) )
-      [Fetch.requestHeaders [
-          HttpRequestHeaders.Authorization ("Bearer " + x.Token.String)
-          HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-      ]]
-      GetCountByInsertedSuccess
-      GetCountByInsertedError
-    | _ -> Cmd.none
+let getCountByInsertedCmd (token: JWT) =
+  Cmd.ofPromise
+    (Fetch.fetchAs<CountBy<UtcDateTimeString> list> "/api/teabags/countby/inserteddate" (Decode.Auto.generateDecoder<CountBy<UtcDateTimeString> list>()) )
+    [Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+    ]]
+    GetCountByInsertedSuccess
+    GetCountByInsertedError
 
 let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) =
   countBy
@@ -155,11 +150,10 @@ let init (userData: UserData option) =
       countBrands = None
       countBagtypes = None
       countInserted = None
-      userData = userData
       displayedByBrands = ReChartHelpers.DataCount.Ten
       displayedBrands = ReChartHelpers.DataCount.Ten
     }
-    initialModel, tryAuthorizationRequest getCountByBrandsCmd userData, getCountByBagtypesCmd userData, getCountByInsertedCmd userData
+    initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByInsertedCmd
 
 let moment: Fable.Import.Moment.IExports = importAll "moment"
 let update (msg:Msg) model : Model*Cmd<Msg> =

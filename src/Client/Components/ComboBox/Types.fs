@@ -21,7 +21,6 @@ type Model = {
   DebouncedTerm : Elmish.Debounce.Model<string>
   IsSearching : bool
   RefValueType: RefValueTypes
-  userData: UserData option
   Errors: string seq
 }
 

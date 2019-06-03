@@ -89,7 +89,7 @@ let fileUploadForm dispatch =
     Field.div [ ]
       [ File.file [ File.IsBoxed; File.Color IsPrimary; File.Size IsLarge; File.IsCentered ]
           [ File.label [ ]
-              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.Util.convertToFile |> Upload |> dispatch); Accept "image/png, image/jpeg" ] ]
+              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.BrowserHelpers.convertToFile |> Upload |> dispatch); Accept "image/png, image/jpeg" ] ]
                 File.cta [ ]
                   [ File.icon [ ]
                       [ Icon.icon [ ]

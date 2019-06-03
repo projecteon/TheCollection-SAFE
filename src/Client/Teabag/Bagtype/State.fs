@@ -7,8 +7,9 @@ open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Domain.SharedTypes
+open Client.ElmishHelpers
+open Client.Validation
 open Client.Teabag.Bagtype.Types
-open Client.Util
 open Server.Api
 open Server.Api.Dtos
 
@@ -99,7 +100,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
     match model.data with
     | Some x -> { model with data = Some { x with name = Name newName } }, Cmd.ofMsg Validate, ExternalMsg.UnChanged
     | _ -> { model with data = Some { NewBagtype with name = Name newName } }, Cmd.none, ExternalMsg.UnChanged
-  | Save bagtype -> model, tryAuthorizationRequest (saveBagtypeCmd bagtype) model.userData, ExternalMsg.UnChanged
+  | Save bagtype -> model, tryJwtCmd (saveBagtypeCmd bagtype) model.userData, ExternalMsg.UnChanged
   | SaveSuccess id ->
     let updatedTeabag = Some { model.data.Value with id = DbId id }
     { model with data = updatedTeabag; originaldata = updatedTeabag }, Cmd.none, ExternalMsg.OnChange { id = updatedTeabag.Value.id; description = updatedTeabag.Value.name.String }

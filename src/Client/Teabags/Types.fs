@@ -16,7 +16,6 @@ type Model = {
   zoomImageId: ImageId option
   page: int64
   isLoading: bool
-  userData: UserData option
 }
 
 type Msg =

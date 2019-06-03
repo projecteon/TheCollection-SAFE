@@ -15,7 +15,6 @@ type Model = {
   brandCmp: ComboBox.Types.Model
   bagtypeCmp: ComboBox.Types.Model
   countryCmp: ComboBox.Types.Model
-  userData: UserData option
   fetchError: exn option
   doValidation: bool
   validationErrors: ValidationErrors seq

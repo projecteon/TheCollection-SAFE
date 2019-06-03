@@ -3,7 +3,7 @@ module Client.Login.State
 open Elmish
 open Elmish.Browser.Navigation
 
-open Client.Util
+open Client.Http
 open Client.Login.Types
 open Client.Navigation
 open Server.Api.Dtos
@@ -33,7 +33,7 @@ let clearUserData () =
 
 let private refreshTokenCmd (model: RefreshTokenViewModel) =
   Cmd.ofPromise
-    httpPost ("/api/refreshtoken", None, model)
+    post ("/api/refreshtoken", None, model)
     LoginSuccess
     LoginFailure
 
@@ -46,7 +46,7 @@ let private tryRefreshTokenCmd =
 
 let private loginCmd (model: LoginViewModel) =
   Cmd.ofPromise
-    httpPost ("/api/token", None, model)
+    post ("/api/token", None, model)
     LoginSuccess
     LoginFailure
 

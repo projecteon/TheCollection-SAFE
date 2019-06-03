@@ -9,11 +9,41 @@ open Thoth.Json
 open Domain.SharedTypes
 open Server.Api.Dtos
 
-module Util =
-  let isLeftButtonClick (ev: Fable.Import.React.MouseEvent) =
-    ev.button <> 0.0
+// https://gist.github.com/MangelMaxime/8d3758cbc0bc69ffb9a156db294ea8e9
+module Http =
+  let errorString (response: Response) =
+    string response.Status + " " + response.StatusText + " for URL " + response.Url
 
-  let inline httpPost2<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
+  let unauthorizedString (response: Response) = promise {
+    try 
+      let! text = response.text()
+      return text
+    with
+    | exn -> return (errorString response)
+  }
+  
+  // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+  type FetchResult =
+    | Success of Response
+    | BadStatus of Response
+    | NetworkError
+    | Unauthorized of Response
+
+  let fetch (url: string) (init: RequestProperties list) : Fable.Import.JS.Promise<FetchResult> =
+    GlobalFetch.fetch(RequestInfo.Url url, requestProps init)
+    |> Promise.map (fun response ->
+      if response.Ok then
+        Success response
+      else
+        if response.Status = 401 then
+          Unauthorized response
+        else if response.Status < 200 || response.Status >= 300 then
+          BadStatus response
+        else
+          NetworkError
+    )
+
+  let inline post2<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
       let body = Encode.Auto.toString(0, data)
       let props = [
           RequestProperties.Method HttpMethod.POST
@@ -33,7 +63,7 @@ module Util =
    }
 
 
-  let inline httpPost<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
+  let inline post<'Data,'Result> (url, token: JWT option, data:'Data) = promise {
       try
           let! res = Fetch.postRecord<'Data> url data [ Fetch.requestHeaders [
             if token.IsSome then yield HttpRequestHeaders.Authorization ("Bearer " + token.Value.String)
@@ -45,23 +75,111 @@ module Util =
       | exn -> return! failwithf "Error while posting to %s. Message: %s" url exn.Message
   }
 
+module Auth =
+  open Fable.Import
+  open Http
+
+  [<Literal>]
+  let SessionUpdatedEvent = "onSessionUpdate"
+  [<Literal>]
+  let SessionExpiredEvent = "onSessionExpired"
+
+  let private notifySessionChange (user : UserData) =
+    let detail =
+      jsOptions<Browser.CustomEventInit>(fun o ->
+        o.detail <- Some (box user)
+      )
+    let event = Browser.CustomEvent.Create(SessionUpdatedEvent, detail)
+    Browser.window.dispatchEvent(event)
+    |> ignore
+
+  let private notifySessionExpired =
+    let event = Browser.CustomEvent.Create(SessionExpiredEvent)
+    Browser.window.dispatchEvent(event)
+    |> ignore
+
+  // https://github.com/fable-compiler/fable-powerpack/blob/master/src/Fetch.fs
+  // https://github.com/elmish/elmish/blob/master/src/cmd.fs
+  let handleRefreshToken (token: RefreshTokenViewModel) (httpRequest : JWT -> JS.Promise<FetchResult>) result =
+    promise {
+      match result with
+      | Success response -> return response
+      | BadStatus response ->
+        return response |> errorString |> failwith
+      | NetworkError ->
+        return failwith "Network error"
+      | Unauthorized response ->
+        let! res = post<RefreshTokenViewModel, UserData>("/api/refreshtoken", None, token)
+        let! secondRes = httpRequest res.Token
+        match secondRes with
+        | Success response ->
+            notifySessionChange res
+            return response
+        | BadStatus response ->
+          return response |> errorString |> failwith
+        | NetworkError ->
+          return failwith "Network error"
+        | Unauthorized response ->
+          notifySessionExpired
+          let! text = unauthorizedString response
+          return failwith text
+    }
+
+  let fetchRecord<'T> (url : string) (token: RefreshTokenViewModel) (decoder: Decode.Decoder<'T>) : JS.Promise<'T> =
+    let httpRequest (token: JWT) =
+      let defaultProps =
+        [ RequestProperties.Method HttpMethod.GET
+          requestHeaders [ ContentType "application/json; charset=utf-8"
+                           Authorization ("Bearer " + token.String) ] ]
+      defaultProps
+      |> fetch url
+
+    httpRequest token.Token
+    |> Promise.bind (handleRefreshToken token httpRequest)
+    |> Promise.bind (fun response ->
+      response.text() 
+      |> Promise.map (fun res ->
+        match Decode.fromString decoder res with
+        | Ok successValue -> successValue
+        | Error error -> failwith error))
+              
+
+module BrowserHelpers =
   let inline convertToFile (input: Fable.Import.Browser.EventTarget): Fable.Import.Browser.File =
     input?files?item(0)
 
-  let tryAuthorizationRequest (cmd: (JWT -> Cmd<'Msg> )) (userData: UserData option) =
-    match userData with
-    | Some x -> cmd x.Token
-    | _ -> Cmd.none
-
+module Validation =
   let validateAndMapResult<'a, 'b> (errorType: (string -> 'b), value: 'a, validateFunc: ('a -> Result<'a, string>)) =
     match (validateFunc value) with
     | Success x -> None
     | Failure y -> y |> errorType |> Some
 
+module ElmishHelpers = 
+  let prodLazyView comp =
+    comp
+    #if !DEBUG
+    |> Elmish.React.Common.lazyView2
+    #endif
+
+  let tryJwtCmd (cmd: (JWT -> Cmd<'Msg> )) (userData: UserData option) =
+    match userData with
+    | Some x -> cmd x.Token
+    | _ -> Cmd.none
+
+  let tryRefresjJwtCmd (cmd: (RefreshTokenViewModel -> Cmd<'Msg> )) (userData: UserData option) =
+    match userData with
+    | Some x -> cmd { Token = x.Token; RefreshToken = x.RefreshToken }
+    | _ -> Cmd.none
+
 module ReactHelpers =
   open Fable.Helpers.React
   open Fable.Helpers.React.Props
-  let getValue (ev: Fable.Import.React.FormEvent) = ev.Value
+
+  let getValue (ev: Fable.Import.React.FormEvent) =
+    ev.Value
+
+  let isLeftButtonClick (ev: Fable.Import.React.MouseEvent) =
+    ev.button <> 0.0
 
 module FulmaHelpers =
   open Fable.Helpers.React
