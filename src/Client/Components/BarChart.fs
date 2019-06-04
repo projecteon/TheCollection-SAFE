@@ -1,14 +1,13 @@
 module Client.Components.BarChart
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.Recharts
 open Fable.Recharts.Props
 
 open Client
 
-module R = Fable.Helpers.React
-module P = R.Props
+module P = Fable.React.Props
     
 let private cells data =
   data |> Array.mapi (fun i x -> cell [P.Key (i.ToString()); P.Fill (ReChartHelpers.getColor ReChartHelpers.C3Colors i)] []) |> ofArray
@@ -33,7 +32,7 @@ let private renderChart data =
 let private renderData data =
   match data with
   | Some x -> x |> renderChart
-  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 320]] []
+  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: 'a[] option) =

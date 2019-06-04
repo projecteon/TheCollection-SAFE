@@ -1,7 +1,7 @@
 module Client.Teabags.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.FontAwesome
 open Fulma
 
@@ -66,13 +66,13 @@ let inputElement model dispatch =
 let searchError model =
   match model.searchError with
   | Some x -> Help.help [ Help.Color IsDanger ] [ str x ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
                 [ str <| (sprintf "Result count: %i" <| x) ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let searchBar (model:Model) dispatch =
   Field.div [ ] [
@@ -100,7 +100,7 @@ let zoomImage model dispatch =
         Modal.content [ ] [ img [ Src (getUrl x) ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [

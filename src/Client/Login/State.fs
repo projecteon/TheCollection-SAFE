@@ -1,7 +1,7 @@
 module Client.Login.State
 
 open Elmish
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 
 open Client.Http
 open Client.Login.Types
@@ -25,14 +25,14 @@ let private loadUser () : UserData option =
     | Ok user -> Some user
     | Error _ -> None
 
-let private saveUserData userData =
+let private saveUserData (userData: UserData) =
   (Client.LocalStorage.save UserDataKey) userData
 
 let clearUserData () =
   Client.LocalStorage.delete UserDataKey
 
 let private refreshTokenCmd (model: RefreshTokenViewModel) =
-  Cmd.ofPromise
+  Cmd.OfPromise.either
     post ("/api/refreshtoken", None, model)
     LoginSuccess
     LoginFailure
@@ -45,7 +45,7 @@ let private tryRefreshTokenCmd =
 
 
 let private loginCmd (model: LoginViewModel) =
-  Cmd.ofPromise
+  Cmd.OfPromise.either
     post ("/api/token", None, model)
     LoginSuccess
     LoginFailure

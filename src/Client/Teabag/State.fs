@@ -2,9 +2,8 @@ module Client.Teabag.State
 
 open Elmish
 open Fable.Core.JsInterop
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
-open Fable.PowerPack.Keyboard
+open Fetch
+//open Fable.PowerPack.Keyboard
 open Thoth.Json
 
 open Client.Components
@@ -56,8 +55,8 @@ let isValid (validationErrors: ValidationErrors seq) =
 let private getTeabagCmd (id: int option) (token: JWT) =
   match id with
   | Some id when id > 0 ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<Teabag> (sprintf "/api/teabags/%i" id) (Decode.Auto.generateDecoder<Teabag>()) )
+    Cmd.OfPromise.either
+      (Client.Http.fetchAs<Teabag> (sprintf "/api/teabags/%i" id) (Decode.Auto.generateDecoder<Teabag>()) )
       [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -73,8 +72,8 @@ let private reloadTeabagCmd (teabag: Teabag option) (token: JWT) =
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/src/Fetch.fs
 // https://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-js-fetch-api
-let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
-  let formData = Fable.Import.Browser.FormData.Create()
+let private uploadImage (file : Browser.Types.File) (token: JWT) =
+  let formData = Browser.XMLHttpRequest.FormData.Create()
   formData.append(file.name, file)
   let defaultProps =
     [ RequestProperties.Method HttpMethod.POST
@@ -83,7 +82,7 @@ let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
       ]]
   let decoder = (Decode.Auto.generateDecoder<ImageId>())
-  Cmd.ofPromise (Fetch.fetchAs "/api/teabags/upload" decoder) defaultProps
+  Cmd.OfPromise.either (Client.Http.fetchAs "/api/teabags/upload" decoder) defaultProps
     ImageChanged
     UploadError
 
@@ -100,7 +99,7 @@ let private saveTeabagCmd (teabag: Teabag) (token: JWT) =
         //HttpRequestHeaders.ContentType "application/json; charset=utf-8"
       ]]
   let decoder = (Decode.Auto.generateDecoder<int>())
-  Cmd.ofPromise (Fetch.fetchAs url decoder) fetchProperties
+  Cmd.OfPromise.either (Client.Http.fetchAs url decoder) fetchProperties
     SaveSuccess
     SaveFailure
 

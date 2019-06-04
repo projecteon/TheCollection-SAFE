@@ -1,6 +1,6 @@
 module HtmlProps
 
-open Fable.Helpers.React.Props
+open Fable.React.Props
 
 type AutoComplete =
  | Off

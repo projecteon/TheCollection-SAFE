@@ -2,8 +2,7 @@ module Client.Components.ComboBox.State
 
 open System
 open Elmish
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
+open Fetch
 open Thoth.Json
 
 open Server.Api.Dtos
@@ -20,8 +19,8 @@ let queryString model =
 // https://github.com/iyegoroff/fable-import-debounce
 // https://mangelmaxime.github.io/Thoth/json/v2/decode.html#auto-decoder
 let getCmd model (token: JWT) =
-  Cmd.ofPromise
-    (Fetch.fetchAs<RefValue list> (sprintf "/api/refvalues%s" (queryString model)) (Decode.Auto.generateDecoder<RefValue list>()) )
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<RefValue list> (sprintf "/api/refvalues%s" (queryString model)) (Decode.Auto.generateDecoderCached<RefValue list>()))
     [Fetch.requestHeaders [
       HttpRequestHeaders.Authorization ("Bearer " + token.String)
       HttpRequestHeaders.ContentType "application/json; charset=utf-8"

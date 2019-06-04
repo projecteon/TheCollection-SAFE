@@ -2,7 +2,7 @@
 module rec Fable.Import.Moment
 open System
 open Fable.Core
-open Fable.Import.JS
+open Fable.Core.JS
 
 let [<Import("*","module")>] moment: Moment.IExports = jsNative
 
@@ -149,8 +149,8 @@ module Moment =
         abstract monthsShort: unit -> ResizeArray<string>
         abstract monthsShort: m: Moment * ?format: string -> string
         abstract monthsParse: monthName: string * format: string * strict: bool -> float
-        abstract monthsRegex: strict: bool -> RegExp
-        abstract monthsShortRegex: strict: bool -> RegExp
+        abstract monthsRegex: strict: bool -> RegExpConstructor
+        abstract monthsShortRegex: strict: bool -> RegExpConstructor
         abstract week: m: Moment -> float
         abstract firstDayOfYear: unit -> float
         abstract firstDayOfWeek: unit -> float
@@ -161,16 +161,16 @@ module Moment =
         abstract weekdaysShort: unit -> ResizeArray<string>
         abstract weekdaysShort: m: Moment -> string
         abstract weekdaysParse: weekdayName: string * format: string * strict: bool -> float
-        abstract weekdaysRegex: strict: bool -> RegExp
-        abstract weekdaysShortRegex: strict: bool -> RegExp
-        abstract weekdaysMinRegex: strict: bool -> RegExp
+        abstract weekdaysRegex: strict: bool -> RegExpConstructor
+        abstract weekdaysShortRegex: strict: bool -> RegExpConstructor
+        abstract weekdaysMinRegex: strict: bool -> RegExpConstructor
         abstract isPM: input: string -> bool
         abstract meridiem: hour: float * minute: float * isLower: bool -> string
 
     type [<AllowNullLiteral>] StandaloneFormatSpec =
         abstract format: ResizeArray<string> with get, set
         abstract standalone: ResizeArray<string> with get, set
-        abstract isFormat: RegExp option with get, set
+        abstract isFormat: RegExpConstructor option with get, set
 
     type [<AllowNullLiteral>] WeekSpec =
         abstract dow: float with get, set
@@ -263,7 +263,7 @@ module Moment =
         abstract weekdays: U3<ResizeArray<string>, StandaloneFormatSpec, MonthWeekdayFn> option with get, set
         abstract weekdaysShort: U3<ResizeArray<string>, StandaloneFormatSpec, WeekdaySimpleFn> option with get, set
         abstract weekdaysMin: U3<ResizeArray<string>, StandaloneFormatSpec, WeekdaySimpleFn> option with get, set
-        abstract meridiemParse: RegExp option with get, set
+        abstract meridiemParse: RegExpConstructor option with get, set
         abstract meridiem: (float -> float -> bool -> string) option with get, set
         abstract isPM: (string -> bool) option with get, set
         abstract longDateFormat: LongDateFormatSpec option with get, set
@@ -271,7 +271,7 @@ module Moment =
         abstract relativeTime: RelativeTimeSpec option with get, set
         abstract invalidDate: string option with get, set
         abstract ordinal: (float -> string) option with get, set
-        abstract ordinalParse: RegExp option with get, set
+        abstract ordinalParse: RegExpConstructor option with get, set
         abstract week: WeekSpec option with get, set
         [<Emit "$0[$1]{{=$2}}">] abstract Item: x: string -> obj option with get, set
 

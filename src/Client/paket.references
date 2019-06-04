@@ -1,12 +1,17 @@
 group Client
   FSharp.Core
+  Fable.Core
+  Fable.Browser.Dom
+  Fable.Browser.XMLHttpRequest
+  Fable.Fetch
+  Fable.Promise
   Fable.Elmish.Browser
   Fable.Elmish.Debugger
   Fable.Elmish.React
-  Fable.Recharts
   Fable.Elmish.HMR
-  Fable.Core
-  dotnet-fable
+  Fable.React
+  Fable.Recharts
   Fulma
   Fable.FontAwesome
   Fable.FontAwesome.Free
+  dotnet-fable

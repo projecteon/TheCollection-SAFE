@@ -1,8 +1,7 @@
 module Client.Teabags.State
 
 open Elmish
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
+open Fetch
 open Thoth.Json
 
 open Client.ElmishHelpers
@@ -15,8 +14,8 @@ let queryString model =
     | _ -> ""
 
 let getTeabagsCmd model (token: JWT) =
-    Cmd.ofPromise
-        (Fetch.fetchAs<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()) )
+    Cmd.OfPromise.either
+        (Client.Http.fetchAs<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()) )
         [Fetch.requestHeaders [
           HttpRequestHeaders.Authorization ("Bearer " + token.String)
           HttpRequestHeaders.ContentType "application/json; charset=utf-8"

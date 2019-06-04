@@ -1,7 +1,7 @@
 module Client.Login.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.FontAwesome
 
 open Fulma
@@ -18,7 +18,7 @@ let private loginBtnContent model =
 let private loginError model =
   match model.loginError with
   | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let view  (model : Model) (dispatch : Msg -> unit) =
     [ Hero.hero [

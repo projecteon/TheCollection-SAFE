@@ -1,7 +1,8 @@
 module Client.Teabag.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Helpers
+open Fable.React.Props
 open Fable.FontAwesome
 open Fulma
 
@@ -11,8 +12,6 @@ open Client.Teabag
 open Client.Teabag.Types
 open Server.Api.Dtos
 open HtmlProps
-
-module R = Fable.Helpers.React
 
 let customComp (refValue: RefValue) msg dispatch =
   Control.p [ ] [
@@ -108,8 +107,8 @@ let uploadFormOrBan (teabag: Teabag) dispatch =
   | _ -> fileUploadForm dispatch
 
 let viewImage x dispatch =
-  div [ ClassName "block"; Style [ Position "relative" ] ] [
-    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position "absolute"; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
+  div [ ClassName "block"; Style [ Position PositionOptions.Relative ] ] [
+    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position PositionOptions.Absolute; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
     img [ Src (getUrlDbId x) ]
   ]
 
@@ -132,19 +131,19 @@ let view (model:Model) (dispatch: Msg -> unit) =
         ]
       | _ ->
         yield Column.column [ ] [
-          div [ClassName "pageloader is-white is-active"; Style [Position "absolute"; Height "calc(100vh - 60px)"]] []
+          div [ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Absolute; Height "calc(100vh - 60px)"]] []
         ]
       if model.editBagtypeCmp.IsSome then
         yield Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
       if model.editBrandCmp.IsSome then
         yield Client.Components.ModalCard.view model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBrandModal false)) Client.Teabag.Brand.View.headerText Client.Teabag.Brand.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
       if model.editCountryCmp.IsSome then
         yield Client.Components.ModalCard.view model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddCountryModal false)) Client.Teabag.Country.View.headerText Client.Teabag.Country.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
     ]
   ]

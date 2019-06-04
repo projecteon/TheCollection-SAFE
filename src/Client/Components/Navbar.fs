@@ -1,16 +1,14 @@
 module Client.Components.Navbar
 
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 open Fable.Core.JsInterop
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-open Fable.Helpers.Isomorphic
+open Fable.React
+open Fable.React.Props
+open Fable.React.Isomorphic
 open Fable.Import
 
 open Client.Navigation
 open Server.Api.Dtos
-
-module R = Fable.Helpers.React
 
 type Model = UserData option
 
@@ -21,21 +19,21 @@ type HTMLAttr =
      | [<CompiledName("aria-hidden")>] AriaHidden of bool
      interface IHTMLProp
 
-let goToUrl (e: React.MouseEvent) =
+let goToUrl (e: Browser.Types.MouseEvent) =
     e.preventDefault()
     let href = !!e.target?href
     Navigation.newUrl href |> List.map (fun f -> f ignore) |> ignore
 
 let viewLink page description =
-  R.a [ Style [ Padding "0 20px" ]
-        Class "navbar-item"
-        Href (Client.Navigation.toPath page)
-        OnClick goToUrl]
-      [ R.str description]
+  a [ Style [ Padding "0 20px" ]
+      Class "navbar-item"
+      Href (Client.Navigation.toPath page)
+      OnClick goToUrl]
+      [ str description]
 
 let brand =
   div [ Class "navbar-brand" ] [
-      R.a [ Class "navbar-item"; Href "\\"] [
+      a [ Class "navbar-item"; Href "\\"] [
         img [ Src "/svg/teapot.svg"; Style [Width 30; Height 30;]; Alt ""]
       ]
       a [

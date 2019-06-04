@@ -2,8 +2,7 @@ module Client.Teabag.Country.State
 
 open Elmish
 open Fable.Core.JsInterop
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
+open Fetch
 open Thoth.Json
 
 open Domain.SharedTypes
@@ -44,8 +43,8 @@ let getNameErrors validationErrors =
 let private getCountryCmd (id: DbId option) (token: JWT) =
   match id with
   | Some id when id.Int > 0 ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<Country> (sprintf "/api/country/%i" id.Int) (Decode.Auto.generateDecoder<Country>()) )
+    Cmd.OfPromise.either
+      (Client.Http.fetchAs<Country> (sprintf "/api/country/%i" id.Int) (Decode.Auto.generateDecoder<Country>()) )
       [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -66,7 +65,7 @@ let private saveCountryCmd (country: Country) (token: JWT) =
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
       ]]
   let decoder = (Decode.Auto.generateDecoder<int>())
-  Cmd.ofPromise (Fetch.fetchAs url decoder) fetchProperties
+  Cmd.OfPromise.either (Client.Http.fetchAs url decoder) fetchProperties
     SaveSuccess
     SaveFailure
 

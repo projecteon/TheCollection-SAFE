@@ -1,16 +1,15 @@
 module Client.Components.PieChart
 
+open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-open Fable.Import
+open Fable.React
+open Fable.React.Props
 open Fable.Recharts
 open Fable.Recharts.Props
 
 open Client
 
-module R = Fable.Helpers.React
-module P = R.Props
+module P = Fable.React.Props
 
 type SliceHoveredId = SliceHoveredId of int
 
@@ -44,7 +43,7 @@ let private renderLabel props =
       str (sprintf "%.1f%%" (props?percent * 100.0))
     ]
   else
-    Fable.Helpers.React.nothing
+    nothing
 
 let private onPieEnter data = // should have sig (evt, activeIndex)
   printf "mouse"
@@ -78,7 +77,7 @@ let private renderChart data =
 let private renderData data =
   match data with
   | Some x -> x |> renderChart
-  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 320]] []
+  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: 'a[] option) =

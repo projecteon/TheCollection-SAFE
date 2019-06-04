@@ -1,7 +1,7 @@
 module State
 
 open Elmish
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 open Fable.Import
 
 open Server.Api.Dtos
@@ -10,7 +10,7 @@ open Client.ElmishHelpers
 open Client.Navigation
 
 let handleNotFound (model: Model) =
-  Browser.console.error("Error parsing url: " + Browser.window.location.href)
+  Browser.Dom.console.error("Error parsing url: " + Browser.Dom.window.location.href)
   ( model, Navigation.modifyUrl (toPath Page.Login) )
 
 /// The navigation logic of the application given a page identity parsed from the .../#info

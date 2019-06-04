@@ -2,8 +2,7 @@ module Client.Teabag.Brand.State
 
 open Elmish
 open Fable.Core.JsInterop
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
+open Fetch
 open Thoth.Json
 
 open Domain.SharedTypes
@@ -44,8 +43,8 @@ let getNameErrors validationErrors =
 let private getBrandCmd (id: DbId option) (token: JWT) =
   match id with
   | Some id when id.Int > 0 ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<Brand> (sprintf "/api/brands/%i" id.Int) (Decode.Auto.generateDecoder<Brand>()) )
+    Cmd.OfPromise.either
+      (Client.Http.fetchAs<Brand> (sprintf "/api/brands/%i" id.Int) (Decode.Auto.generateDecoder<Brand>()) )
       [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -66,7 +65,7 @@ let private saveBrandCmd (brand: Brand) (token: JWT) =
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
       ]]
   let decoder = (Decode.Auto.generateDecoder<int>())
-  Cmd.ofPromise (Fetch.fetchAs url decoder) fetchProperties
+  Cmd.OfPromise.either (Client.Http.fetchAs url decoder) fetchProperties
     SaveSuccess
     SaveFailure
 

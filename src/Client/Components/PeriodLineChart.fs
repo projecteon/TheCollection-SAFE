@@ -2,8 +2,8 @@ module Client.Components.PeriodLinehart
 
 open Fable.Core.JsInterop
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.Recharts
 open Fable.Recharts.Props
 open Fable.Import.Moment.Moment
@@ -11,11 +11,8 @@ open Fable.Import.Moment.Moment
 open Client
 open Client.Extensions
 open Domain.SharedTypes
-open Fable.PowerPack.Keyboard
 
-module R = Fable.Helpers.React
-module P = R.Props
-
+module P = Fable.React.Props
 
 let SIZE = 32.0
 let halfSize = SIZE / 2.0;
@@ -30,7 +27,7 @@ let private legendIcon color =
         P.Height 14
         P.ViewBox (sprintf "0 0 %f %f" SIZE SIZE)
         P.Version "1.1"
-        P.Style [Display "inline-block"; VerticalAlign "middle"; MarginRight 4]][
+        P.Style [Display DisplayOptions.InlineBlock; VerticalAlign "middle"; MarginRight 4]][
           path [P.ClassName "recharts-legend-icon"; P.StrokeWidth 4; P.Stroke color; P.Fill "none"; P.D pathD ][]
         ]
 
@@ -57,7 +54,7 @@ let private transformToChartData (model: CountBy<Moment> list) =
   |> createXAxisLabels
   |> Seq.mapi (fun i x -> createObj (["period" ==> x] |> List.append yearData.[i]))
 
-let inline objectKeys (o: obj) : string seq = upcast Fable.Import.JS.Object.keys(o)
+let inline objectKeys (o: obj) : string seq = upcast Fable.Core.JS.Object.keys(o)
 
 let private lineOpacity hoveredKey currentKey =
   match hoveredKey with
@@ -96,7 +93,7 @@ let private renderToolTipItem data =
       //span [Style [Display "inline-block"; Height "10px"; Width "10px"; MarginRight "6px"; BackgroundColor data.stroke ]][]
       str data.name
     ]
-    td [ Style [ Padding "3px 6px"; FontSize "13px"; TextAlign "right"; BorderLeft "1px dotted #999" ]][ str (sprintf "%i" data.value) ]
+    td [ Style [ Padding "3px 6px"; FontSize "13px"; TextAlign TextAlignOptions.Right; BorderLeft "1px dotted #999" ]][ str (sprintf "%i" data.value) ]
   ]
 
 type private LegendData = {
@@ -118,7 +115,7 @@ let private CustomTooltip (legendData: LegendData) =
       ]
     ]
   else
-    Fable.Helpers.React.nothing
+    nothing
 
 // https://github.com/recharts/recharts/issues/466
 let private renderChart hoverLegend opacityKey data =
@@ -143,7 +140,7 @@ let private renderChart hoverLegend opacityKey data =
 let private renderData data hoverLegend opacityKey =
   match data with
   | Some x -> x |> renderChart hoverLegend opacityKey
-  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 320]] []
+  | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: CountBy<Moment> list option) hoverLegend opacityKey =
