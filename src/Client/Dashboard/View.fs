@@ -1,7 +1,7 @@
 module Client.Dashboard.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.FontAwesome
 
 open Client
@@ -12,7 +12,6 @@ open Fable.C3
 
 open Fulma
 
-module P = Fable.Helpers.React.Props
 module C3 = Fable.C3.React
 
 let renderBarChart data (count: ReChartHelpers.DataCount) =
@@ -30,15 +29,15 @@ let lineChartHoverLegend dispatch key =
   
 let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
   match chart with
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
   | Some chartConfig ->
     match chartConfig.data.``type`` with
-    | None -> Fable.Helpers.React.nothing
+    | None -> nothing
     | Some chartType ->
       match chartType with
       | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]][Fa.i [ Fa.Solid.ChartPie ][]])
       | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]][Fa.i [ Fa.Solid.ChartBar ][]])
-      | _ -> Fable.Helpers.React.nothing
+      | _ -> nothing
   
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
@@ -54,7 +53,7 @@ let view (model:Model) dispatch =
         Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
+              div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
                 str "Brands ReChart"
                 div [][
                   ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
@@ -77,7 +76,7 @@ let view (model:Model) dispatch =
         Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
           Panel.panel [] [
             Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
+              div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
                 str "Inserted ReChart"
               ]
             ]
@@ -86,56 +85,56 @@ let view (model:Model) dispatch =
             ]
           ]
         ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
-                str "Brands C3"
-                div [][
-                  TransformationsIcon model.countBrands dispatch TransformCountByBrand
-                  ExpandCollapseIcon  model.displayedBrands dispatch ExpandBrands CollapseBrands
-                ]
-              ]
-            ]
-            Panel.block [ ] [
-              match model.countBrands with
-                | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-                | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 200]] []
-            ]
-          ]
-        ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
-                str "Bagtypes C3"
-                div [][
-                  yield (TransformationsIcon model.countBagtypes dispatch TransformCountByBagtype)
-                ]
-              ]
-            ]
-            Panel.block [ ] [
-              match model.countBagtypes with
-              | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-              | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 200]] []
-            ]
-          ]
-        ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display "flex"; JustifyContent "space-between"; AlignItems "center" ]] [
-                str "Inserted C3"
-                div [][]
-              ]
-            ]
-            Panel.block [ ] [
-              match model.countInserted with
-              | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-              | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position "relative"; MinWidth "100%"; MinHeight 200]] []
-            ]
-          ]
-        ]
+        //Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
+        //  Panel.panel [] [
+        //    Panel.heading [ ] [
+        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+        //        str "Brands C3"
+        //        div [][
+        //          TransformationsIcon model.countBrands dispatch TransformCountByBrand
+        //          ExpandCollapseIcon  model.displayedBrands dispatch ExpandBrands CollapseBrands
+        //        ]
+        //      ]
+        //    ]
+        //    Panel.block [ ] [
+        //      match model.countBrands with
+        //        | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
+        //        | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
+        //    ]
+        //  ]
+        //]
+        //Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
+        //  Panel.panel [] [
+        //    Panel.heading [ ] [
+        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+        //        str "Bagtypes C3"
+        //        div [][
+        //          yield (TransformationsIcon model.countBagtypes dispatch TransformCountByBagtype)
+        //        ]
+        //      ]
+        //    ]
+        //    Panel.block [ ] [
+        //      match model.countBagtypes with
+        //      | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
+        //      | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
+        //    ]
+        //  ]
+        //]
+        //Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+        //  Panel.panel [] [
+        //    Panel.heading [ ] [
+        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+        //        str "Inserted C3"
+        //        div [][]
+        //      ]
+        //    ]
+        //    Panel.block [ ] [
+        //      match model.countInserted with
+        //      | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
+        //      | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
+        //    ]
+        //  ]
+        //]
       ]
       br []
     ]

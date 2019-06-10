@@ -1,7 +1,7 @@
 module Client.Teabags.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.FontAwesome
 open Fulma
 
@@ -17,11 +17,11 @@ let getDisplayValue (model: Model) =
     | _ -> ""
 
 let resultItem (teabag: Teabag) dispatch =
-  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
+  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneQuarter); Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
         figure [] [
-            img [ Src (getUrl teabag.imageid) ]
+            img [ Src (getUrl teabag.imageid) ] // https://codepen.io/anon/pen/KLLgNv
         ]
       ]
       Card.content [] [
@@ -66,13 +66,13 @@ let inputElement model dispatch =
 let searchError model =
   match model.searchError with
   | Some x -> Help.help [ Help.Color IsDanger ] [ str x ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
                 [ str <| (sprintf "Result count: %i" <| x) ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let searchBar (model:Model) dispatch =
   Field.div [ ] [
@@ -97,10 +97,10 @@ let zoomImage model dispatch =
   | Some x ->
     Modal.modal [ Modal.IsActive true; Modal.Props [ Style [ MaxWidth "100vw"] ] ]
       [ Modal.background [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] ] [ ]
-        Modal.content [ ] [ img [ Src (getUrl x) ] ]
+        Modal.content [ ] [ img [ Src (getUrl x); Style [ObjectFit "contain"] ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [

@@ -1,7 +1,8 @@
 module Client.Teabag.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Helpers
+open Fable.React.Props
 open Fable.FontAwesome
 open Fulma
 
@@ -11,8 +12,6 @@ open Client.Teabag
 open Client.Teabag.Types
 open Server.Api.Dtos
 open HtmlProps
-
-module R = Fable.Helpers.React
 
 let customComp (refValue: RefValue) msg dispatch =
   Control.p [ ] [
@@ -42,7 +41,14 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
         str "Flavour"
       ]
       Control.div [ ] [
-          Input.text [ Input.Placeholder "Ex: English breakfast"; Input.ValueOrDefault teabag.flavour; Input.Option.Id "flavour"; Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value)) ]
+        Input.text [
+          yield Input.Placeholder "Ex: English breakfast";
+          yield Input.ValueOrDefault teabag.flavour;
+          yield Input.Option.Id "flavour";
+          yield Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value))
+          if teabag.flavour.Length > 0 then
+            yield Input.Color IsSuccess
+        ]
       ]
     ]
     (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype ToggleAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
@@ -108,43 +114,47 @@ let uploadFormOrBan (teabag: Teabag) dispatch =
   | _ -> fileUploadForm dispatch
 
 let viewImage x dispatch =
-  div [ ClassName "block"; Style [ Position "relative" ] ] [
-    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position "absolute"; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
+  div [ ClassName "block"; Style [ Position PositionOptions.Relative ] ] [
+    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position PositionOptions.Absolute; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
     img [ Src (getUrlDbId x) ]
   ]
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [
     yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsVCentered ] [
-      match model.data with
-      | Some x ->
-        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
-          Content.content [] [
-            match x.imageid.Option with
-            | Some x -> yield viewImage x dispatch
-            | None -> yield uploadFormOrBan x dispatch
-          ]
-        ]
-        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-          Card.card [] [
-            Card.content [] [ teabagForm x model dispatch ]
-          ]
-        ]
-      | _ ->
+      match model.isWorking with
+      | true ->
         yield Column.column [ ] [
-          div [ClassName "pageloader is-white is-active"; Style [Position "absolute"; Height "calc(100vh - 60px)"]] []
-        ]
+                div [ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Absolute; Height "calc(100vh - 60px)"]] []
+              ]
+      | false ->
+          match model.data with
+          | Some x ->
+            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
+              Content.content [] [
+                match x.imageid.Option with
+                | Some x -> yield viewImage x dispatch
+                | None -> yield uploadFormOrBan x dispatch
+              ]
+            ]
+            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
+              Card.card [] [
+                Card.content [] [ teabagForm x model dispatch ]
+              ]
+            ]
+          | _ ->
+            yield nothing
       if model.editBagtypeCmp.IsSome then
         yield Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
       if model.editBrandCmp.IsSome then
         yield Client.Components.ModalCard.view model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBrandModal false)) Client.Teabag.Brand.View.headerText Client.Teabag.Brand.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
       if model.editCountryCmp.IsSome then
         yield Client.Components.ModalCard.view model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddCountryModal false)) Client.Teabag.Country.View.headerText Client.Teabag.Country.View.view
       else
-        yield Fable.Helpers.React.nothing
+        yield nothing
     ]
   ]

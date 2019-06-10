@@ -1,8 +1,6 @@
 module Client.Teabags.State
 
 open Elmish
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Client.ElmishHelpers
@@ -14,17 +12,14 @@ let queryString model =
     | Some x -> sprintf "?term=%s&page=%i" x model.page
     | _ -> ""
 
-let getTeabagsCmd model (token: JWT) =
-    Cmd.ofPromise
-        (Fetch.fetchAs<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()) )
-        [Fetch.requestHeaders [
-          HttpRequestHeaders.Authorization ("Bearer " + token.String)
-          HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-        ]]
+let getTeabagsCmd model (token: RefreshTokenViewModel) =
+    Cmd.OfPromise.either
+        (Client.Auth.fetchRecord<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()))
+        token
         SearchSuccess
         SearchError
 
-let init () =
+let init =
     let initialModel = {
       result = []
       resultCount=None
@@ -37,17 +32,15 @@ let init () =
     initialModel
 
 let update (msg:Msg) model userData : Model*Cmd<Msg> =
-    printfn "teabags update"
     match msg with
     | OnSearchTermChange searchTerms ->
       {model with searchedTerms = Some searchTerms; searchError = None}, Cmd.none
     | Search ->
       let result = validateSearchTerm model
       match result with
-      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryJwtCmd (getTeabagsCmd model) userData
+      | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryRefreshJwtCmd (getTeabagsCmd model) userData
       | Failure x -> {model with searchError = Some x}, Cmd.none
     | SearchSuccess result ->
-        printfn "teabags update"
         { model with result = result.data; resultCount=Some result.count; isLoading=false }, Cmd.none
     | SearchError exn ->
         printfn "search error %O" exn
@@ -55,4 +48,3 @@ let update (msg:Msg) model userData : Model*Cmd<Msg> =
     | ZoomImageToggle id ->
         { model with zoomImageId = id }, Cmd.none
     | _ -> model, Cmd.none
-

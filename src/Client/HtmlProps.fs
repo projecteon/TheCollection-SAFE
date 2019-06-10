@@ -1,6 +1,6 @@
 module HtmlProps
 
-open Fable.Helpers.React.Props
+open Fable.React.Props
 
 type AutoComplete =
  | Off
@@ -11,6 +11,6 @@ type AutoComplete =
         | On -> "on"
 
 type HTMLAttr =
-     | [<CompiledName("autocomplete")>] AutoComplete of AutoComplete
+     | [<CompiledName("autoComplete")>] AutoComplete of AutoComplete
      interface IHTMLProp
 

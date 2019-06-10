@@ -52,7 +52,7 @@ type Msg =
   | BagtypeCmp of ComboBox.Types.Msg
   | CountryCmp of ComboBox.Types.Msg
   | ImageChanged of ImageId
-  | Upload of Fable.Import.Browser.File
+  | Upload of Browser.Types.File
   | UploadError of exn
   | Save of Teabag
   | SaveSuccess of int

@@ -2,9 +2,8 @@ module Client.Teabag.State
 
 open Elmish
 open Fable.Core.JsInterop
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
-open Fable.PowerPack.Keyboard
+open Fetch
+//open Fable.PowerPack.Keyboard
 open Thoth.Json
 
 open Client.Components
@@ -53,29 +52,27 @@ let isValid (validationErrors: ValidationErrors seq) =
   validationErrors |> Seq.isEmpty
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
-let private getTeabagCmd (id: int option) (token: JWT) =
+let private getTeabagCmd (id: int option) (token: RefreshTokenViewModel) =
   match id with
   | Some id when id > 0 ->
-    Cmd.ofPromise
-      (Fetch.fetchAs<Teabag> (sprintf "/api/teabags/%i" id) (Decode.Auto.generateDecoder<Teabag>()) )
-      [Fetch.requestHeaders [
-        HttpRequestHeaders.Authorization ("Bearer " + token.String)
-        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-      ]]
+    Cmd.OfPromise.either
+      (Client.Auth.fetchRecord<Teabag> (sprintf "/api/teabags/%i" id) (Decode.Auto.generateDecoder<Teabag>()) )
+      token
       GetSuccess
       GetError
   | _ -> Cmd.ofMsg (GetSuccess NewTeabag)
 
-let private reloadTeabagCmd (teabag: Teabag option) (token: JWT) =
+let private reloadTeabagCmd (teabag: Teabag option) (token: RefreshTokenViewModel) =
   match teabag with
   | None -> getTeabagCmd None token
   | Some x -> getTeabagCmd (Some x.id.Int) token
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/src/Fetch.fs
 // https://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-js-fetch-api
-let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
-  let formData = Fable.Import.Browser.FormData.Create()
-  formData.append(file.name, file)
+let private uploadImage (teabagId: DbId) (file : Browser.Types.File) (token: JWT) =
+  let filename = System.Text.RegularExpressions.Regex.Replace(file.name, @"^(.*)\.(.*)$", sprintf @"%i.$2" teabagId.Int)
+  let formData = Browser.XMLHttpRequest.FormData.Create()
+  formData.append(filename, file)
   let defaultProps =
     [ RequestProperties.Method HttpMethod.POST
       RequestProperties.Body (formData |> unbox)
@@ -83,24 +80,18 @@ let private uploadImage (file : Fable.Import.Browser.File) (token: JWT) =
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
       ]]
   let decoder = (Decode.Auto.generateDecoder<ImageId>())
-  Cmd.ofPromise (Fetch.fetchAs "/api/teabags/upload" decoder) defaultProps
+  Cmd.OfPromise.either (Client.Http.fetchAs "/api/teabags/upload" decoder) defaultProps
     ImageChanged
     UploadError
 
-let private saveTeabagCmd (teabag: Teabag) (token: JWT) =
-  let (requestMethod, url) =
+let private saveTeabagCmd (teabag: Teabag) (token: RefreshTokenViewModel) =
+  let (requestMethod) =
     match teabag.id with
-    | DbId 0 -> (HttpMethod.POST, "/api/teabags")
-    | _ -> (HttpMethod.PUT, sprintf "/api/teabags/%i" teabag.id.Int)
-  let fetchProperties =
-    [ RequestProperties.Method requestMethod
-      RequestProperties.Body !^(Encode.Auto.toString(0, teabag))
-      Fetch.requestHeaders [
-        HttpRequestHeaders.Authorization ("Bearer " + token.String)
-        //HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-      ]]
+    | DbId 0 -> (Client.Auth.postRecord "/api/teabags")
+    | _ -> (Client.Auth.putRecord (sprintf "/api/teabags/%i" teabag.id.Int))
   let decoder = (Decode.Auto.generateDecoder<int>())
-  Cmd.ofPromise (Fetch.fetchAs url decoder) fetchProperties
+  Cmd.OfPromise.either (requestMethod decoder token)
+    !^(Encode.Auto.toString(0, teabag))
     SaveSuccess
     SaveFailure
 
@@ -110,7 +101,7 @@ let private trySave (model: Model) =
   | true, Some teabag -> Cmd.ofMsg (Msg.Save teabag)
   | _, _-> Cmd.none
 
-let init (userData: UserData option) =
+let init =
   let brandCmp = ComboBox.State.init("Brand", RefValueTypes.Brand)
   let bagtypeCmp = ComboBox.State.init("Bagtype", RefValueTypes.Bagtype)
   let countryCmp = ComboBox.State.init("Country", RefValueTypes.Country)
@@ -198,9 +189,9 @@ let update (msg:Msg) model userData : Model*Cmd<Msg> =
     | Some x -> { model with data = Some { x with imageid = id } }, Cmd.none
     | _ -> { model with data = Some { NewTeabag with imageid = id } }, Cmd.none
   | Upload input ->
-    model, tryJwtCmd (input |> uploadImage) userData
+    model, tryJwtCmd (uploadImage model.data.Value.id input) userData
   | UploadError exn -> { model with fetchError = Some exn }, Cmd.none
-  | Save teabag -> model, tryJwtCmd (saveTeabagCmd teabag) userData
+  | Save teabag -> model, tryRefreshJwtCmd   (saveTeabagCmd teabag) userData
   | SaveSuccess id ->
     let updatedTeabag = Some { model.data.Value with id = DbId id }
     { model with data = updatedTeabag; originaldata = updatedTeabag }, Cmd.none
@@ -221,44 +212,44 @@ let update (msg:Msg) model userData : Model*Cmd<Msg> =
     validatedModel, Cmd.batch [ Cmd.map BrandCmp (validatedModel |> fetchBrandErrors |> ComboBox.State.setErrors)
                                 Cmd.map BagtypeCmp (validatedModel |> fetchBagtypeErrors |> ComboBox.State.setErrors)
                                 trySave validatedModel]
-  | Reload -> model, tryJwtCmd (reloadTeabagCmd model.data) userData
+  | Reload -> model, tryRefreshJwtCmd (reloadTeabagCmd model.data) userData
   | ToggleAddBagtypeModal display ->
     if display then
-      let bagtypeModel, cmd = Client.Teabag.Bagtype.State.init userData
+      let bagtypeModel, cmd = Client.Teabag.Bagtype.State.init
       let bagtypeId = match model.data with | Some x -> Some x.bagtype.id | None -> None
-      {model with editBagtypeCmp = Some bagtypeModel}, Cmd.map EditBagtypeCmp (cmd bagtypeId userData.Value.Token)
+      {model with editBagtypeCmp = Some bagtypeModel}, Cmd.map EditBagtypeCmp (tryRefreshJwtCmd (cmd bagtypeId) userData)
     else
       {model with editBagtypeCmp = None}, Cmd.none
   | ToggleAddBrandModal display ->
     if display then
-      let brandModel, cmd = Client.Teabag.Brand.State.init userData
+      let brandModel, cmd = Client.Teabag.Brand.State.init
       let brandId = match model.data with | Some x -> Some x.brand.id | None -> None
-      {model with editBrandCmp = Some brandModel}, Cmd.map EditBrandCmp (cmd brandId userData.Value.Token)
+      {model with editBrandCmp = Some brandModel}, Cmd.map EditBrandCmp (tryRefreshJwtCmd (cmd brandId) userData)
     else
       {model with editBrandCmp = None}, Cmd.none
   | ToggleAddCountryModal display ->
     if display then
-      let countryModel, cmd = Client.Teabag.Country.State.init userData
+      let countryModel, cmd = Client.Teabag.Country.State.init
       let countryId = match model.data with | Some x when x.country.IsSome -> Some x.country.Value.id | _ -> None
-      {model with editCountryCmp = Some countryModel}, Cmd.map EditCountryCmp (cmd countryId userData.Value.Token)
+      {model with editCountryCmp = Some countryModel}, Cmd.map EditCountryCmp (tryRefreshJwtCmd (cmd countryId) userData)
     else
       {model with editCountryCmp = None}, Cmd.none
   | EditBagtypeCmp msg ->
-    let res, cmd, exMsg = Client.Teabag.Bagtype.State.update msg model.editBagtypeCmp.Value
+    let res, cmd, exMsg = Client.Teabag.Bagtype.State.update msg model.editBagtypeCmp.Value userData
     let newModel, nextCmd = match exMsg, model.data with
                             | Client.Teabag.Bagtype.Types.ExternalMsg.OnChange newBagtype, Some teabag -> { model with data = Some {teabag with bagtype = newBagtype };  editBagtypeCmp = None }, Cmd.map BagtypeCmp (ComboBox.State.setValueCmd (newBagtype |> refValueToOptional))
                             | _ -> {model with editBagtypeCmp = Some res}, Cmd.none
     newModel, Cmd.batch [ nextCmd
                           Cmd.map EditBagtypeCmp cmd ]
   | EditBrandCmp msg ->
-    let res, cmd, exMsg = Client.Teabag.Brand.State.update msg model.editBrandCmp.Value
+    let res, cmd, exMsg = Client.Teabag.Brand.State.update msg model.editBrandCmp.Value userData
     let newModel, nextCmd = match exMsg, model.data with
                             | Client.Teabag.Brand.Types.ExternalMsg.OnChange newBrand, Some teabag -> { model with data = Some {teabag with brand = newBrand };  editBrandCmp = None }, Cmd.map BrandCmp (ComboBox.State.setValueCmd (newBrand |> refValueToOptional))
                             | _ -> {model with editBrandCmp = Some res}, Cmd.none
     newModel, Cmd.batch [ nextCmd
                           Cmd.map EditBrandCmp cmd ]
   | EditCountryCmp msg ->
-    let res, cmd, exMsg = Client.Teabag.Country.State.update msg model.editCountryCmp.Value
+    let res, cmd, exMsg = Client.Teabag.Country.State.update msg model.editCountryCmp.Value userData
     let newModel, nextCmd = match exMsg, model.data with
                             | Client.Teabag.Country.Types.ExternalMsg.OnChange newCountry, Some teabag -> { model with data = Some {teabag with brand = newCountry };  editCountryCmp = None }, Cmd.map CountryCmp (ComboBox.State.setValueCmd (newCountry |> refValueToOptional))
                             | _ -> {model with editCountryCmp = Some res}, Cmd.none

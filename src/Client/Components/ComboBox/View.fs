@@ -1,7 +1,7 @@
 module Client.Components.ComboBox.View
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.FontAwesome
 open Fulma
 
@@ -15,7 +15,7 @@ let CarrigeReturnKeyCode = 13.0
 let ArrowUpKeyCode = 38.0
 let ArrowDownKeyCode = 40.0
 
-let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) =
+let onChange dispatch (ev: Browser.Types.MouseEvent) (newValue: RefValue) =
   let isLeftButtonClick = ev.button = 0.0;
   if isLeftButtonClick then
     dispatch (OnChange newValue)
@@ -23,7 +23,7 @@ let onChange dispatch (ev: Fable.Import.React.MouseEvent) (newValue: RefValue) =
     ev.stopPropagation()
     ev.preventDefault() |> ignore
 
-let onKeyDown (model: Model) dispatch (ev: Fable.Import.React.KeyboardEvent) =
+let onKeyDown (model: Model) dispatch (ev: Browser.Types.KeyboardEvent) =
   if (not model.HasFocus) && model.SearchResult.IsNone && model.Value.IsNone then
     ev |> ignore
   else
@@ -38,7 +38,7 @@ let onKeyDown (model: Model) dispatch (ev: Fable.Import.React.KeyboardEvent) =
       dispatch IncreaseSearchResultHoverIndex |> ignore
     else if ev.keyCode = CarrigeReturnKeyCode then
       dispatch SelectSearchResultHoverIndex |> ignore
-      (ev.currentTarget :?> Fable.Import.Browser.HTMLInputElement).blur()
+      (ev.currentTarget :?> Browser.Types.HTMLInputElement).blur()
     else
       ev |> ignore
 
@@ -90,7 +90,7 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
         ]
       ]
     ]
-  | _ -> Fable.Helpers.React.nothing
+  | _ -> nothing
 
 let inputIcon model =
   match model.Value with
@@ -105,7 +105,7 @@ let inputIcon model =
                 | _ -> yield Fa.Solid.Check ] [ ]
 
     ]
-  | None -> Fable.Helpers.React.nothing
+  | None -> nothing
 
 let inputElement model dispatch =
   Input.text [
