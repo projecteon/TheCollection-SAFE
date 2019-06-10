@@ -11,6 +11,6 @@ type AutoComplete =
         | On -> "on"
 
 type HTMLAttr =
-     | [<CompiledName("autocomplete")>] AutoComplete of AutoComplete
+     | [<CompiledName("autoComplete")>] AutoComplete of AutoComplete
      interface IHTMLProp
 
