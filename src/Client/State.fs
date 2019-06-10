@@ -1,16 +1,15 @@
 module State
 
 open Elmish
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 open Fable.Import
 
-open Server.Api.Dtos
 open ClientTypes
 open Client.ElmishHelpers
 open Client.Navigation
 
 let handleNotFound (model: Model) =
-  Browser.console.error("Error parsing url: " + Browser.window.location.href)
+  Browser.Dom.console.error("Error parsing url: " + Browser.Dom.window.location.href)
   ( model, Navigation.modifyUrl (toPath Page.Login) )
 
 /// The navigation logic of the application given a page identity parsed from the .../#info
@@ -22,38 +21,38 @@ let urlUpdate (result: Page option) (model: Model) =
 
   | Some Page.Logout ->
     Client.Login.State.clearUserData()
-    let m, cmd = Client.Login.State.init()
+    let m, cmd = Client.Login.State.init
     { model with User = None; PageModel = LoginPageModel m }, (Navigation.modifyUrl (toPath Page.Login))
 
   | Some Page.Login ->
-    let m, cmd = Client.Login.State.init()
+    let m, cmd = Client.Login.State.init
     { model with PageModel = LoginPageModel m }, Cmd.map LoginMsg cmd
 
   | _ when model.User.IsNone ->
-    let m, cmd = Client.Login.State.init()
+    let m, cmd = Client.Login.State.init
     { model with PageModel = LoginPageModel m }, Cmd.batch [  (Navigation.modifyUrl (toPath Page.Login))
                                                               Cmd.map LoginMsg cmd ]
 
   | Some Page.Teabags ->
-    let m = Client.Teabags.State.init()
+    let m = Client.Teabags.State.init
     { model with PageModel = TeabagsPageModel m }, Cmd.none
 
   | Some (Page.Teabag id) ->
-    let m, cmd = Client.Teabag.State.init(model.User)
-    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryJwtCmd (id |> Some |> cmd) model.User)
+    let m, cmd = Client.Teabag.State.init
+    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryRefreshJwtCmd (id |> Some |> cmd) model.User)
 
   | Some (Page.TeabagNew str) ->
-    let m, cmd = Client.Teabag.State.init(model.User)
-    { model with PageModel = TeabagPageModel m },  Cmd.map TeabagMsg (tryJwtCmd (cmd None) model.User)
+    let m, cmd = Client.Teabag.State.init
+    { model with PageModel = TeabagPageModel m },  Cmd.map TeabagMsg (tryRefreshJwtCmd (cmd None) model.User)
 
   | Some Page.Dashboard ->
-    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init(model.User)
+    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init
     { model with PageModel = DashboardPageModel m },  Cmd.batch [   Cmd.map DashboardMsg (tryJwtCmd cmd model.User)
                                                                     Cmd.map DashboardMsg (tryJwtCmd cmd2 model.User)
                                                                     Cmd.map DashboardMsg (tryJwtCmd cmd3 model.User) ]
 
 let init page =
-  let m, cmd = Client.Login.State.init()
+  let m, cmd = Client.Login.State.init
   let model = { User = None; PageModel = LoginPageModel m }
   urlUpdate page model
 
@@ -85,3 +84,5 @@ let update msg model =
     model, Cmd.none
   | LogOut _, _ ->
     {model with User = None}, (Navigation.modifyUrl (toPath Page.Login))
+  | RefreshUser user,_ ->
+    {model with User = Some user}, Cmd.none

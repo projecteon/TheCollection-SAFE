@@ -1,12 +1,13 @@
 module App
 
 open Elmish
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 open Elmish.React
 open Fable.Core.JsInterop
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fulma
+open Elmish.HMR // needs to be last
 
 open ClientTypes
 open State
@@ -47,18 +48,29 @@ open Elmish.HMR
 
 let sessionHandler initial =
   let sub (dispatch: Msg -> unit) =
-    Fable.Import.Browser.window.addEventListener(Client.Auth.SessionExpiredEvent, !^(fun e -> e |> printf "SessionExpiredEvent %O" )) |> ignore
-    Fable.Import.Browser.window.addEventListener(Client.Auth.SessionUpdatedEvent, !^(fun e -> e |> printf "SessionUpdatedEvent %O" )) |> ignore
+    Browser.Dom.window.addEventListener(Client.Auth.SessionExpiredEvent, (fun e ->
+      (dispatch LogOut)
+      e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionExpiredEvent %s" )
+    ) |> ignore
+    Browser.Dom.window.addEventListener(Client.Auth.SessionUpdatedEvent, (fun e ->
+      (dispatch (e?detail |> unbox |> RefreshUser))
+      e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionUpdatedEvent %s" )
+    ) |> ignore
   Cmd.ofSub sub
+
+let withReact =
+  if (!!Browser.Dom.window?__INIT_MODEL__)
+  then Program.withReactHydrate
+  else Program.withReactSynchronous
 
 Program.mkProgram init update view //(lazyView2 view)
 |> Program.withSubscription sessionHandler // https://elmish.github.io/elmish/subscriptions.html
 |> Program.toNavigable urlParser urlUpdate
 #if DEBUG
 |> Program.withConsoleTrace
-|> Program.withHMR
+//|> Program.withHMR
 #endif
-|> Program.withReact "elmish-app"
+|> withReact "elmish-app"
 #if DEBUG
 |> Program.withDebugger
 #endif

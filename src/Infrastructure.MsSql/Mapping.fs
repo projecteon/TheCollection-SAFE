@@ -14,7 +14,7 @@ module Mapping =
 
   let toDbId id : DbId option =
     match  id with
-    | Some id -> Some (DbId id)
+    | Some id when id > 0 -> Some (DbId id)
     | _ -> None
 
   let toInstant (utcDateTime: DateTime) : Instant =

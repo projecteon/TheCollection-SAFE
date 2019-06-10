@@ -3,8 +3,7 @@ module Client.Dashboard.State
 open Elmish
 open Fable.Core
 open Fable.Core.JsInterop
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
+open Fetch
 
 open Fable.C3
 open Fable.Import.Moment.Moment
@@ -51,8 +50,8 @@ let createXAxis (model: CountBy<Moment> list) =
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
 let getCountByBrandsCmd (token: JWT) =
-  Cmd.ofPromise
-    (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/brands" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<CountBy<string> list> "/api/teabags/countby/brands" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -61,8 +60,8 @@ let getCountByBrandsCmd (token: JWT) =
     GetCountByBrandsError
 
 let getCountByBagtypesCmd (token: JWT) =
-  Cmd.ofPromise
-    (Fetch.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<CountBy<string> list> "/api/teabags/countby/bagtypes" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -71,8 +70,8 @@ let getCountByBagtypesCmd (token: JWT) =
     GetCountByBagtypesError
 
 let getCountByInsertedCmd (token: JWT) =
-  Cmd.ofPromise
-    (Fetch.fetchAs<CountBy<UtcDateTimeString> list> "/api/teabags/countby/inserteddate" (Decode.Auto.generateDecoder<CountBy<UtcDateTimeString> list>()) )
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<CountBy<UtcDateTimeString> list> "/api/teabags/countby/inserteddate" (Decode.Auto.generateDecoder<CountBy<UtcDateTimeString> list>()) )
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
@@ -141,7 +140,7 @@ let dataCountToggle previousCount =
   | ReChartHelpers.DataCount.Twenty -> ReChartHelpers.DataCount.Ten
   | _ -> ReChartHelpers.DataCount.Ten
 
-let init (userData: UserData option) =
+let init =
     let initialModel = {
       countByBrands = None
       countByBagtypes = None

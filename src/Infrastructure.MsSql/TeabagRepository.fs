@@ -102,7 +102,6 @@ module TeabagRepository =
             , dbo.xf_get_brand_text(a.ro_brand) as t_ro_brand
             , dbo.xf_get_bagtype_text(a.ro_bagtype) as t_ro_bagtype
             , dbo.xf_get_country_text(a.rs_country) as t_rs_country
-            , i_total_count = COUNT(*) OVER()
           FROM tcd_teabag a
         WHERE id = @id
     "
@@ -133,6 +132,7 @@ module TeabagRepository =
 
     // https://docs.microsoft.com/en-us/previous-versions/sql/compact/sql-server-compact-4.0/gg699618(v=sql.110)
     // https://sqlperformance.com/2015/01/t-sql-queries/pagination-with-offset-fetch
+    // https://stackoverflow.com/questions/20475663/fulltext-search-with-contains-on-multiple-columns-and-predicate-and
     [<Literal>]
     let  SQLQry = "
         DECLARE @json NVARCHAR(4000)
@@ -193,8 +193,8 @@ module TeabagRepository =
 
     let searchAll (connectiongString: string) (searchParams: SearchParams) =
       let cmd = new TeabagQry(connectiongString)
-      let result = cmd.Execute((searchParams.Term |> createJsonTermArray), pageSize * (pageNumberOrDefault searchParams), pageSize)
-      (result |> Seq.map mapData |> Seq.toList, result |> Seq.tryHead |> mapTotalCount)
+      let result = cmd.Execute((searchParams.Term |> createJsonTermArray), pageSize * (pageNumberOrDefault searchParams), pageSize) |> Seq.toList // Make sure we only do one request to DB
+      (result |> List.map mapData, result |> List.tryHead |> mapTotalCount)
 
 
     [<Literal>]

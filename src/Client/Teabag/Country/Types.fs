@@ -10,7 +10,6 @@ type ValidationErrors =
 type Model = {
   originaldata: Option<Country>
   data: Option<Country>
-  userData: UserData option
   fetchError: exn option
   doValidation: bool
   validationErrors: ValidationErrors seq

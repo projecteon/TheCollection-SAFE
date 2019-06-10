@@ -10,7 +10,6 @@ type ValidationErrors =
 type Model = {
   originaldata: Option<Bagtype>
   data: Option<Bagtype>
-  userData: UserData option
   fetchError: exn option
   doValidation: bool
   validationErrors: ValidationErrors seq

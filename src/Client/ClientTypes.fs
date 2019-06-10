@@ -18,3 +18,4 @@ type Msg =
     | TeabagMsg of Client.Teabag.Types.Msg
     | LoginMsg of Client.Login.Types.Msg
     | LogOut
+    | RefreshUser of UserData

@@ -2,8 +2,6 @@ module Client.Components.ComboBox.State
 
 open System
 open Elmish
-open Fable.PowerPack
-open Fable.PowerPack.Fetch
 open Thoth.Json
 
 open Server.Api.Dtos
@@ -19,13 +17,10 @@ let queryString model =
 // https://github.com/SAFE-Stack/SAFE-Search
 // https://github.com/iyegoroff/fable-import-debounce
 // https://mangelmaxime.github.io/Thoth/json/v2/decode.html#auto-decoder
-let getCmd model (token: JWT) =
-  Cmd.ofPromise
-    (Fetch.fetchAs<RefValue list> (sprintf "/api/refvalues%s" (queryString model)) (Decode.Auto.generateDecoder<RefValue list>()) )
-    [Fetch.requestHeaders [
-      HttpRequestHeaders.Authorization ("Bearer " + token.String)
-      HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-    ]]
+let getCmd model (token: RefreshTokenViewModel) =
+  Cmd.OfPromise.either
+    (Client.Auth.fetchRecord<RefValue list> (sprintf "/api/refvalues%s" (queryString model)) (Decode.Auto.generateDecoderCached<RefValue list>()))
+    token
     SearchSuccess
     SearchError
 
@@ -136,4 +131,4 @@ let update (msg : Msg) (currentModel : Model) userData : Model * Cmd<Msg> * Exte
     dModel, dMsg, ExternalMsg.UnChanged
   | FetchSuggestions text ->
     let nextModel = { currentModel with IsSearching = true }
-    nextModel, tryJwtCmd (getCmd currentModel) userData, ExternalMsg.UnChanged
+    nextModel, tryRefreshJwtCmd (getCmd currentModel) userData, ExternalMsg.UnChanged

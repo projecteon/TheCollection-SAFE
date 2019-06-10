@@ -1,7 +1,7 @@
 module Client.Login.State
 
 open Elmish
-open Elmish.Browser.Navigation
+open Elmish.Navigation
 
 open Client.Http
 open Client.Login.Types
@@ -25,15 +25,17 @@ let private loadUser () : UserData option =
     | Ok user -> Some user
     | Error _ -> None
 
-let private saveUserData userData =
+let private saveUserData (userData: UserData) =
   (Client.LocalStorage.save UserDataKey) userData
 
 let clearUserData () =
   Client.LocalStorage.delete UserDataKey
 
 let private refreshTokenCmd (model: RefreshTokenViewModel) =
-  Cmd.ofPromise
-    post ("/api/refreshtoken", None, model)
+  let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
+  Cmd.OfPromise.either
+    (postAs "/api/refreshtoken" userDecoder)
+    model
     LoginSuccess
     LoginFailure
 
@@ -45,8 +47,10 @@ let private tryRefreshTokenCmd =
 
 
 let private loginCmd (model: LoginViewModel) =
-  Cmd.ofPromise
-    post ("/api/token", None, model)
+  let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
+  Cmd.OfPromise.either
+    (postAs "/api/token" userDecoder)
+    model
     LoginSuccess
     LoginFailure
 
@@ -76,7 +80,7 @@ let private updateValidationErrorsCmd (model: Model) =
   let passwordErrors = validatePassword model
   { model with userNameError = userNameErrors; passwordError = passwordErrors; }
 
-let init () =
+let init =
   let initialModel = {
     userName = EmailAddress.Empty
     userNameError = []
