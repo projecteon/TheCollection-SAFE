@@ -17,11 +17,11 @@ let getDisplayValue (model: Model) =
     | _ -> ""
 
 let resultItem (teabag: Teabag) dispatch =
-  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.Desktop, Column.IsOneFifth);  Column.Width (Screen.Mobile, Column.IsFull); ][
+  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneQuarter); Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
         figure [] [
-            img [ Src (getUrl teabag.imageid) ]
+            img [ Src (getUrl teabag.imageid) ] // https://codepen.io/anon/pen/KLLgNv
         ]
       ]
       Card.content [] [
@@ -97,7 +97,7 @@ let zoomImage model dispatch =
   | Some x ->
     Modal.modal [ Modal.IsActive true; Modal.Props [ Style [ MaxWidth "100vw"] ] ]
       [ Modal.background [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] ] [ ]
-        Modal.content [ ] [ img [ Src (getUrl x) ] ]
+        Modal.content [ ] [ img [ Src (getUrl x); Style [ObjectFit "contain"] ] ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
   | None -> nothing

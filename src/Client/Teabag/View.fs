@@ -41,7 +41,14 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
         str "Flavour"
       ]
       Control.div [ ] [
-          Input.text [ Input.Placeholder "Ex: English breakfast"; Input.ValueOrDefault teabag.flavour; Input.Option.Id "flavour"; Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value)) ]
+        Input.text [
+          yield Input.Placeholder "Ex: English breakfast";
+          yield Input.ValueOrDefault teabag.flavour;
+          yield Input.Option.Id "flavour";
+          yield Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value))
+          if teabag.flavour.Length > 0 then
+            yield Input.Color IsSuccess
+        ]
       ]
     ]
     (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype ToggleAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
@@ -115,24 +122,28 @@ let viewImage x dispatch =
 let view (model:Model) (dispatch: Msg -> unit) =
   [
     yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsVCentered ] [
-      match model.data with
-      | Some x ->
-        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
-          Content.content [] [
-            match x.imageid.Option with
-            | Some x -> yield viewImage x dispatch
-            | None -> yield uploadFormOrBan x dispatch
-          ]
-        ]
-        yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-          Card.card [] [
-            Card.content [] [ teabagForm x model dispatch ]
-          ]
-        ]
-      | _ ->
+      match model.isWorking with
+      | true ->
         yield Column.column [ ] [
-          div [ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Absolute; Height "calc(100vh - 60px)"]] []
-        ]
+                div [ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Absolute; Height "calc(100vh - 60px)"]] []
+              ]
+      | false ->
+          match model.data with
+          | Some x ->
+            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
+              Content.content [] [
+                match x.imageid.Option with
+                | Some x -> yield viewImage x dispatch
+                | None -> yield uploadFormOrBan x dispatch
+              ]
+            ]
+            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
+              Card.card [] [
+                Card.content [] [ teabagForm x model dispatch ]
+              ]
+            ]
+          | _ ->
+            yield nothing
       if model.editBagtypeCmp.IsSome then
         yield Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
       else

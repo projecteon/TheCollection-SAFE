@@ -40,15 +40,12 @@ let getNameErrors validationErrors =
     | ValidationErrors.NameError err -> Some err
     | _ -> None)
 
-let private getCountryCmd (id: DbId option) (token: JWT) =
+let private getCountryCmd (id: DbId option) (token: RefreshTokenViewModel) =
   match id with
   | Some id when id.Int > 0 ->
     Cmd.OfPromise.either
-      (Client.Http.fetchAs<Country> (sprintf "/api/country/%i" id.Int) (Decode.Auto.generateDecoder<Country>()) )
-      [Fetch.requestHeaders [
-        HttpRequestHeaders.Authorization ("Bearer " + token.String)
-        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
-      ]]
+      (Client.Auth.fetchRecord<Country> (sprintf "/api/country/%i" id.Int) (Decode.Auto.generateDecoder<Country>()) )
+      token
       GetSuccess
       GetError
   | _ -> Cmd.ofMsg (GetSuccess NewCountry)
@@ -76,11 +73,10 @@ let private trySave (model: Model) =
   | _, _-> Cmd.none
 
 
-let init (userData: UserData option) =
+let init =
   let initialModel = {
     originaldata = None
     data = None
-    userData = userData
     fetchError = None
     doValidation = false
     validationErrors = Seq.empty
@@ -88,7 +84,7 @@ let init (userData: UserData option) =
   }
   initialModel, getCountryCmd
 
-let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
+let update (msg:Msg) model userData : Model*Cmd<Msg>*ExternalMsg =
   match msg with
   | New -> {model with data = Some NewCountry}, Cmd.none, ExternalMsg.UnChanged
   | GetSuccess data ->
@@ -99,7 +95,7 @@ let update (msg:Msg) model : Model*Cmd<Msg>*ExternalMsg =
     match model.data with
     | Some x -> { model with data = Some { x with name = Name newName } }, Cmd.ofMsg Validate, ExternalMsg.UnChanged
     | _ -> { model with data = Some { NewCountry with name = Name newName } }, Cmd.none, ExternalMsg.UnChanged
-  | Save country -> model, tryJwtCmd (saveCountryCmd country) model.userData, ExternalMsg.UnChanged
+  | Save country -> model, tryJwtCmd (saveCountryCmd country) userData, ExternalMsg.UnChanged
   | SaveSuccess id ->
     let updatedTeabag = Some { model.data.Value with id = DbId id }
     { model with data = updatedTeabag; originaldata = updatedTeabag }, Cmd.none, ExternalMsg.OnChange { id = updatedTeabag.Value.id; description = updatedTeabag.Value.name.String }

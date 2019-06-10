@@ -140,7 +140,7 @@ let dataCountToggle previousCount =
   | ReChartHelpers.DataCount.Twenty -> ReChartHelpers.DataCount.Ten
   | _ -> ReChartHelpers.DataCount.Ten
 
-let init (userData: UserData option) =
+let init =
     let initialModel = {
       countByBrands = None
       countByBagtypes = None

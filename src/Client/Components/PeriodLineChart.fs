@@ -87,7 +87,7 @@ type private LegenDataPayload = {
   value: int
 }
 let private renderToolTipItem data =
-  tr [ Style [ Border "1px solid #CCC" ] ][
+  tr [ Key data.name; Style [ Border "1px solid #CCC" ] ][
     td [ Style [ Padding "3px 6px"; FontSize "13px"; ] ][
       legendIcon data.stroke
       //span [Style [Display "inline-block"; Height "10px"; Width "10px"; MarginRight "6px"; BackgroundColor data.stroke ]][]

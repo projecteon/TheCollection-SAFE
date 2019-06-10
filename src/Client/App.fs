@@ -48,8 +48,14 @@ open Elmish.HMR
 
 let sessionHandler initial =
   let sub (dispatch: Msg -> unit) =
-    Browser.Dom.window.addEventListener(Client.Auth.SessionExpiredEvent, (fun e -> e |> printf "SessionExpiredEvent %O" )) |> ignore
-    Browser.Dom.window.addEventListener(Client.Auth.SessionUpdatedEvent, (fun e -> e |> printf "SessionUpdatedEvent %O" )) |> ignore
+    Browser.Dom.window.addEventListener(Client.Auth.SessionExpiredEvent, (fun e ->
+      (dispatch LogOut)
+      e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionExpiredEvent %s" )
+    ) |> ignore
+    Browser.Dom.window.addEventListener(Client.Auth.SessionUpdatedEvent, (fun e ->
+      (dispatch (e?detail |> unbox |> RefreshUser))
+      e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionUpdatedEvent %s" )
+    ) |> ignore
   Cmd.ofSub sub
 
 let withReact =

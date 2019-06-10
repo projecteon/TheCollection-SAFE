@@ -45,16 +45,16 @@ let private renderLabel props =
   else
     nothing
 
-let private onPieEnter data = // should have sig (evt, activeIndex)
-  printf "mouse"
-  printf "%s" (Thoth.Json.Encode.toString 4 data)
+let private onPieEnter data index event = // should have sig (data, activeIndex, event)
+  //printf "%s %i" (Thoth.Json.Encode.toString 4 data) index
+  printf "%i" index
   
 // https://github.com/recharts/recharts/issues/466
 let private renderChart data =
     pieChart
         [ ReChartHelpers.margin 15. 20. 5. 0. ] [
           tooltip [][]
-          legend [ Legend.IconType ShapeType.Square ][]
+          legend [ Legend.IconType ShapeType.Square; Legend.OnMouseEnter onPieEnter ][]
           pie [
             Polar.Data data;
             Polar.DataKey "count";

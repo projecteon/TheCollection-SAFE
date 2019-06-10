@@ -32,8 +32,10 @@ let clearUserData () =
   Client.LocalStorage.delete UserDataKey
 
 let private refreshTokenCmd (model: RefreshTokenViewModel) =
+  let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
   Cmd.OfPromise.either
-    post ("/api/refreshtoken", None, model)
+    (postAs "/api/refreshtoken" userDecoder)
+    model
     LoginSuccess
     LoginFailure
 
@@ -45,8 +47,10 @@ let private tryRefreshTokenCmd =
 
 
 let private loginCmd (model: LoginViewModel) =
+  let userDecoder = Thoth.Json.Decode.Auto.generateDecoder<UserData>()
   Cmd.OfPromise.either
-    post ("/api/token", None, model)
+    (postAs "/api/token" userDecoder)
+    model
     LoginSuccess
     LoginFailure
 
@@ -76,7 +80,7 @@ let private updateValidationErrorsCmd (model: Model) =
   let passwordErrors = validatePassword model
   { model with userNameError = userNameErrors; passwordError = passwordErrors; }
 
-let init () =
+let init =
   let initialModel = {
     userName = EmailAddress.Empty
     userNameError = []

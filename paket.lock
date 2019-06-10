@@ -820,13 +820,13 @@ NUGET
     Fable.Promise (2.0)
       Fable.Core (>= 3.0)
       FSharp.Core (>= 4.5.2)
-    Fable.React (5.2.3)
+    Fable.React (5.2.5)
       Fable.Browser.Dom (>= 1.0)
       Fable.Core (>= 3.0)
       FSharp.Core (>= 4.6.2)
-    Fable.Recharts (1.0)
+    Fable.Recharts (1.1)
       Fable.React (>= 5.0)
-      FSharp.Core (>= 4.5.2)
+      FSharp.Core (>= 4.6.2)
     FSharp.Core (4.6.2)
     Fulma (2.1)
       Fable.Core (>= 3.0)
@@ -835,8 +835,8 @@ NUGET
       Fable.Core (>= 3.0)
       FSharp.Core (>= 4.6.2)
 GITHUB
-  remote: CompositionalIT/fshelpers
-    src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs (2e1ba955ffcff32a3aa2638d3dcc4f4057cf7186)
+  remote: projecteon/fshelpers
+    src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs (864ad548982dd9ae17d1a42cf60e9562297ea38f)
       Fable.Elmish
   remote: projecteon/Fable.C3
     src/Fable.C3.React/Chart.fs (afa085779878378cc14cfa5d95675ce4f586ce55)
