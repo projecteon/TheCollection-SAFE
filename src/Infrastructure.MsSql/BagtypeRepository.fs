@@ -25,9 +25,9 @@ module BagtypeRepository =
 
     type BagtypeQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Bagtype list> =
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Bagtype list> =
       task {
-        let cmd = new BagtypeQry(connectiongString)
+        let cmd = new BagtypeQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -47,9 +47,9 @@ module BagtypeRepository =
 
     type BagtypeById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
-    let getById (connectiongString: string) (id: int) : Task<Bagtype option> =
+    let getById (config: DbConfig) (id: int) : Task<Bagtype option> =
       task {
-        let cmd = new BagtypeById(connectiongString)
+        let cmd = new BagtypeById(config.ReadOnly.String)
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
@@ -68,9 +68,9 @@ module BagtypeRepository =
 
     type InsertBagtype = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
 
-    let insert (connectiongString: string) (bagtype : Bagtype) =
+    let insert (config: DbConfig) (bagtype : Bagtype) =
       task {
-        let cmd = new InsertBagtype(connectiongString)
+        let cmd = new InsertBagtype(config.Default.String)
         return cmd.AsyncExecute(bagtype.name.String)
       }
 
@@ -82,8 +82,8 @@ module BagtypeRepository =
     "
 
     type UpdateBagtype = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
-    let update (connectiongString: string) (bagtype : Bagtype) =
+    let update (config: DbConfig) (bagtype : Bagtype) =
       task {
-        let cmd = new UpdateBagtype(connectiongString)
+        let cmd = new UpdateBagtype(config.Default.String)
         return! cmd.AsyncExecute(bagtype.name.String, bagtype.id.Int)
       }

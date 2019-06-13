@@ -18,9 +18,9 @@ module FileRepository =
     "
 
     type Insert = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
-    let insert (connectiongString: string) (file: Domain.Tea.File) =
+    let insert (config: DbConfig) (file: Domain.Tea.File) =
       task {
-        let cmd = new Insert(connectiongString)
+        let cmd = new Insert(config.Default.String)
         return cmd.Execute(file.uri, file.filename)
                 |> function
                   | Some x -> x |> DbId |> Some
@@ -45,9 +45,9 @@ module FileRepository =
         modified = (Mapping.toInstant <| record.d_modified) |> ModifiedDate
       }
 
-    let getById (connectiongString: string) id =
+    let getById (config: DbConfig) id =
       task {
-        let cmd = new FileById(connectiongString)
+        let cmd = new FileById(config.ReadOnly.String)
         let! teabag = cmd.AsyncExecute(id)
         return match teabag with
                 | Some x -> x |> mapByIdData |> Some

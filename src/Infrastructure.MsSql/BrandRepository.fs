@@ -25,9 +25,9 @@ module BrandRepository =
     "
 
     type BrandQry = SqlCommandProvider<QrySQL, DevConnectionString>
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Brand list> =
       task {
-        let cmd = new BrandQry(connectiongString)
+        let cmd = new BrandQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -45,9 +45,9 @@ module BrandRepository =
     "
 
     type BrandById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
-    let getById (connectiongString: string) id =
+    let getById (config: DbConfig) id =
       task {
-        let cmd = new BrandById(connectiongString)
+        let cmd = new BrandById(config.ReadOnly.String)
         let! brand = cmd.AsyncExecute(id)
         return match brand with
                 | Some x -> Some {
@@ -65,9 +65,9 @@ module BrandRepository =
     "
 
     type InsertBrand = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
-    let insert (connectiongString: string) (brand : Brand) =
+    let insert (config: DbConfig) (brand : Brand) =
       task {
-        let cmd = new InsertBrand(connectiongString)
+        let cmd = new InsertBrand(config.Default.String)
         return cmd.Execute(brand.name.String)
       }
 
@@ -79,9 +79,9 @@ module BrandRepository =
     "
 
     type UpdateBrand = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
-    let update (connectiongString: string) (brand : Brand) =
+    let update (config: DbConfig) (brand : Brand) =
       task {
-        let cmd = new UpdateBrand(connectiongString)
+        let cmd = new UpdateBrand(config.Default.String)
         return! cmd.AsyncExecute(brand.name.String, brand.id.Int)
       }
 

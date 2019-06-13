@@ -25,9 +25,9 @@ module CountryRepository =
 
     type CountryQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Country list> =
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Country list> =
       task {
-        let cmd = new CountryQry(connectiongString)
+        let cmd = new CountryQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -47,9 +47,9 @@ module CountryRepository =
 
     type CountryById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
-    let getById (connectiongString: string)  (id: int) : Task<Country option> =
+    let getById (config: DbConfig)  (id: int) : Task<Country option> =
       task {
-        let cmd = new CountryById(connectiongString)
+        let cmd = new CountryById(config.ReadOnly.String)
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
@@ -68,9 +68,9 @@ module CountryRepository =
     "
 
     type InsertCountry = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
-    let insert (connectiongString: string) (country : Country) =
+    let insert (config: DbConfig) (country : Country) =
       task {
-        let cmd = new InsertCountry(connectiongString)
+        let cmd = new InsertCountry(config.Default.String)
         return cmd.AsyncExecute(country.name.String)
       }
 
@@ -82,8 +82,8 @@ module CountryRepository =
     "
 
     type UpdateCountry = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
-    let update (connectiongString: string) (country : Country) =
+    let update (config: DbConfig) (country : Country) =
       task {
-        let cmd = new UpdateCountry(connectiongString)
+        let cmd = new UpdateCountry(config.Default.String)
         return! cmd.AsyncExecute(country.name.String, country.id.Int)
       }

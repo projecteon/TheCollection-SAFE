@@ -9,6 +9,7 @@ module WebServer =
   open TeaCollection.Infrastructure.MsSql
   open Security.Authorization
   open TeaCollection.Infrastructure.MsSql.AzureStorage
+  open TeaCollection.Infrastructure.MsSql.DbContext
 
   let azureStorageCfg = {
     AccountName = AccountName "devstoreaccount1"
@@ -21,27 +22,33 @@ module WebServer =
     }
   }
 
-  let searchAllTeabags = TeabagRepository.searchAll DbContext.DevConnectionString
-  let getByIdTeabags = TeabagRepository.getById DbContext.DevConnectionString
-  let getByIdBrands = BrandRepository.getById DbContext.DevConnectionString
-  let getAllBrands = BrandRepository.getAll DbContext.DevConnectionString
-  let getByIdBagtypes = BagtypeRepository.getById DbContext.DevConnectionString
-  let getAllBagtypes = BagtypeRepository.getAll DbContext.DevConnectionString
-  let getByIdCountries = CountryRepository.getById DbContext.DevConnectionString
-  let getAllCountries = CountryRepository.getAll DbContext.DevConnectionString
-  let getCountByInserted = (TeabagRepository.insertedCount DbContext.DevConnectionString)
-  let getAllRefValues = RefValueRepository.getAll DbContext.DevConnectionString
-  let getUserByEmail = UserRepository.getByEmail DbContext.DevConnectionString
+  let DevDbCondig = {
+    PageSize = 100 |> int64 |> PageSize
+    Default = DbContext.DevConnectionString |> ConnectionString
+    ReadOnly = DbContext.DevConnectionString |> ConnectionString
+  }
 
-  let updateUser = UserRepository.update DbContext.DevConnectionString
-  let insertTeabag = TeabagRepository.insert DbContext.DevConnectionString
-  let updateTeabag = TeabagRepository.update DbContext.DevConnectionString
-  let insertBagtype = BagtypeRepository.insert DbContext.DevConnectionString
-  let updateBagtype = BagtypeRepository.update DbContext.DevConnectionString
-  let insertBrand = BrandRepository.insert DbContext.DevConnectionString
-  let updateBrand = BrandRepository.update DbContext.DevConnectionString
-  let insertCountry = CountryRepository.insert DbContext.DevConnectionString
-  let updateCountry = CountryRepository.update DbContext.DevConnectionString
+  let searchAllTeabags = TeabagRepository.searchAll DevDbCondig
+  let getByIdTeabags = TeabagRepository.getById DevDbCondig
+  let getByIdBrands = BrandRepository.getById DevDbCondig
+  let getAllBrands = BrandRepository.getAll DevDbCondig
+  let getByIdBagtypes = BagtypeRepository.getById DevDbCondig
+  let getAllBagtypes = BagtypeRepository.getAll DevDbCondig
+  let getByIdCountries = CountryRepository.getById DevDbCondig
+  let getAllCountries = CountryRepository.getAll DevDbCondig
+  let getCountByInserted = (TeabagRepository.insertedCount DevDbCondig)
+  let getAllRefValues = RefValueRepository.getAll DevDbCondig
+  let getUserByEmail = UserRepository.getByEmail DevDbCondig
+
+  let updateUser = UserRepository.update DevDbCondig
+  let insertTeabag = TeabagRepository.insert DevDbCondig
+  let updateTeabag = TeabagRepository.update DevDbCondig
+  let insertBagtype = BagtypeRepository.insert DevDbCondig
+  let updateBagtype = BagtypeRepository.update DevDbCondig
+  let insertBrand = BrandRepository.insert DevDbCondig
+  let updateBrand = BrandRepository.update DevDbCondig
+  let insertCountry = CountryRepository.insert DevDbCondig
+  let updateCountry = CountryRepository.update DevDbCondig
 
   let validate (model: 'a) =
     Domain.SharedTypes.Result.Success model
@@ -52,7 +59,7 @@ module WebServer =
     fun (next : HttpFunc) (ctx : Http.HttpContext) ->
       task {
         //let! bytes = ImageFilesystemRepository.getAsync imageId
-        let! file = FileRepository.getById DbContext.DevConnectionString imageId
+        let! file = FileRepository.getById DevDbCondig imageId
         match file with
         | None -> return! (RequestErrors.NOT_FOUND (sprintf "%i" imageId)) next ctx
         | Some x ->
@@ -66,7 +73,7 @@ module WebServer =
       task {
         let formFeature = ctx.Features.Get<Http.Features.IFormFeature>()
         let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
-        let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DbContext.DevConnectionString
+        let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DevDbCondig
         match result with
         | Domain.SharedTypes.Result.Success x -> return! (Successful.OK (Domain.SharedTypes.ImageId x)) next ctx
         | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
@@ -80,8 +87,8 @@ module WebServer =
           GET >=> authorize >=> choose [
             route "/teabags" >=> (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
             routef "/teabags/%i" (Api.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
-            route "/teabags/countby/brands" >=> (Api.Generic.handleGetAll (TeabagRepository.brandCount DbContext.DevConnectionString))
-            route "/teabags/countby/bagtypes" >=> (Api.Generic.handleGetAll (TeabagRepository.bagtypeCount DbContext.DevConnectionString))
+            route "/teabags/countby/brands" >=> (Api.Generic.handleGetAll (TeabagRepository.brandCount DevDbCondig))
+            route "/teabags/countby/bagtypes" >=> (Api.Generic.handleGetAll (TeabagRepository.bagtypeCount DevDbCondig))
             route "/teabags/countby/inserteddate" >=> Api.Generic.handleGetTransformAll getCountByInserted Transformers.transform
             route "/brands" >=> (Api.Generic.handleGetAllSearch getAllBrands)
             routef "/brands/%i" (Api.Generic.handleGet getByIdBrands Transformers.transformBrand)

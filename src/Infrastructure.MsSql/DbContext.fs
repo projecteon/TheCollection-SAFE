@@ -19,8 +19,6 @@ module DbContext =
     ReadOnly: ConnectionString
   }
   
-  let pageSize = PageSize (int64 100)
-
 module AzureStorage =
   // $"DefaultEndpointsProtocol={scheme};AccountName={name};AccountKey={key};{endpoints}"
   type Scheme = Scheme of string
