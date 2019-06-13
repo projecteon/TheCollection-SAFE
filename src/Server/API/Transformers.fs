@@ -134,7 +134,7 @@ let transformDtoToInsertTeabag (teabag: Server.Api.Dtos.Teabag) : Domain.Tea.Tea
     country = teabag.country |> transformDomainRefValue
     serialnumber = teabag.serialnumber |> SerialNumber |> Some
     imageid = teabag.imageid
-    created = created
+    created = created |> CreatedDate
   }
 
 let transformDtoToUpdateTeabag (current: Domain.Tea.Teabag, teabag: Server.Api.Dtos.Teabag) : Domain.Tea.Teabag =

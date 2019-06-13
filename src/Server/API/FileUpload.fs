@@ -7,6 +7,7 @@ module FileUpload =
   
   open Domain.SharedTypes
   open System.Threading.Tasks
+  open Domain.Types
 
   // https://theburningmonk.com/2012/10/f-helper-functions-to-convert-between-asyncunit-and-task/
   let inline startAsPlainTask (work : Async<'a>) = System.Threading.Tasks.Task.Factory.StartNew(fun () -> work |> Async.RunSynchronously)
@@ -20,13 +21,13 @@ module FileUpload =
       return (filePath, file.FileName)
     }
 
-  let uploadFiles (files: IFormFileCollection) (fileRepository: string*string -> Task<DbId option>) =
+  let uploadFiles (files: IFormFileCollection) (fileRepository: Domain.Tea.File -> Task<DbId option>) =
     task {
       if files.Count > 1 then
         return Failure "Only supports uploading one file at a time"
       else 
-        let! result = files.[0] |> uploadSingle
-        let! id = fileRepository result
+        let! (uri, filename) = files.[0] |> uploadSingle
+        let! id = fileRepository { id = DbId.Empty; importId = 0; uri = uri; filename = filename; created = CreatedDate.Now; modified = ModifiedDate.Now }
         return Success id
     }
 

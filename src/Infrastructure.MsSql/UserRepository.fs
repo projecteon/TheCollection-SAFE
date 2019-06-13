@@ -16,7 +16,7 @@ module UserRepository =
         WHERE id = @id
     "
 
-    type UserById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type UserById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
     let getById (connectiongString: string) (id: int) : Task<User option> =
       task {
         let cmd = new UserById(connectiongString)
@@ -39,7 +39,7 @@ module UserRepository =
         WHERE a.s_email = @email
     "
 
-    type UserByEmail = SqlCommandProvider<ByEmailSQL, ConnectionString, SingleRow = true>
+    type UserByEmail = SqlCommandProvider<ByEmailSQL, DevConnectionString, SingleRow = true>
     let getByEmail (connectiongString: string) (email: EmailAddress) : Task<User option> =
       task {
         let cmd = new UserByEmail(connectiongString)
@@ -64,7 +64,7 @@ module UserRepository =
         WHERE id = @id
     "
 
-    type UpdateUser = SqlCommandProvider<UpdateUserSQL, ConnectionString, SingleRow = true>
+    type UpdateUser = SqlCommandProvider<UpdateUserSQL, DevConnectionString, SingleRow = true>
     let update (connectiongString: string) (user: User) =
       task {
         let cmd = new UpdateUser(connectiongString)

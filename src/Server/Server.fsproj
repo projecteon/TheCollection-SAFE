@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <UserSecretsId>b840c868-6c40-4d95-8a5e-2243020a938d</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.fsproj" />
@@ -12,6 +13,8 @@
   <ItemGroup>
     <Compile Include="API\Dtos.fs" />
     <Compile Include="NodaTimeHelper.fs" />
+    <Compile Include="Repositories\FilesystemRepository.fs" />
+    <Compile Include="Repositories\AzureBlobRepository.fs" />
     <Compile Include="API\FileUpload.fs" />
     <Compile Include="API\Transformers.fs" />
     <Compile Include="API\Generic.fs" />

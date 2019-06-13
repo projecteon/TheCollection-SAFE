@@ -24,7 +24,7 @@ module BrandRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type BrandQry = SqlCommandProvider<QrySQL, ConnectionString>
+    type BrandQry = SqlCommandProvider<QrySQL, DevConnectionString>
     let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
       task {
         let cmd = new BrandQry(connectiongString)
@@ -44,7 +44,7 @@ module BrandRepository =
         WHERE id = @id
     "
 
-    type BrandById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type BrandById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
     let getById (connectiongString: string) id =
       task {
         let cmd = new BrandById(connectiongString)
@@ -64,7 +64,7 @@ module BrandRepository =
         VALUES(@name);
     "
 
-    type InsertBrand = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+    type InsertBrand = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
     let insert (connectiongString: string) (brand : Brand) =
       task {
         let cmd = new InsertBrand(connectiongString)
@@ -78,7 +78,7 @@ module BrandRepository =
         WHERE id = @id;
     "
 
-    type UpdateBrand = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    type UpdateBrand = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
     let update (connectiongString: string) (brand : Brand) =
       task {
         let cmd = new UpdateBrand(connectiongString)

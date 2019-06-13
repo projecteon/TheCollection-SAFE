@@ -23,7 +23,7 @@ module CountryRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type CountryQry = SqlCommandProvider<QrySQL, ConnectionString>
+    type CountryQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
     let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Country list> =
       task {
@@ -45,7 +45,7 @@ module CountryRepository =
         WHERE id = @id
     "
 
-    type CountryById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type CountryById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
     let getById (connectiongString: string)  (id: int) : Task<Country option> =
       task {
@@ -67,7 +67,7 @@ module CountryRepository =
         VALUES(@name);
     "
 
-    type InsertCountry = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+    type InsertCountry = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
     let insert (connectiongString: string) (country : Country) =
       task {
         let cmd = new InsertCountry(connectiongString)
@@ -81,7 +81,7 @@ module CountryRepository =
         WHERE id = @id;
     "
 
-    type UpdateCountry = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    type UpdateCountry = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
     let update (connectiongString: string) (country : Country) =
       task {
         let cmd = new UpdateCountry(connectiongString)

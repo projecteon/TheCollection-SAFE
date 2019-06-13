@@ -44,7 +44,7 @@ module TeabagRepository =
            ,GETDATE())
     "
 
-    type InsertTeabag = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+    type InsertTeabag = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
 
     let insert (connectiongString: string) (teabag: Domain.Tea.Teabag) =
       task {
@@ -77,7 +77,7 @@ module TeabagRepository =
         WHERE id = @id
     "
 
-    type UpdateTeabag = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    type UpdateTeabag = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
 
     let update (connectiongString: string) (teabag: Domain.Tea.Teabag) =
       task {
@@ -106,7 +106,7 @@ module TeabagRepository =
         WHERE id = @id
     "
 
-    type TeabagById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type TeabagById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
     let mapByIdData (record: TeabagById.Record) = {
         id = DbId record.id
@@ -118,7 +118,7 @@ module TeabagRepository =
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
         imageid = ImageId (toDbId record.rf_image)
-        created = toInstant <| record.d_created
+        created = (toInstant <| record.d_created) |> CreatedDate
       }
 
     let getById (connectiongString: string) id =
@@ -156,7 +156,7 @@ module TeabagRepository =
         FETCH NEXT @pageSize ROWS ONLY;
     "
 
-    type TeabagQry = SqlCommandProvider<SQLQry, ConnectionString>
+    type TeabagQry = SqlCommandProvider<SQLQry, DevConnectionString>
 
     let mapData (record: TeabagQry.Record) = {
         id = DbId record.id
@@ -168,7 +168,7 @@ module TeabagRepository =
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
         imageid = ImageId (toDbId record.rf_image)
-        created = toInstant <| record.d_created
+        created = (toInstant <| record.d_created) |> CreatedDate
       }
 
     let mapTotalCount (record: TeabagQry.Record option) =
@@ -180,7 +180,7 @@ module TeabagRepository =
 
     let getAll (connectiongString: string) (searchFilter: SearchTerm) page =
       let cmd = new TeabagQry(connectiongString)
-      cmd.Execute((searchFilter |> createJsonTermArray), pageSize * page, pageSize)
+      cmd.Execute((searchFilter |> createJsonTermArray), pageSize.pageStart(page), pageSize.int64)
       // |> List.ofSeq
       |> Seq.map mapData
       |> Seq.toList
@@ -193,7 +193,7 @@ module TeabagRepository =
 
     let searchAll (connectiongString: string) (searchParams: SearchParams) =
       let cmd = new TeabagQry(connectiongString)
-      let result = cmd.Execute((searchParams.Term |> createJsonTermArray), pageSize * (pageNumberOrDefault searchParams), pageSize) |> Seq.toList // Make sure we only do one request to DB
+      let result = cmd.Execute((searchParams.Term |> createJsonTermArray), pageSize.pageStart(pageNumberOrDefault searchParams), pageSize.int64) |> Seq.toList // Make sure we only do one request to DB
       (result |> List.map mapData, result |> List.tryHead |> mapTotalCount)
 
 
@@ -207,7 +207,7 @@ module TeabagRepository =
          ORDER BY i_count DESC;
     "
 
-    type BrandCountQry = SqlCommandProvider<SQLBrandCountQry, ConnectionString>
+    type BrandCountQry = SqlCommandProvider<SQLBrandCountQry, DevConnectionString>
 
     let brandCount (connectiongString: string) : Task<CountBy<string> list> =
       task {
@@ -231,7 +231,7 @@ module TeabagRepository =
          ORDER BY i_count DESC
     "
 
-    type BagtypeCountQry = SqlCommandProvider<SQLBagtypeCountQry, ConnectionString>
+    type BagtypeCountQry = SqlCommandProvider<SQLBagtypeCountQry, DevConnectionString>
 
     let bagtypeCount (connectiongString: string) : Task<CountBy<string> list> =
       task {
@@ -281,7 +281,7 @@ module TeabagRepository =
         OPTION (MAXRECURSION 5000)
     "
     
-    type InsertedCountQry = SqlCommandProvider<SQLInsertedCountQry, ConnectionString>
+    type InsertedCountQry = SqlCommandProvider<SQLInsertedCountQry, DevConnectionString>
 
     let insertedCount (connectiongString: string) : Task<CountBy<Instant> list> =
       task {

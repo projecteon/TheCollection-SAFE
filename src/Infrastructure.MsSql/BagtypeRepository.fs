@@ -23,7 +23,7 @@ module BagtypeRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type BagtypeQry = SqlCommandProvider<QrySQL, ConnectionString>
+    type BagtypeQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
     let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Bagtype list> =
       task {
@@ -45,7 +45,7 @@ module BagtypeRepository =
         WHERE id = @id
     "
 
-    type BagtypeById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type BagtypeById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
     let getById (connectiongString: string) (id: int) : Task<Bagtype option> =
       task {
@@ -66,7 +66,7 @@ module BagtypeRepository =
         VALUES(@name);
     "
 
-    type InsertBagtype = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+    type InsertBagtype = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
 
     let insert (connectiongString: string) (bagtype : Bagtype) =
       task {
@@ -81,7 +81,7 @@ module BagtypeRepository =
         WHERE id = @id;
     "
 
-    type UpdateBagtype = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
+    type UpdateBagtype = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
     let update (connectiongString: string) (bagtype : Bagtype) =
       task {
         let cmd = new UpdateBagtype(connectiongString)

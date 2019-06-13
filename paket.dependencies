@@ -34,6 +34,7 @@ group Server
     nuget Fable.JsonConverter
     nuget Thoth.Json.Giraffe
     nuget NodaTime
+    nuget WindowsAzure.Storage ~> 9.3
 
 group Client
     source https://api.nuget.org/v3/index.json

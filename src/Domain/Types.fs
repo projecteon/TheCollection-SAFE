@@ -8,14 +8,24 @@ open Domain.SharedTypes
 type BrandName  = BrandName of string
     with
     member this.String = let (BrandName s) = this in s
+
 type BagtypeName  = BagtypeName of string
     with
     member this.String = let (BagtypeName s) = this in s
+
 type CountryName  = CountryName of string
     with
     member this.String = let (CountryName s) = this in s
 
-type CreatedDate = Instant
+type CreatedDate = CreatedDate of Instant
+    with
+    member this.Instant = let (CreatedDate instant) = this in instant
+    static member Now = DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc |> CreatedDate
+
+type ModifiedDate = ModifiedDate of Instant
+    with
+    member this.Instant = let (ModifiedDate instant) = this in instant
+    static member Now = DateTime.Now.ToUniversalTime() |> Instant.FromDateTimeUtc |> ModifiedDate
 
 type RefreshTokenExpire = RefreshTokenExpire of DateTime
   with

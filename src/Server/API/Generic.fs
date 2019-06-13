@@ -34,6 +34,8 @@ let handleGetAllSearch (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) 
 
 let handleGetAllWithPaging (getAll: ('a -> 'b list*int )) (transform: ('b list -> 'c list )) next (ctx: HttpContext) =
   task {
+    // ctx.GetService<IOption<IDbConfig>>()
+    // ctx.GetService<IConfiguration>() // https://www.devprotocol.com/use-appsettings-in-a-giraffe-web-app/
     let filter = ctx.BindQueryString<'a>()
     let (data, count) = getAll(filter)
     return! Successful.OK {data=(transform data); count=count} next ctx
