@@ -12,3 +12,9 @@ module ImageFilesystemRepository =
     |> File.ReadAllBytes
 
   let getAsync id = task { return get id }
+
+  let insertAsync (filename, stream: Stream) = async {
+    use fileStream = new FileStream(Path, FileMode.Create)
+    do! stream.CopyToAsync(fileStream) |> Async.AwaitIAsyncResult |> Async.Ignore
+    return (new System.Uri(Path), filename)
+  }

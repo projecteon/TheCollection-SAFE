@@ -1,9 +1,6 @@
 namespace Server
 
 module WebServer =
-  open System.IO
-  open Microsoft.AspNetCore
-  open FSharp.Control.Tasks.V2
   open Giraffe
 
   open TeaCollection.Infrastructure.MsSql
@@ -39,6 +36,8 @@ module WebServer =
   let getCountByInserted = (TeabagRepository.insertedCount DevDbCondig)
   let getAllRefValues = RefValueRepository.getAll DevDbCondig
   let getUserByEmail = UserRepository.getByEmail DevDbCondig
+  let getFileById = FileRepository.getById DevDbCondig
+  let getBlobByFilename = AzureBlobRepository.getAsync2 azureStorageCfg AzureBlobRepository.ImagesContainerReferance
 
   let updateUser = UserRepository.update DevDbCondig
   let insertTeabag = TeabagRepository.insert DevDbCondig
@@ -49,41 +48,19 @@ module WebServer =
   let updateBrand = BrandRepository.update DevDbCondig
   let insertCountry = CountryRepository.insert DevDbCondig
   let updateCountry = CountryRepository.update DevDbCondig
+  let insertFile = FileRepository.insert DevDbCondig
+  let insertBlob = AzureBlobRepository.insertAsync2 azureStorageCfg AzureBlobRepository.ImagesContainerReferance
 
   let validate (model: 'a) =
     Domain.SharedTypes.Result.Success model
 
   // https://blogs.msdn.microsoft.com/dotnet/2017/09/26/build-a-web-service-with-f-and-net-core-2-0/
 
-  let thumbnailHandler imageId : HttpHandler =
-    fun (next : HttpFunc) (ctx : Http.HttpContext) ->
-      task {
-        //let! bytes = ImageFilesystemRepository.getAsync imageId
-        let! file = FileRepository.getById DevDbCondig imageId
-        match file with
-        | None -> return! (RequestErrors.NOT_FOUND (sprintf "%i" imageId)) next ctx
-        | Some x ->
-          let! blobStorageContainer = Server.AzureBlobRepository.createContainer azureStorageCfg AzureBlobRepository.ImagesContainerReferance
-          let! bytes = AzureBlobRepository.getAsync blobStorageContainer x.filename
-          return! ctx.WriteBytesAsync bytes
-      }
-
-  let fileUploadHandler =
-    fun (next : HttpFunc) (ctx : Http.HttpContext) ->
-      task {
-        let formFeature = ctx.Features.Get<Http.Features.IFormFeature>()
-        let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
-        let! result = form.Files |> Api.FileUpload.uploadFiles <| FileRepository.insert DevDbCondig
-        match result with
-        | Domain.SharedTypes.Result.Success x -> return! (Successful.OK (Domain.SharedTypes.ImageId x)) next ctx
-        | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
-      }
-
   let webApp: HttpHandler =
     choose [
       subRoute "/api"
         (choose [
-          GET >=> routef "/thumbnails/%i" thumbnailHandler
+          GET >=> routef "/thumbnails/%i" (Api.FileUpload.thumbnailHandler getFileById getBlobByFilename)
           GET >=> authorize >=> choose [
             route "/teabags" >=> (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
             routef "/teabags/%i" (Api.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
@@ -101,7 +78,7 @@ module WebServer =
           POST >=> route "/token" >=> (handlePostToken getUserByEmail updateUser)
           POST >=> route "/refreshtoken" >=> (handlePostRefreshToken getUserByEmail updateUser)
           POST >=> authorize >=> choose [
-            route "/teabags/upload" >=> fileUploadHandler
+            route "/teabags/upload" >=> (Api.FileUpload.fileUploadHandler insertFile insertBlob)
             route "/teabags" >=> (Api.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
             route "/bagtypes" >=> (Api.Generic.handlePost insertBagtype Transformers.transformDtoToInsertBagtype validate)
             route "/brands" >=> (Api.Generic.handlePost insertBrand Transformers.transformDtoToInsertBrand validate)

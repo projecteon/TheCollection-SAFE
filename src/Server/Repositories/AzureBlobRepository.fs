@@ -45,3 +45,16 @@ module AzureBlobRepository =
     do! blockBlob.UploadFromStreamAsync(stream) |> Async.AwaitIAsyncResult |> Async.Ignore
     return blockBlob.Uri;
   }
+
+  let getAsync2 (config: AzureStorage.StorageAccount) containerReferance filename = async {
+    let! container = createContainer config containerReferance
+    let blockBlob = container.GetBlockBlobReference(filename)
+    return! mapBlop blockBlob
+  }
+
+  let insertAsync2 (config: AzureStorage.StorageAccount) containerReferance  (filename, stream: Stream) = async {
+    let! container = createContainer config containerReferance
+    let blockBlob = container.GetBlockBlobReference(filename)
+    do! blockBlob.UploadFromStreamAsync(stream) |> Async.AwaitIAsyncResult |> Async.Ignore
+    return (blockBlob.Uri, filename);
+  }
