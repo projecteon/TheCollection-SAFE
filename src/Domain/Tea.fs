@@ -4,6 +4,15 @@ open Domain.Searchable
 open Domain.SharedTypes
 open Domain.Types
 
+type File = {
+    id: DbId
+    importId: int
+    uri: string
+    filename: string
+    created: CreatedDate
+    modified: ModifiedDate
+}
+
 type Brand = {
     id: DbId
     name: BrandName

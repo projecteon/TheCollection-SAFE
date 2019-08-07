@@ -77,6 +77,14 @@ let teabagForm (teabag: Teabag) (model:Model) dispatch =
         Input.text [ Input.Placeholder "Ex: With logo"; Input.ValueOrDefault teabag.serie; Input.Option.Id "serie"; Input.OnChange (fun ev -> dispatch (SerieChanged ev.Value)) ]
       ]
     ]
+    Field.div [ ] [
+      Label.label [ Label.Option.For "inserted" ] [
+        str "Inserted"
+      ]
+      Control.div [ ] [
+        Input.text [ Input.ValueOrDefault (teabag.inserted.ToShortDateString()); Input.Option.Id "inserted"; Input.Disabled true ]
+      ]
+    ]
     Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
       Control.div [ ] [
         Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
@@ -116,7 +124,7 @@ let uploadFormOrBan (teabag: Teabag) dispatch =
 let viewImage x dispatch =
   div [ ClassName "block"; Style [ Position PositionOptions.Relative ] ] [
     Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position PositionOptions.Absolute; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
-    img [ Src (getUrlDbId x) ]
+    img [ Src (getImageUrl x) ]
   ]
 
 let view (model:Model) (dispatch: Msg -> unit) =

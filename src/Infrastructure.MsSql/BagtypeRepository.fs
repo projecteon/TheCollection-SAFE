@@ -23,11 +23,11 @@ module BagtypeRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type BagtypeQry = SqlCommandProvider<QrySQL, ConnectionString>
+    type BagtypeQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Bagtype list> =
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Bagtype list> =
       task {
-        let cmd = new BagtypeQry(connectiongString)
+        let cmd = new BagtypeQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -45,11 +45,11 @@ module BagtypeRepository =
         WHERE id = @id
     "
 
-    type BagtypeById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type BagtypeById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
-    let getById (connectiongString: string) (id: int) : Task<Bagtype option> =
+    let getById (config: DbConfig) (id: int) : Task<Bagtype option> =
       task {
-        let cmd = new BagtypeById(connectiongString)
+        let cmd = new BagtypeById(config.ReadOnly.String)
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
@@ -61,16 +61,16 @@ module BagtypeRepository =
 
     [<Literal>]
     let  InsertSQL = "
-        INSERT INTO tco_bagtype (s_name)
+        INSERT INTO tco_bagtype (s_name, dt_created, dt_modified)
         OUTPUT Inserted.ID
-        VALUES(@name);
+        VALUES(@name, GETDATE(), GETDATE());
     "
 
-    type InsertBagtype = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
+    type InsertBagtype = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
 
-    let insert (connectiongString: string) (bagtype : Bagtype) =
+    let insert (config: DbConfig) (bagtype : Bagtype) =
       task {
-        let cmd = new InsertBagtype(connectiongString)
+        let cmd = new InsertBagtype(config.Default.String)
         return cmd.AsyncExecute(bagtype.name.String)
       }
 
@@ -78,12 +78,13 @@ module BagtypeRepository =
     let  UpdateSQL = "
         UPDATE tco_bagtype SET
           s_name = @s_name
+          ,dt_modified = GETDATE()
         WHERE id = @id;
     "
 
-    type UpdateBagtype = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
-    let update (connectiongString: string) (bagtype : Bagtype) =
+    type UpdateBagtype = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
+    let update (config: DbConfig) (bagtype : Bagtype) =
       task {
-        let cmd = new UpdateBagtype(connectiongString)
+        let cmd = new UpdateBagtype(config.Default.String)
         return! cmd.AsyncExecute(bagtype.name.String, bagtype.id.Int)
       }

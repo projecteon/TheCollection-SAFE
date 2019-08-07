@@ -3,3 +3,4 @@ group Server
   Saturn
   Fable.JsonConverter
   Thoth.Json.Giraffe
+  WindowsAzure.Storage

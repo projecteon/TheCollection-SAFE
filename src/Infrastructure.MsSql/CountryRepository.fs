@@ -23,11 +23,11 @@ module CountryRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type CountryQry = SqlCommandProvider<QrySQL, ConnectionString>
+    type CountryQry = SqlCommandProvider<QrySQL, DevConnectionString>
 
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Country list> =
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Country list> =
       task {
-        let cmd = new CountryQry(connectiongString)
+        let cmd = new CountryQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -45,11 +45,11 @@ module CountryRepository =
         WHERE id = @id
     "
 
-    type CountryById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
+    type CountryById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
 
-    let getById (connectiongString: string)  (id: int) : Task<Country option> =
+    let getById (config: DbConfig)  (id: int) : Task<Country option> =
       task {
-        let cmd = new CountryById(connectiongString)
+        let cmd = new CountryById(config.ReadOnly.String)
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
@@ -62,15 +62,15 @@ module CountryRepository =
 
     [<Literal>]
     let  InsertSQL = "
-        INSERT INTO tcs_country (s_name)
+        INSERT INTO tcs_country (s_name, dt_created, dt_modified)
         OUTPUT Inserted.ID
-        VALUES(@name);
+        VALUES(@name, GETDATE(), GETDATE());
     "
 
-    type InsertCountry = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
-    let insert (connectiongString: string) (country : Country) =
+    type InsertCountry = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
+    let insert (config: DbConfig) (country : Country) =
       task {
-        let cmd = new InsertCountry(connectiongString)
+        let cmd = new InsertCountry(config.Default.String)
         return cmd.AsyncExecute(country.name.String)
       }
 
@@ -78,12 +78,13 @@ module CountryRepository =
     let  UpdateSQL = "
         UPDATE tcs_country SET
           s_name = @s_name
+          ,dt_modified = GETDATE()
         WHERE id = @id;
     "
 
-    type UpdateCountry = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
-    let update (connectiongString: string) (country : Country) =
+    type UpdateCountry = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
+    let update (config: DbConfig) (country : Country) =
       task {
-        let cmd = new UpdateCountry(connectiongString)
+        let cmd = new UpdateCountry(config.Default.String)
         return! cmd.AsyncExecute(country.name.String, country.id.Int)
       }

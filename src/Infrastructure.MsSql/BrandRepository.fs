@@ -24,10 +24,10 @@ module BrandRepository =
           AND (LEN(@sName) = 0 OR a.s_name LIKE @sName)
     "
 
-    type BrandQry = SqlCommandProvider<QrySQL, ConnectionString>
-    let getAll (connectiongString: string) (nameFilter: SearchParams) : Task<Brand list> =
+    type BrandQry = SqlCommandProvider<QrySQL, DevConnectionString>
+    let getAll (config: DbConfig) (nameFilter: SearchParams) : Task<Brand list> =
       task {
-        let cmd = new BrandQry(connectiongString)
+        let cmd = new BrandQry(config.ReadOnly.String)
         return cmd.Execute(nameFilter.Term |> extractSearchTerm)
         |> List.ofSeq
         |> Seq.map (fun x -> {
@@ -44,10 +44,10 @@ module BrandRepository =
         WHERE id = @id
     "
 
-    type BrandById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
-    let getById (connectiongString: string) id =
+    type BrandById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
+    let getById (config: DbConfig) id =
       task {
-        let cmd = new BrandById(connectiongString)
+        let cmd = new BrandById(config.ReadOnly.String)
         let! brand = cmd.AsyncExecute(id)
         return match brand with
                 | Some x -> Some {
@@ -59,15 +59,15 @@ module BrandRepository =
 
     [<Literal>]
     let  InsertSQL = "
-        INSERT INTO tco_brand (s_name)
+        INSERT INTO tco_brand (s_name, dt_created, dt_modified)
         OUTPUT Inserted.ID
-        VALUES(@name);
+        VALUES(@name, GETDATE(), GETDATE());
     "
 
-    type InsertBrand = SqlCommandProvider<InsertSQL, ConnectionString, SingleRow = true>
-    let insert (connectiongString: string) (brand : Brand) =
+    type InsertBrand = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
+    let insert (config: DbConfig) (brand : Brand) =
       task {
-        let cmd = new InsertBrand(connectiongString)
+        let cmd = new InsertBrand(config.Default.String)
         return cmd.Execute(brand.name.String)
       }
 
@@ -75,13 +75,14 @@ module BrandRepository =
     let  UpdateSQL = "
         UPDATE tco_brand SET
           s_name = @s_name
+          ,dt_modified = GETDATE()
         WHERE id = @id;
     "
 
-    type UpdateBrand = SqlCommandProvider<UpdateSQL, ConnectionString, SingleRow = true>
-    let update (connectiongString: string) (brand : Brand) =
+    type UpdateBrand = SqlCommandProvider<UpdateSQL, DevConnectionString, SingleRow = true>
+    let update (config: DbConfig) (brand : Brand) =
       task {
-        let cmd = new UpdateBrand(connectiongString)
+        let cmd = new UpdateBrand(config.Default.String)
         return! cmd.AsyncExecute(brand.name.String, brand.id.Int)
       }
 

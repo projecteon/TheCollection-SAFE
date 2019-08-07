@@ -1,6 +1,11 @@
 namespace Domain
 
 module SharedTypes =
+  //type [<Erase>] DbId = DbId of int
+  //  with
+  //      member inline this.Int = ( function | DbId i -> i ) this
+  //      static member inline Empty = DbId 0
+
   type DbId = DbId of int
     with
     member this.Int = let (DbId i) = this in i

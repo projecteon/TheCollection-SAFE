@@ -82,6 +82,7 @@ module Dtos =
     country: RefValue option;
     serialnumber: string;
     imageid: ImageId;
+    inserted: DateTime;
   }
 
   type UpsertTeabag = {

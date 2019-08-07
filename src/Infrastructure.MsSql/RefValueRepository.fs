@@ -34,17 +34,17 @@ module RefValueRepository =
       else sprintf "%s%%" searchTerm |> Some;
     | None -> "%%" |> Some
 
-  let getAll (connectiongString: string) (searchParams: RefValueSearchParams) : Task<Server.Api.Dtos.RefValue list> =
+  let getAll (config: DbConfig) (searchParams: RefValueSearchParams) : Task<Server.Api.Dtos.RefValue list> =
       task {
         let searchFilter: SearchParams = {Term = searchParams.Term |> addWildcardSuffic; Page = None}
         match searchParams.RefValueType with
         | RefValueTypes.Brand ->
-          let! brands = (BrandRepository.getAll connectiongString searchFilter)
+          let! brands = (BrandRepository.getAll config searchFilter)
           return brands |> List.map mapBrand
         | RefValueTypes.Bagtype ->
-          let! brands = (BagtypeRepository.getAll connectiongString searchFilter)
+          let! brands = (BagtypeRepository.getAll config searchFilter)
           return brands |> List.map mapBagtype
         | RefValueTypes.Country ->
-          let! brands = (CountryRepository.getAll connectiongString searchFilter)
+          let! brands = (CountryRepository.getAll config searchFilter)
           return brands |> List.map mapCountry
       }

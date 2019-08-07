@@ -11,18 +11,32 @@ open Client.FileUrlHandler
 open Client.Teabags.Types
 open Server.Api.Dtos
 
+open Domain.SharedTypes
+
 let getDisplayValue (model: Model) =
   match model.searchedTerms with
     | Some x -> x
     | _ -> ""
 
+let renderImage(imageId: ImageId) =
+  match imageId.Option with
+  | Some dbId -> figure [] [ img [ Src (getThumbnailUrl dbId) ] ]
+  | None ->  figure [ Style [ Display DisplayOptions.Flex; JustifyContent "center" ]] [
+                Fa.stack [ Fa.Stack.Size Fa.Fa7x; Fa.Stack.Props [Style [Width "100%"; MarginTop "10px"]] ]
+                  [ Fa.i [ Fa.Solid.Camera
+                           Fa.Stack1x ]
+                      [ ]
+                    Fa.i [ Fa.Solid.Ban
+                           Fa.Stack2x
+                           Fa.CustomClass "has-text-danger" ]
+                      [ ] ] ]
+
+
 let resultItem (teabag: Teabag) dispatch =
   Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneQuarter); Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
-        figure [] [
-            img [ Src (getUrl teabag.imageid) ] // https://codepen.io/anon/pen/KLLgNv
-        ]
+        renderImage teabag.imageid
       ]
       Card.content [] [
         Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.description ]
@@ -51,14 +65,24 @@ let searchResult (model:Model) dispatch =
   |> List.map (fun teabag -> resultItem teabag dispatch)
   |> ofList
 
+
+let CarrigeReturnKeyCode = 13.0
+let onKeyDown dispatch (ev: Browser.Types.KeyboardEvent) =
+  if ev.keyCode = CarrigeReturnKeyCode then
+    ev.preventDefault();
+    ev.stopPropagation();
+    dispatch Search
+  else
+    ev |> ignore
+
 let inputElement model dispatch =
   Input.search [
-    yield Input.Props [AutoComplete "off"]
+    yield Input.Props [AutoComplete "off"; DOMAttr.OnKeyDown (fun ev -> onKeyDown dispatch ev)]
     yield Input.Option.Id "searchterm"
     yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
     yield Input.ValueOrDefault (getDisplayValue model)
-    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
+    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))    
     if model.searchError.IsSome then
       yield Input.Color IsDanger
   ]

@@ -16,10 +16,10 @@ module UserRepository =
         WHERE id = @id
     "
 
-    type UserById = SqlCommandProvider<ByIdSQL, ConnectionString, SingleRow = true>
-    let getById (connectiongString: string) (id: int) : Task<User option> =
+    type UserById = SqlCommandProvider<ByIdSQL, DevConnectionString, SingleRow = true>
+    let getById (config: DbConfig) (id: int) : Task<User option> =
       task {
-        let cmd = new UserById(connectiongString)
+        let cmd = new UserById(config.ReadOnly.String)
         return cmd.Execute(id)
         |> function
           | Some x -> Some {
@@ -39,10 +39,10 @@ module UserRepository =
         WHERE a.s_email = @email
     "
 
-    type UserByEmail = SqlCommandProvider<ByEmailSQL, ConnectionString, SingleRow = true>
-    let getByEmail (connectiongString: string) (email: EmailAddress) : Task<User option> =
+    type UserByEmail = SqlCommandProvider<ByEmailSQL, DevConnectionString, SingleRow = true>
+    let getByEmail (config: DbConfig) (email: EmailAddress) : Task<User option> =
       task {
-        let cmd = new UserByEmail(connectiongString)
+        let cmd = new UserByEmail(config.ReadOnly.String)
         return cmd.Execute(email.String)
         |> function
           | Some x -> Some {
@@ -64,10 +64,10 @@ module UserRepository =
         WHERE id = @id
     "
 
-    type UpdateUser = SqlCommandProvider<UpdateUserSQL, ConnectionString, SingleRow = true>
-    let update (connectiongString: string) (user: User) =
+    type UpdateUser = SqlCommandProvider<UpdateUserSQL, DevConnectionString, SingleRow = true>
+    let update (config: DbConfig) (user: User) =
       task {
-        let cmd = new UpdateUser(connectiongString)
+        let cmd = new UpdateUser(config.Default.String)
         return! cmd.AsyncExecute(
           user.RefreshToken |> Mapping.toDbStringValue
           , user.RefreshTokenExpire |> Mapping.toDbDateTimeValue
