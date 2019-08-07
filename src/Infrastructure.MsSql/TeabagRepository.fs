@@ -29,7 +29,9 @@ module TeabagRepository =
            ,s_serie
            ,s_serialnumber
            ,s_search_terms
-           ,d_created)
+           ,d_created
+           ,dt_created
+           ,dt_modified)
         OUTPUT INSERTED.ID
         VALUES
            (@ro_brand
@@ -41,6 +43,8 @@ module TeabagRepository =
            ,@s_serie
            ,@s_serialnumber
            ,@s_search_terms
+           ,GETDATE()
+           ,GETDATE()
            ,GETDATE())
     "
 
@@ -74,6 +78,7 @@ module TeabagRepository =
            ,s_serie = @s_serie
            ,s_serialnumber = @s_serialnumber
            ,s_search_terms = @s_search_terms
+           ,dt_modified = GETDATE()
         WHERE id = @id
     "
 

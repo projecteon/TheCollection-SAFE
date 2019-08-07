@@ -38,6 +38,7 @@ module WebServer =
   let getUserByEmail = UserRepository.getByEmail DevDbCondig
   let getFileById = FileRepository.getById DevDbCondig
   let getBlobByFilename = AzureBlobRepository.getAsync2 azureStorageCfg AzureBlobRepository.ImagesContainerReferance
+  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 azureStorageCfg AzureBlobRepository.ThumbnailsContainerReferance
 
   let updateUser = UserRepository.update DevDbCondig
   let insertTeabag = TeabagRepository.insert DevDbCondig
@@ -60,7 +61,8 @@ module WebServer =
     choose [
       subRoute "/api"
         (choose [
-          GET >=> routef "/thumbnails/%i" (Api.FileUpload.thumbnailHandler getFileById getBlobByFilename)
+          GET >=> routef "/thumbnails/%i" (Api.File.get getFileById getThumbBlobByFilename)
+          GET >=> routef "/images/%i" (Api.File.get getFileById getBlobByFilename)
           GET >=> authorize >=> choose [
             route "/teabags" >=> (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
             routef "/teabags/%i" (Api.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
@@ -78,7 +80,7 @@ module WebServer =
           POST >=> route "/token" >=> (handlePostToken getUserByEmail updateUser)
           POST >=> route "/refreshtoken" >=> (handlePostRefreshToken getUserByEmail updateUser)
           POST >=> authorize >=> choose [
-            route "/teabags/upload" >=> (Api.FileUpload.fileUploadHandler insertFile insertBlob)
+            route "/teabags/upload" >=> (Api.File.upload insertFile insertBlob)
             route "/teabags" >=> (Api.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
             route "/bagtypes" >=> (Api.Generic.handlePost insertBagtype Transformers.transformDtoToInsertBagtype validate)
             route "/brands" >=> (Api.Generic.handlePost insertBrand Transformers.transformDtoToInsertBrand validate)

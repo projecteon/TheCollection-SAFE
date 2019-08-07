@@ -41,8 +41,8 @@ module FileRepository =
         importId = record.i_import_id
         uri = record.s_uri
         filename = record.s_filename
-        created = (Mapping.toInstant <| record.d_created) |> CreatedDate
-        modified = (Mapping.toInstant <| record.d_modified) |> ModifiedDate
+        created = (Mapping.toInstant <| record.dt_created) |> CreatedDate
+        modified = (Mapping.toInstant <| record.dt_modified) |> ModifiedDate
       }
 
     let getById (config: DbConfig) id =

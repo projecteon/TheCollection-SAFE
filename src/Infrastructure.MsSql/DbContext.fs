@@ -2,6 +2,7 @@ namespace TeaCollection.Infrastructure.MsSql
 
 module DbContext =
   [<Literal>]
+  //let  DevConnectionString = "Server=tcp:collection.database.windows.net,1433;Initial Catalog=the_collection;Persist Security Info=False;User ID=collectiondb;Password=Zs9O0PjaVm8il65alfOP;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   let  DevConnectionString = "Server=(LocalDB)\MSSQLLocalDB;Database=the_collection;Trusted_Connection=True;MultipleActiveResultSets=true"
 
   type PageSize = PageSize of int64  

@@ -1,6 +1,6 @@
 namespace Api
 
-module FileUpload =
+module File =
   open Microsoft.AspNetCore.Http
   open System.IO
   open FSharp.Control.Tasks.V2
@@ -14,28 +14,20 @@ module FileUpload =
   let inline startAsPlainTask (work : Async<'a>) = System.Threading.Tasks.Task.Factory.StartNew(fun () -> work |> Async.RunSynchronously)
 
   // https://stackoverflow.com/questions/39322085/how-to-save-iformfile-to-disk
-  let openSingle (file: IFormFile) =
+  let toStream (file: IFormFile) =
     (file.FileName, file.OpenReadStream())
-
-  //let uploadSingle (file: IFormFile) =
-  //  task {
-  //    let filePath = sprintf "c:\\temp\\%s" file.FileName
-  //    use fileStream = new FileStream(filePath, FileMode.Create)
-  //    do! file.CopyToAsync(fileStream) 
-  //    return (filePath, file.FileName)
-  //  }
 
   let uploadFiles (fileRepository: Domain.Tea.File -> Task<DbId option>) (blobRepository: string*Stream -> Async<System.Uri*string>) (files: IFormFileCollection) =
     task {
       if files.Count > 1 then
         return Failure "Only supports uploading one file at a time"
       else 
-        let! (uri, filename) = files.[0] |> openSingle |> blobRepository
+        let! (uri, filename) = files.[0] |> toStream |> blobRepository
         let! id = fileRepository { id = DbId.Empty; importId = 0; uri = uri.AbsoluteUri; filename = filename; created = CreatedDate.Now; modified = ModifiedDate.Now }
         return Success id
     }
 
-  let thumbnailHandler (getById: int -> Task<Domain.Tea.File option>) (getFile: string -> Async<byte[]>) imageId : HttpHandler =
+  let get (getById: int -> Task<Domain.Tea.File option>) (getFile: string -> Async<byte[]>) imageId : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) ->
       task {
         //let! bytes = ImageFilesystemRepository.getAsync imageId
@@ -47,7 +39,7 @@ module FileUpload =
           return! ctx.WriteBytesAsync bytes
       }
 
-  let fileUploadHandler (insertFile: Domain.Tea.File -> Task<DbId option>) (blobRepository: string*Stream -> Async<System.Uri*string>) =
+  let upload (insertFile: Domain.Tea.File -> Task<DbId option>) (blobRepository: string*Stream -> Async<System.Uri*string>) =
     fun (next : HttpFunc) (ctx : HttpContext) ->
       task {
         let formFeature = ctx.Features.Get<Features.IFormFeature>()

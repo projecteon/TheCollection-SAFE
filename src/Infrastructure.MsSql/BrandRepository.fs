@@ -59,9 +59,9 @@ module BrandRepository =
 
     [<Literal>]
     let  InsertSQL = "
-        INSERT INTO tco_brand (s_name)
+        INSERT INTO tco_brand (s_name, dt_created, dt_modified)
         OUTPUT Inserted.ID
-        VALUES(@name);
+        VALUES(@name, GETDATE(), GETDATE());
     "
 
     type InsertBrand = SqlCommandProvider<InsertSQL, DevConnectionString, SingleRow = true>
@@ -75,6 +75,7 @@ module BrandRepository =
     let  UpdateSQL = "
         UPDATE tco_brand SET
           s_name = @s_name
+          ,dt_modified = GETDATE()
         WHERE id = @id;
     "
 

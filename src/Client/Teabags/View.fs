@@ -20,7 +20,7 @@ let getDisplayValue (model: Model) =
 
 let renderImage(imageId: ImageId) =
   match imageId.Option with
-  | Some dbId -> figure [] [ img [ Src (getUrlDbId dbId) ] ]
+  | Some dbId -> figure [] [ img [ Src (getThumbnailUrl dbId) ] ]
   | None ->  figure [ Style [ Display DisplayOptions.Flex; JustifyContent "center" ]] [
                 Fa.stack [ Fa.Stack.Size Fa.Fa7x; Fa.Stack.Props [Style [Width "100%"; MarginTop "10px"]] ]
                   [ Fa.i [ Fa.Solid.Camera
@@ -65,14 +65,24 @@ let searchResult (model:Model) dispatch =
   |> List.map (fun teabag -> resultItem teabag dispatch)
   |> ofList
 
+
+let CarrigeReturnKeyCode = 13.0
+let onKeyDown dispatch (ev: Browser.Types.KeyboardEvent) =
+  if ev.keyCode = CarrigeReturnKeyCode then
+    ev.preventDefault();
+    ev.stopPropagation();
+    dispatch Search
+  else
+    ev |> ignore
+
 let inputElement model dispatch =
   Input.search [
-    yield Input.Props [AutoComplete "off"]
+    yield Input.Props [AutoComplete "off"; DOMAttr.OnKeyDown (fun ev -> onKeyDown dispatch ev)]
     yield Input.Option.Id "searchterm"
     yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
     yield Input.ValueOrDefault (getDisplayValue model)
-    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
+    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))    
     if model.searchError.IsSome then
       yield Input.Color IsDanger
   ]
