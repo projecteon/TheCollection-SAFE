@@ -3,8 +3,6 @@ namespace Server
 open System.IO;
 open Microsoft.WindowsAzure.Storage;
 open Microsoft.WindowsAzure.Storage.Blob;
-open FSharp.Control.Tasks.V2
-open TeaCollection.Infrastructure.MsSql
 
 // https://docs.microsoft.com/en-us/dotnet/fsharp/using-fsharp-on-azure/blob-storage
 // http://thorium.github.io/FSharpAzure/2-AzureStorage/AzureStorageEng.html
@@ -19,8 +17,7 @@ module AzureBlobRepository =
       do! container.CreateIfNotExistsAsync() |> Async.AwaitIAsyncResult |> Async.Ignore
   }
 
-  let createContainer (config: AzureStorage.StorageAccount) containerReferance = async {
-      let storageAccount = CloudStorageAccount.Parse(config.ConnectionString)
+  let createContainer (storageAccount: CloudStorageAccount) containerReferance = async {
       let blobClient = storageAccount.CreateCloudBlobClient()
       let container = blobClient.GetContainerReference(containerReferance)
       do! CreateContainerIfNotExistsAsync container
@@ -46,13 +43,13 @@ module AzureBlobRepository =
     return blockBlob.Uri;
   }
 
-  let getAsync2 (config: AzureStorage.StorageAccount) containerReferance filename = async {
+  let getAsync2 (config: CloudStorageAccount) containerReferance filename = async {
     let! container = createContainer config containerReferance
     let blockBlob = container.GetBlockBlobReference(filename)
     return! mapBlop blockBlob
   }
 
-  let insertAsync2 (config: AzureStorage.StorageAccount) containerReferance  (filename, stream: Stream) = async {
+  let insertAsync2 (config: CloudStorageAccount) containerReferance  (filename, stream: Stream) = async {
     let! container = createContainer config containerReferance
     let blockBlob = container.GetBlockBlobReference(filename)
     do! blockBlob.UploadFromStreamAsync(stream) |> Async.AwaitIAsyncResult |> Async.Ignore

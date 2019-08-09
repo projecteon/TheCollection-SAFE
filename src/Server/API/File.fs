@@ -5,7 +5,7 @@ module File =
   open System.IO
   open FSharp.Control.Tasks.V2
   open Giraffe
-  
+
   open Domain.SharedTypes
   open System.Threading.Tasks
   open Domain.Types
@@ -21,7 +21,7 @@ module File =
     task {
       if files.Count > 1 then
         return Failure "Only supports uploading one file at a time"
-      else 
+      else
         let! (uri, filename) = files.[0] |> toStream |> blobRepository
         let! id = fileRepository { id = DbId.Empty; importId = 0; uri = uri.AbsoluteUri; filename = filename; created = CreatedDate.Now; modified = ModifiedDate.Now }
         return Success id
@@ -44,20 +44,20 @@ module File =
       task {
         let formFeature = ctx.Features.Get<Features.IFormFeature>()
         let! form = formFeature.ReadFormAsync System.Threading.CancellationToken.None
-        let! result = form.Files |> (uploadFiles insertFile blobRepository) 
+        let! result = form.Files |> (uploadFiles insertFile blobRepository)
         match result with
-        | Domain.SharedTypes.Result.Success x -> return! (Successful.OK (Domain.SharedTypes.ImageId x)) next ctx
+        | Domain.SharedTypes.Result.Success x -> return! (json (Domain.SharedTypes.ImageId x)) next ctx
         | Domain.SharedTypes.Result.Failure y -> return! (RequestErrors.BAD_REQUEST y) next ctx
       }
 
   // https://codereview.stackexchange.com/questions/90569/saving-an-uploaded-file-and-returning-form-data
-  //let singleFile 
-  //  (req : HttpRequestMessage) 
-  //  dirName 
-  //  typeDir 
-  //  (fileType : string) 
-  //  userName 
-  //  clearDir 
+  //let singleFile
+  //  (req : HttpRequestMessage)
+  //  dirName
+  //  typeDir
+  //  (fileType : string)
+  //  userName
+  //  clearDir
   //  deleteExistingFile =
 
   //  let isValidFile (fileData: seq<MultipartFileData>) =
@@ -81,9 +81,9 @@ module File =
   //  async {
   //      if not (req.Content.IsMimeMultipartContent()) then
   //          return req.CreateResponse HttpStatusCode.UnsupportedMediaType
-  //      else 
+  //      else
 
-  //          let tempFileFolder = 
+  //          let tempFileFolder =
   //              HttpContext.Current.Server.MapPath @"~/TempFileUploads"
 
   //          Directory.CreateDirectory tempFileFolder |> ignore
@@ -91,19 +91,19 @@ module File =
   //          let provider = new MultipartFormDataStreamProvider(tempFileFolder)
 
   //          try
-  //              let dirPath = 
-  //                  let path = 
-  //                      @"~/Uploads/" + typeDir + @"/" + dirName 
+  //              let dirPath =
+  //                  let path =
+  //                      @"~/Uploads/" + typeDir + @"/" + dirName
   //                      + if String.IsNullOrWhiteSpace userName then "" else @"/" + userName
   //                  HttpContext.Current.Server.MapPath path
 
-  //              if clearDir && Directory.Exists dirPath then 
+  //              if clearDir && Directory.Exists dirPath then
   //                  Directory.Delete(dirPath, true)
 
   //              // create the final directory path
   //              Directory.CreateDirectory dirPath |> ignore
 
-  //              let! readToProvider = 
+  //              let! readToProvider =
   //                  req.Content.ReadAsMultipartAsync provider |> Async.AwaitIAsyncResult
 
   //              let fileNameAndTypeIsValid = isValidFile provider.FileData && provider.FormData.Count > 0
@@ -114,7 +114,7 @@ module File =
   //                          provider.FileData.ElementAt(0).LocalFileName
   //                      )
 
-  //                  let ext = 
+  //                  let ext =
   //                      Path.GetExtension(
   //                          provider.FileData.ElementAt(0)
   //                              .Headers.ContentDisposition.FileName
@@ -123,9 +123,9 @@ module File =
 
   //                  File.Move(fileInfo.FullName, Path.Combine(dirPath, fileInfo.Name + ext))
 
-  //                  let fileUrl = 
-  //                      @"/Uploads/" + typeDir + @"/" + dirName + @"/"  
-  //                      + if String.IsNullOrWhiteSpace userName then "" else userName + @"/" 
+  //                  let fileUrl =
+  //                      @"/Uploads/" + typeDir + @"/" + dirName + @"/"
+  //                      + if String.IsNullOrWhiteSpace userName then "" else userName + @"/"
   //                      + fileInfo.Name + ext
 
   //                  provider.FormData.Add("FileUrl", fileUrl)

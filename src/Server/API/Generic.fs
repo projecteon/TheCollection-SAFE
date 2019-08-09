@@ -29,7 +29,7 @@ let handleGetAllSearch (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) 
   task {
     let filter = ctx.BindQueryString<'a>()
     let! data = getAll(filter)
-    return! Successful.OK data next ctx
+    return! json data next ctx
   }
 
 let handleGetAllWithPaging (getAll: ('a -> 'b list*int )) (transform: ('b list -> 'c list )) next (ctx: HttpContext) =
@@ -38,34 +38,34 @@ let handleGetAllWithPaging (getAll: ('a -> 'b list*int )) (transform: ('b list -
     // ctx.GetService<IConfiguration>() // https://www.devprotocol.com/use-appsettings-in-a-giraffe-web-app/
     let filter = ctx.BindQueryString<'a>()
     let (data, count) = getAll(filter)
-    return! Successful.OK {data=(transform data); count=count} next ctx
+    return! json {data=(transform data); count=count} next ctx
   }
 
 let handleGet (get: ('a -> Task<Option<'b>> )) (transform: ('b -> 'c )) id next ctx =
   task {
     let! data = get id
     match data with
-    | Some x -> return! Successful.OK (transform x) next ctx
+    | Some x -> return! json (transform x) next ctx
     | _ -> return! Successful.NO_CONTENT next ctx
   }
 
 let handleGetAll (get: Task<'a>) next ctx =
   task {
     let! data = get
-    return! Successful.OK data next ctx
+    return! json data next ctx
   }
 
 let handleGetTransformAll (get: Task<'a>) (transform: ('a -> 'b )) next ctx =
   task {
     let! data = get
-    return! Successful.OK (transform data) next ctx
+    return! json (transform data) next ctx
   }
 
 let handleSearchAndTransform (search: ('a -> Task<'b> )) (transform: ('b -> 'c )) next (ctx: HttpContext) =
   task {
     let filter = ctx.BindQueryString<'a>()
     let! data = search filter
-    return! Successful.OK (transform data) next ctx
+    return! json (transform data) next ctx
   }
 
 
@@ -79,7 +79,7 @@ let handleGetAllQuery (getAll: ('a -> Task<'b list> )) next (ctx: HttpContext) =
     match filter with
     | Ok filter ->
       let! data = getAll(filter)
-      return! Successful.OK data next ctx
+      return! json data next ctx
     | Error err -> return! RequestErrors.BAD_REQUEST err next ctx
   }
 
@@ -91,7 +91,7 @@ let handlePost (insert: ('a -> Task<'b> )) (transform: ('c -> 'a )) (validate: (
     match validatedModel with
     | Success model ->
       let! result = insert model
-      return! Successful.OK result next ctx
+      return! json result next ctx
     | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx
   }
 
@@ -107,6 +107,6 @@ let handlePut (get: ('a -> Task<Option<'b>> )) (update: ('b -> Task<'a>)) (trans
       match validatedModel with
       | Success model ->
         let! result = update (model)
-        return! Successful.OK result next ctx
+        return! json result next ctx
       | Failure err -> return! RequestErrors.BAD_REQUEST err next ctx
   }

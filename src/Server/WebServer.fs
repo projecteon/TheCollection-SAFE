@@ -5,24 +5,20 @@ module WebServer =
 
   open TeaCollection.Infrastructure.MsSql
   open Security.Authorization
-  open TeaCollection.Infrastructure.MsSql.AzureStorage
   open TeaCollection.Infrastructure.MsSql.DbContext
 
-  let azureStorageCfg = {
-    AccountName = AccountName "devstoreaccount1"
-    AccountKey = AccountKey "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
-    Scheme= Scheme "http"
-    Endpoints = {
-      BlobEndpoint = BlobEndpoint "http://127.0.0.1:10000/devstoreaccount1"
-      TableEndpoint = TableEndpoint "http://127.0.0.1:10000/devstoreaccount1"
-      QueueEndpoint = QueueEndpoint "http://127.0.0.1:10000/devstoreaccount1"
-    }
-  }
+  open Microsoft.WindowsAzure.Storage
+
+  let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
+  let connectionString = tryGetEnv "DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
+  let storageAccount = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true" |> CloudStorageAccount.Parse
+
+  printfn "%s" connectionString.String
 
   let DevDbCondig = {
     PageSize = 100 |> int64 |> PageSize
-    Default = DbContext.DevConnectionString |> ConnectionString
-    ReadOnly = DbContext.DevConnectionString |> ConnectionString
+    Default = connectionString
+    ReadOnly = connectionString
   }
 
   let searchAllTeabags = TeabagRepository.searchAll DevDbCondig
@@ -37,8 +33,8 @@ module WebServer =
   let getAllRefValues = RefValueRepository.getAll DevDbCondig
   let getUserByEmail = UserRepository.getByEmail DevDbCondig
   let getFileById = FileRepository.getById DevDbCondig
-  let getBlobByFilename = AzureBlobRepository.getAsync2 azureStorageCfg AzureBlobRepository.ImagesContainerReferance
-  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 azureStorageCfg AzureBlobRepository.ThumbnailsContainerReferance
+  let getBlobByFilename = AzureBlobRepository.getAsync2 storageAccount AzureBlobRepository.ImagesContainerReferance
+  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 storageAccount AzureBlobRepository.ThumbnailsContainerReferance
 
   let updateUser = UserRepository.update DevDbCondig
   let insertTeabag = TeabagRepository.insert DevDbCondig
@@ -50,7 +46,7 @@ module WebServer =
   let insertCountry = CountryRepository.insert DevDbCondig
   let updateCountry = CountryRepository.update DevDbCondig
   let insertFile = FileRepository.insert DevDbCondig
-  let insertBlob = AzureBlobRepository.insertAsync2 azureStorageCfg AzureBlobRepository.ImagesContainerReferance
+  let insertBlob = AzureBlobRepository.insertAsync2 storageAccount AzureBlobRepository.ImagesContainerReferance
 
   let validate (model: 'a) =
     Domain.SharedTypes.Result.Success model

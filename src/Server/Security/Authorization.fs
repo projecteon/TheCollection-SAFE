@@ -23,7 +23,7 @@ module Authorization =
       let userEmail = emailClaim.Value.Value |> EmailAddress
       let! userOption = userRepository userEmail;
       match userOption with
-      | Some user when user.RefreshToken.IsSome -> 
+      | Some user when user.RefreshToken.IsSome ->
         if (user.RefreshToken.Value <> refreshToken) then
           return Failure "Invalid refresh token!"
         else if user.RefreshTokenExpire.Value.IsBefore System.DateTime.Now then
@@ -33,7 +33,7 @@ module Authorization =
                             UserName = userEmail
                             Token = generateTokenFromClaims securityToken.Claims
                             RefreshToken = generateRefreshToken
-                          } 
+                          }
           let updatedUser = {user with RefreshToken = Some newToken.RefreshToken; RefreshTokenExpire = Some (DateTime.Now.AddHours(8.0) |> RefreshTokenExpire)}
           let! updateUserResult = updateUserRepository updatedUser
           return Success newToken
@@ -66,7 +66,7 @@ module Authorization =
         let! loginResult = loginUserCmd userRepository updateUserRepository model
         match loginResult with
         | Success userData ->
-          return! Successful.OK userData next ctx
+          return! json userData next ctx
         | Failure msg -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" msg) next ctx
     }
 
@@ -76,6 +76,6 @@ module Authorization =
       let! loginResult = refreshToken userRepository updateUserRepository (model.Token, model.RefreshToken)
       match loginResult with
       | Success userData ->
-        return! Successful.OK userData next ctx
+        return! json userData next ctx
       | Failure msg -> return! (RequestErrors.UNAUTHORIZED "Basic" "The Collection" msg) next ctx
     }

@@ -8,7 +8,7 @@ module Dtos =
   type JWT = JWT of string
     with
     member this.String = let (JWT s) = this in s
-    
+
   type Name = Name of string
     with
     member this.String = let (Name s) = this in s
@@ -20,13 +20,13 @@ module Dtos =
   //      if (s <> "" || (not (isNull s)) ) then Ok s
   //      else Error "Invalid string"
 
-  [<CLIMutable>]
+  // [<CLIMutable>]
   type LoginViewModel = {
       Email     : EmailAddress
       Password  : Password
   }
-  
-  [<CLIMutable>]
+
+  // [<CLIMutable>]
   type RefreshTokenViewModel = {
     Token         : JWT
     RefreshToken  : RefreshToken

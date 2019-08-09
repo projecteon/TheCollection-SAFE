@@ -5,8 +5,9 @@ module JsonWebToken =
   open System.Text
   open System.Security.Claims
   open System.Security.Cryptography
+
   open System.IdentityModel.Tokens.Jwt
-  open Microsoft.IdentityModel.Tokens
+   //open Microsoft.IdentityModel.Tokens
 
   open Domain.SharedTypes
   open Server.Api.Dtos
@@ -27,8 +28,8 @@ module JsonWebToken =
   let generateTokenFromClaims claims =
       let expires = Nullable(DateTime.UtcNow.AddHours(1.0))
       let notBefore = Nullable(DateTime.UtcNow)
-      let securityKey = SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
-      let signingCredentials = SigningCredentials(key = securityKey, algorithm = SecurityAlgorithms.HmacSha256)
+      let securityKey = Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+      let signingCredentials = Microsoft.IdentityModel.Tokens.SigningCredentials(key = securityKey, algorithm = Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256)
 
       let token =
           JwtSecurityToken(
@@ -46,7 +47,7 @@ module JsonWebToken =
           Claim(JwtRegisteredClaimNames.Sub, email.String);
           Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) |]
 
-      let tokenResult = {
+      let tokenResult: UserData = {
         UserName = email
         Token = generateTokenFromClaims claims
         RefreshToken = generateRefreshToken
@@ -55,17 +56,17 @@ module JsonWebToken =
       tokenResult
 
   let getJwtSecturityTokenFromExpiredToken (token: JWT) =
-    let tokenValidationParameters = new TokenValidationParameters(
+    let tokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters(
                                                                     ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
                                                                     ValidateIssuer = false,
                                                                     ValidateIssuerSigningKey = true,
-                                                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+                                                                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
                                                                     ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
                                                                   )
     let tokenHandler = new JwtSecurityTokenHandler()
     let (principal, securityToken) = tokenHandler.ValidateToken(token.String, tokenValidationParameters)
     let jwtSecurityToken = securityToken :?> JwtSecurityToken
-    if (jwtSecurityToken = null || (String.Compare(jwtSecurityToken.Header.Alg, SecurityAlgorithms.HmacSha256, StringComparison.CurrentCultureIgnoreCase) <> 0)) then
-        raise (new SecurityTokenException("Invalid token"))
+    if (jwtSecurityToken = null || (String.Compare(jwtSecurityToken.Header.Alg, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256, StringComparison.CurrentCultureIgnoreCase) <> 0)) then
+        raise (new Microsoft.IdentityModel.Tokens.SecurityTokenException("Invalid token"))
     else
       jwtSecurityToken
