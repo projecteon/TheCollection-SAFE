@@ -13,8 +13,6 @@ module WebServer =
   let connectionString = tryGetEnv "DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
   let storageAccount = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true" |> CloudStorageAccount.Parse
 
-  printfn "%s" connectionString.String
-
   let DevDbCondig = {
     PageSize = 100 |> int64 |> PageSize
     Default = connectionString
