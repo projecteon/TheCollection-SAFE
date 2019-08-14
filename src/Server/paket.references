@@ -3,3 +3,5 @@ group Server
   Saturn
   Thoth.Json.Giraffe
   WindowsAzure.Storage
+  BCrypt.Net-Next
+  NodaTime

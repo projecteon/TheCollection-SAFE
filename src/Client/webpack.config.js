@@ -1,6 +1,9 @@
 var path = require("path");
 var webpack = require("webpack");
 var MinifyPlugin = require("terser-webpack-plugin");
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpackModuleCommon = require('./webpack.config.common.module');
 
 function resolve(filePath) {
@@ -24,21 +27,31 @@ var CONFIG = {
     historyApiFallback: {
         index: resolve("./index.html")
     },
-    contentBase: resolve("./public")
+    outputDir: './deploy',
+    contentBase: resolve("./public"),
+    indexHtmlTemplate: './index.html',
+    assetsDir: './public',
+    devServerPort: 8080,
 }
 
 var isProduction = process.argv.indexOf("-p") >= 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
+var commonPlugins = [
+  new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: resolve(CONFIG.indexHtmlTemplate)
+  })
+];
+
 module.exports = {
     entry : CONFIG.fsharpEntry,
     output: {
-        path: resolve('./public/js'),
-        publicPath: "/js",
-        filename: "[name].js"
+      path: resolve(CONFIG.outputDir),
+      filename: isProduction ? '[name].[hash].js' : '[name].js'
     },
     mode: isProduction ? "production" : "development",
-    devtool: isProduction ? undefined : "source-map",
+    devtool: isProduction ? 'source-map' : 'eval-source-map',
     resolve: {
         symlinks: false
     },
@@ -58,23 +71,24 @@ module.exports = {
     },
     // DEVELOPMENT
     //      - HotModuleReplacementPlugin: Enables hot reloading when code changes without refreshing
-    plugins: isProduction ? [
-      // new HtmlWebpackPlugin({
-      //   filename: 'index.html',
-      //   template: resolve("./public/index.html")
-      // })
-    ] : [
+    plugins: isProduction ?
+    commonPlugins.concat([
+        new MiniCssExtractPlugin({ filename: 'style.[hash].css' }),
+        new CopyWebpackPlugin([{ from: resolve(CONFIG.assetsDir) }]),
+    ])
+    : commonPlugins.concat([
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()
-    ],
+    ]),
     // Configuration for webpack-dev-server
     devServer: {
-        proxy: CONFIG.devServerProxy,
-        hot: true,
-        inline: true,
-        // historyApiFallback: CONFIG.historyApiFallback, // https://stackoverflow.com/questions/37271062/historyapifallback-doesnt-work-in-webpack-dev-server/38207496#38207496
-        historyApiFallback: true,
-        contentBase: CONFIG.contentBase
+      publicPath: '/',
+      hot: true,
+      inline: true,
+      port: CONFIG.devServerPort,
+      proxy: CONFIG.devServerProxy,
+      // historyApiFallback: CONFIG.historyApiFallback, // https://stackoverflow.com/questions/37271062/historyapifallback-doesnt-work-in-webpack-dev-server/38207496#38207496
+      historyApiFallback: true,
+      contentBase: CONFIG.contentBase
     },
     // - fable-loader: transforms F# into JS
     // - babel-loader: transforms JS to old syntax (compatible with old browsers)

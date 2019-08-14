@@ -6,6 +6,7 @@ module Authorization =
   open Microsoft.AspNetCore.Http
   open FSharp.Control.Tasks.V2
   open Giraffe
+  open BCrypt.Net
 
   open Domain.SharedTypes
   open Domain.Types
@@ -51,10 +52,10 @@ module Authorization =
       match dbUser with
       | None -> return Failure "Invalid username or password!"
       | Some user ->
-        if user.Password = loginModel.Password then
+        if BCrypt.EnhancedVerify(loginModel.Password.String, user.Password.String) then
           let token = generateToken user.Email
           let updatedUser = {user with RefreshToken = Some token.RefreshToken; RefreshTokenExpire = Some (DateTime.Now.AddHours(8.0) |> RefreshTokenExpire)}
-          let! updateUserResult = updateUserRepository updatedUser
+          do! updateUserRepository updatedUser |> Async.AwaitTask |> Async.Ignore // https://stackoverflow.com/questions/8022909/how-to-async-awaittask-on-plain-task-not-taskt
           return (token |> Success)
         else return Failure "Invalid username or password!"
     }

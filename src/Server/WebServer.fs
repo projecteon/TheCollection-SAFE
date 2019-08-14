@@ -10,7 +10,7 @@ module WebServer =
   open Microsoft.WindowsAzure.Storage
 
   let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
-  let connectionString = tryGetEnv "DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
+  let connectionString = tryGetEnv "SQLCONNSTR_DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
   let storageAccount = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true" |> CloudStorageAccount.Parse
 
   let DevDbCondig = {

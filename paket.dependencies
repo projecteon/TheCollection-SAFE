@@ -32,6 +32,7 @@ group Server
     nuget FSharp.Core
     nuget Saturn
     nuget Thoth.Json.Giraffe ~> 2.1
+    nuget BCrypt.Net-Next
     nuget NodaTime
     nuget WindowsAzure.Storage ~> 9.3
 
@@ -71,4 +72,10 @@ group Build
     nuget Fake.Core.Target ~> 5.13
     nuget Fake.DotNet.Cli ~> 5.13
     nuget Fake.IO.FileSystem ~> 5.13
+    nuget Fake.Core.ReleaseNotes
+    nuget Fake.Core.Environment
+    nuget Fake.Core.Trace
+    nuget Fake.IO.Zip
     nuget FAKE ~> 5.8
+
+    github CompositionalIT/fshelpers src/FsHelpers/ArmHelper/ArmHelper.fs

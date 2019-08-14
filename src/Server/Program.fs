@@ -5,7 +5,8 @@ open Saturn
 open Security.JsonWebToken
 open Server.WebServer
 
-let publicPath = Path.GetFullPath "../Client/public"
+let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
+let publicPath = tryGetEnv "public_path" |> Option.defaultValue "../Client/public" |> Path.GetFullPath
 let port = 8085us
 
 let app = application {
