@@ -14,7 +14,7 @@ open State
 open Client.Navigation
 
 
-// look into https://chriscourses.com/blog/loading-fonts-webpack 
+// look into https://chriscourses.com/blog/loading-fonts-webpack
 importAll "../sass/index.scss"
 
 let viewPage model dispatch =
@@ -35,7 +35,7 @@ let view model dispatch =
     div [ Class "loginPage" ] (viewPage model dispatch)
   | _ ->
     Container.container [ ] [
-      Client.Components.Navbar.view()()
+      Client.Components.Navbar.View.view model.CurrentPage model.Navbar (NavbarMsg >> dispatch)
       hr [Style [MarginTop 0]]
       div [ ] (viewPage model dispatch)
     ]

@@ -35,29 +35,33 @@ let urlUpdate (result: Page option) (model: Model) =
 
   | Some Page.Teabags ->
     let m = Client.Teabags.State.init
-    { model with PageModel = TeabagsPageModel m }, Cmd.none
+    { model with PageModel = TeabagsPageModel m; CurrentPage = Page.Teabags }, Cmd.none
 
   | Some (Page.Teabag id) ->
     let m, cmd = Client.Teabag.State.init
-    { model with PageModel = TeabagPageModel m }, Cmd.map TeabagMsg (tryRefreshJwtCmd (id |> Some |> cmd) model.User)
+    { model with PageModel = TeabagPageModel m; CurrentPage = (Page.Teabag id) }, Cmd.map TeabagMsg (tryRefreshJwtCmd (id |> Some |> cmd) model.User)
 
   | Some (Page.TeabagNew str) ->
     let m, cmd = Client.Teabag.State.init
-    { model with PageModel = TeabagPageModel m },  Cmd.map TeabagMsg (tryRefreshJwtCmd (cmd None) model.User)
+    { model with PageModel = TeabagPageModel m; CurrentPage = (Page.TeabagNew str) },  Cmd.map TeabagMsg (tryRefreshJwtCmd (cmd None) model.User)
 
   | Some Page.Dashboard ->
     let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init
-    { model with PageModel = DashboardPageModel m },  Cmd.batch [   Cmd.map DashboardMsg (tryJwtCmd cmd model.User)
-                                                                    Cmd.map DashboardMsg (tryJwtCmd cmd2 model.User)
-                                                                    Cmd.map DashboardMsg (tryJwtCmd cmd3 model.User) ]
+    { model with PageModel = DashboardPageModel m; CurrentPage = Page.Dashboard },  Cmd.batch [ Cmd.map DashboardMsg (tryJwtCmd cmd model.User)
+                                                                                                Cmd.map DashboardMsg (tryJwtCmd cmd2 model.User)
+                                                                                                Cmd.map DashboardMsg (tryJwtCmd cmd3 model.User) ]
 
 let init page =
   let m, cmd = Client.Login.State.init
-  let model = { User = None; PageModel = LoginPageModel m }
+  let (navbar, navCmd) = Client.Components.Navbar.State.init()
+  let model = { User = None; PageModel = LoginPageModel m; CurrentPage = Page.Login; Navbar = navbar }
   urlUpdate page model
 
 let update msg model =
   match msg, model.PageModel with
+  | NavbarMsg msg, _ ->
+    let (navbar, navbarCmd) = Client.Components.Navbar.State.update msg model.Navbar
+    { model with Navbar = navbar }, Cmd.map NavbarMsg navbarCmd
   | TeabagsMsg msg, TeabagsPageModel m ->
     let m, cmd = Client.Teabags.State.update msg m model.User
     { model with PageModel = TeabagsPageModel m }, Cmd.map TeabagsMsg cmd

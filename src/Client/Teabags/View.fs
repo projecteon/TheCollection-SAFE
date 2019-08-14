@@ -6,7 +6,7 @@ open Fable.FontAwesome
 open Fulma
 
 open Client.Navigation
-open Client.Components.Navbar
+open Client.Components.Navbar.View
 open Client.FileUrlHandler
 open Client.Teabags.Types
 open Server.Api.Dtos
@@ -82,7 +82,7 @@ let inputElement model dispatch =
     yield Input.Disabled model.isLoading
     yield Input.Placeholder (sprintf "Ex: Some searchterm")
     yield Input.ValueOrDefault (getDisplayValue model)
-    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))    
+    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
     if model.searchError.IsSome then
       yield Input.Color IsDanger
   ]

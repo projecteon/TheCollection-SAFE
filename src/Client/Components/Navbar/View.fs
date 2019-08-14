@@ -1,16 +1,14 @@
-module Client.Components.Navbar
+module Client.Components.Navbar.View
+
 
 open Elmish.Navigation
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
-open Fable.React.Isomorphic
 open Fable.Import
 
+open Client.Components.Navbar.Types
 open Client.Navigation
-open Server.Api.Dtos
-
-type Model = UserData option
 
 type HTMLAttr =
      | [<CompiledName("data-target")>] DataTarget of string
@@ -24,14 +22,19 @@ let goToUrl (e: Browser.Types.MouseEvent) =
     let href = !!e.target?href
     Navigation.newUrl href |> List.map (fun f -> f ignore) |> ignore
 
-let viewLink page description =
+let goToUrlAndToggleBurger dispatch (e: Browser.Types.MouseEvent) =
+    dispatch ToggleBurger |> ignore
+    goToUrl e |> ignore
+
+let viewLink description page currentPage dispatch =
+  printf "%O %O" page currentPage
   a [ Style [ Padding "0 20px" ]
-      Class "navbar-item"
+      classList ["navbar-item", true; "is-active", page = currentPage]
       Href (Client.Navigation.toPath page)
-      OnClick goToUrl]
+      OnClick (goToUrlAndToggleBurger dispatch)]
       [ str description]
 
-let brand =
+let brand (model: Model) dispatch =
   div [ Class "navbar-brand" ] [
       a [ Class "navbar-item"; Href "\\"] [
         img [ Src "/svg/teapot.svg"; Style [Width 30; Height 30;]; Alt ""]
@@ -40,31 +43,32 @@ let brand =
           Role "button"
           Class "navbar-burger burger"
           AriaLabel "menu"
-          AriaExpanded false
+          AriaExpanded model.isBurgerOpen
           DataTarget "navMenu"
+          OnClick (fun _ -> dispatch ToggleBurger)
         ] [
           span [AriaHidden true] []
           span [AriaHidden true] []
           span [AriaHidden true] []
       ]
   ]
-  
+
 // https://github.com/Fulma/Fulma/issues/46
 // https://github.com/MangelMaxime/fulma-demo/blob/master/src/App.fs#L16-L65
-let navMenu =
+let navMenu currentPage (model: Model) dispatch =
   div [
       Id "navMenu"
-      Class "navbar-menu"
+      classList ["navbar-menu", true; "is-active", model.isBurgerOpen]
     ] [
       div [ Class "navbar-end" ] [
-        viewLink Page.Dashboard "Dashboard"
-        viewLink Page.Teabags "Teabags"
-        viewLink (Page.TeabagNew "") "New"
-        viewLink Page.Logout "Logout"
+        viewLink "Dashboard" Page.Dashboard currentPage dispatch
+        viewLink "Teabags" Page.Teabags currentPage dispatch
+        viewLink "New" (Page.TeabagNew "") currentPage dispatch
+        viewLink "Logout" Page.Logout currentPage dispatch
       ]
     ]
 
-let inline private clientView () =
+let view currentPage (model: Model) dispatch =
     nav [
           Style []
           Class "navbar is-fixed-top"
@@ -72,13 +76,7 @@ let inline private clientView () =
           AriaLabel "main naviation"
         ] [
           div [Class "container"] [
-            brand
-            navMenu
+            brand model dispatch
+            navMenu currentPage model dispatch
           ]
         ]
-
-let inline private serverView () =
-    clientView()
-
-let view() =
-    isomorphicView clientView serverView

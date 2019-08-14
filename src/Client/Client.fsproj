@@ -21,8 +21,10 @@
         <Compile Include="Components/ComboBox/Types.fs" />
         <Compile Include="Components/ComboBox/State.fs" />
         <Compile Include="Components/ComboBox/View.fs" />
-        <Compile Include="Components\ModalCard.fs" />
-        <Compile Include="Components/Navbar.fs" />
+        <Compile Include="Components/Navbar/Types.fs" />
+        <Compile Include="Components/Navbar/State.fs" />
+        <Compile Include="Components/Navbar/View.fs" />
+        <Compile Include="Components/ModalCard.fs" />
         <Compile Include="Components/BarChart.fs" />
         <Compile Include="Components/PieChart.fs" />
         <Compile Include="Components/PeriodLineChart.fs" />
