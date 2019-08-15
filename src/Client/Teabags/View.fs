@@ -20,7 +20,7 @@ let getDisplayValue (model: Model) =
 
 let renderImage(imageId: ImageId) =
   match imageId.Option with
-  | Some dbId -> figure [] [ img [ Src (getThumbnailUrl dbId) ] ]
+  | Some dbId -> figure [] [ img [ Src (getThumbnailUrl dbId); Style [Width "100%"] ] ]
   | None ->  figure [ Style [ Display DisplayOptions.Flex; JustifyContent "center" ]] [
                 Fa.stack [ Fa.Stack.Size Fa.Fa7x; Fa.Stack.Props [Style [Width "100%"; MarginTop "10px"]] ]
                   [ Fa.i [ Fa.Solid.Camera
@@ -128,11 +128,13 @@ let zoomImage model dispatch =
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [
-    div [] [
-      searchBar model dispatch
-      Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsCentered ] [
-         searchResult model dispatch
+    Container.container [] [
+      Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
+        searchBar model dispatch
+        Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsCentered ] [
+           searchResult model dispatch
+        ]
+        zoomImage model dispatch
       ]
-      zoomImage model dispatch
     ]
   ]

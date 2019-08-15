@@ -26,7 +26,7 @@ let renderPieChart data =
 
 let lineChartHoverLegend dispatch key =
   dispatch (ToggleCountByInsertedHoveredKey key)
-  
+
 let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
   match chart with
   | None -> nothing
@@ -38,7 +38,7 @@ let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
       | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]][Fa.i [ Fa.Solid.ChartPie ][]])
       | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]][Fa.i [ Fa.Solid.ChartBar ][]])
       | _ -> nothing
-  
+
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
     Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ][Fa.i [ Fa.Solid.ExpandArrowsAlt ][]]
@@ -48,93 +48,45 @@ let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
 
 let view (model:Model) dispatch =
     [
-      br []
-      Columns.columns [ Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
-        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                str "Brands ReChart"
-                div [][
-                  ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
+      Container.container [] [
+        Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
+          Columns.columns [ Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
+            Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
+              Panel.panel [] [
+                Panel.heading [ ] [
+                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+                    str "Brands ReChart"
+                    div [][
+                      ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
+                    ]
+                  ]
+                ]
+                Panel.block [ ] [
+                  renderBarChart model.countByBrands model.displayedByBrands
                 ]
               ]
             ]
-            Panel.block [ ] [
-              renderBarChart model.countByBrands model.displayedByBrands
-            ]
-          ]
-        ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [ str "Bagtypes ReChart"]
-            Panel.block [ ] [
-              renderPieChart model.countByBagtypes
-            ]
-          ]
-        ]
-        Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-          Panel.panel [] [
-            Panel.heading [ ] [
-              div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                str "Inserted ReChart"
+            Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
+              Panel.panel [] [
+                Panel.heading [ ] [ str "Bagtypes ReChart"]
+                Panel.block [ ] [
+                  renderPieChart model.countByBagtypes
+                ]
               ]
             ]
-            Panel.block [ ] [
-              PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+            Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+              Panel.panel [] [
+                Panel.heading [ ] [
+                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+                    str "Inserted ReChart"
+                  ]
+                ]
+                Panel.block [ ] [
+                  PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+                ]
+              ]
             ]
           ]
         ]
-        //Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-        //  Panel.panel [] [
-        //    Panel.heading [ ] [
-        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-        //        str "Brands C3"
-        //        div [][
-        //          TransformationsIcon model.countBrands dispatch TransformCountByBrand
-        //          ExpandCollapseIcon  model.displayedBrands dispatch ExpandBrands CollapseBrands
-        //        ]
-        //      ]
-        //    ]
-        //    Panel.block [ ] [
-        //      match model.countBrands with
-        //        | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-        //        | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
-        //    ]
-        //  ]
-        //]
-        //Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-        //  Panel.panel [] [
-        //    Panel.heading [ ] [
-        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-        //        str "Bagtypes C3"
-        //        div [][
-        //          yield (TransformationsIcon model.countBagtypes dispatch TransformCountByBagtype)
-        //        ]
-        //      ]
-        //    ]
-        //    Panel.block [ ] [
-        //      match model.countBagtypes with
-        //      | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-        //      | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
-        //    ]
-        //  ]
-        //]
-        //Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-        //  Panel.panel [] [
-        //    Panel.heading [ ] [
-        //      div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-        //        str "Inserted C3"
-        //        div [][]
-        //      ]
-        //    ]
-        //    Panel.block [ ] [
-        //      match model.countInserted with
-        //      | Some x -> yield (C3.chart { data = x.data; axis = x.axis; height = 320 })
-        //      | None -> yield  div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 200]] []
-        //    ]
-        //  ]
-        //]
       ]
-      br []
     ]

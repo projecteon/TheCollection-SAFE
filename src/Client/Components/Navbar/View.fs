@@ -6,6 +6,7 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open Fable.Import
+open Fulma
 
 open Client.Components.Navbar.Types
 open Client.Navigation
@@ -75,7 +76,7 @@ let view currentPage (model: Model) dispatch =
           Role "navitation"
           AriaLabel "main naviation"
         ] [
-          div [Class "container"] [
+          Container.container [] [
             brand model dispatch
             navMenu currentPage model dispatch
           ]
