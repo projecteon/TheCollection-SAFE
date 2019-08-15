@@ -7,16 +7,10 @@ module WebServer =
   open Security.Authorization
   open TeaCollection.Infrastructure.MsSql.DbContext
 
-  open Microsoft.WindowsAzure.Storage
-
-  let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
-  let connectionString = tryGetEnv "SQLCONNSTR_DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
-  let storageAccount = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true" |> CloudStorageAccount.Parse
-
   let DevDbCondig = {
     PageSize = 100 |> int64 |> PageSize
-    Default = connectionString
-    ReadOnly = connectionString
+    Default = Config.connectionString
+    ReadOnly = Config.connectionString
   }
 
   let searchAllTeabags = TeabagRepository.searchAll DevDbCondig
@@ -31,8 +25,8 @@ module WebServer =
   let getAllRefValues = RefValueRepository.getAll DevDbCondig
   let getUserByEmail = UserRepository.getByEmail DevDbCondig
   let getFileById = FileRepository.getById DevDbCondig
-  let getBlobByFilename = AzureBlobRepository.getAsync2 storageAccount AzureBlobRepository.ImagesContainerReferance
-  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 storageAccount AzureBlobRepository.ThumbnailsContainerReferance
+  let getBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
+  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ThumbnailsContainerReferance
 
   let updateUser = UserRepository.update DevDbCondig
   let insertTeabag = TeabagRepository.insert DevDbCondig
@@ -44,7 +38,7 @@ module WebServer =
   let insertCountry = CountryRepository.insert DevDbCondig
   let updateCountry = CountryRepository.update DevDbCondig
   let insertFile = FileRepository.insert DevDbCondig
-  let insertBlob = AzureBlobRepository.insertAsync2 storageAccount AzureBlobRepository.ImagesContainerReferance
+  let insertBlob = AzureBlobRepository.insertAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
 
   let validate (model: 'a) =
     Domain.SharedTypes.Result.Success model

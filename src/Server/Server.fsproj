@@ -17,6 +17,7 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.fs" />
     <Compile Include="API\Dtos.fs" />
     <Compile Include="NodaTimeHelper.fs" />
     <Compile Include="Repositories\FilesystemRepository.fs" />

@@ -1,21 +1,23 @@
-open System.IO
 open Microsoft.AspNetCore
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.StaticFiles
 open Saturn
 
-open Security.JsonWebToken
 open Server.WebServer
 
-let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
-let publicPath = tryGetEnv "public_path" |> Option.defaultValue "../Client/public" |> Path.GetFullPath
-let port = 8085us
+let configureApp (app: IApplicationBuilder) =
+  let provider = FileExtensionContentTypeProvider();
+  provider.Mappings.[".webmanifest"] <- "application/manifest+json";
+  app.UseStaticFiles(StaticFileOptions (ContentTypeProvider = provider));
 
 let app = application {
-  url ("http://0.0.0.0:" + port.ToString() + "/")
+  app_config configureApp
+  url ("http://0.0.0.0:" + Server.Config.Port.ToString() + "/")
   use_router webApp
   memory_cache
-  use_static publicPath
+  use_static Server.Config.PublicPath
   use_gzip
-  use_jwt_authentication secret "thecollection.net"
+  use_jwt_authentication Server.Config.JwtSecret Server.Config.JwtIssuer
   use_json_serializer (Thoth.Json.Giraffe.ThothSerializer())
 }
 

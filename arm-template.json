@@ -17,7 +17,7 @@
       },
       "databaseEdition": {
         "type": "string",
-        "defaultValue": "Basic",
+        "defaultValue": "Standard",
         "allowedValues": [
           "Basic",
           "Standard",
@@ -26,11 +26,11 @@
       },
       "databaseMaxSizeBytes": {
         "type": "string",
-        "defaultValue": "1073741824"
+        "defaultValue": "2147483648"
       },
       "databaseRequestedServiceObjectiveName": {
         "type": "string",
-        "defaultValue": "Basic",
+        "defaultValue": "S1",
         "allowedValues": [
           "Basic",
           "S0",
