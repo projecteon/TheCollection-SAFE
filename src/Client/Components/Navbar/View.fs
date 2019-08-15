@@ -28,21 +28,20 @@ let goToUrlAndToggleBurger dispatch (e: Browser.Types.MouseEvent) =
     goToUrl e |> ignore
 
 let viewLink description page currentPage dispatch =
-  printf "%O %O" page currentPage
-  a [ Style [ Padding "0 20px" ]
-      classList ["navbar-item", true; "is-active", page = currentPage]
-      Href (Client.Navigation.toPath page)
-      OnClick (goToUrlAndToggleBurger dispatch)]
-      [ str description]
+  Navbar.Item.a [ Navbar.Item.IsActive (page = currentPage)
+                  Navbar.Item.Props [ Style [ Padding "0 20px" ]
+                                      Href (Client.Navigation.toPath page)
+                                      OnClick (goToUrlAndToggleBurger dispatch) ] ]
+                  [ str description]
 
 let brand (model: Model) dispatch =
-  div [ Class "navbar-brand" ] [
-      a [ Class "navbar-item"; Href "\\"] [
+  Navbar.Brand.div [] [
+      Navbar.Item.a [ Navbar.Item.Props [ Href "\\" ]] [
         img [ Src "/svg/teapot.svg"; Style [Width 30; Height 30;]; Alt ""]
       ]
       a [
           Role "button"
-          Class "navbar-burger burger"
+          Class "navbar-burger"
           AriaLabel "menu"
           AriaExpanded model.isBurgerOpen
           DataTarget "navMenu"
@@ -57,11 +56,10 @@ let brand (model: Model) dispatch =
 // https://github.com/Fulma/Fulma/issues/46
 // https://github.com/MangelMaxime/fulma-demo/blob/master/src/App.fs#L16-L65
 let navMenu currentPage (model: Model) dispatch =
-  div [
-      Id "navMenu"
-      classList ["navbar-menu", true; "is-active", model.isBurgerOpen]
+  Navbar.menu [
+     Navbar.Menu.IsActive model.isBurgerOpen
     ] [
-      div [ Class "navbar-end" ] [
+      Navbar.End.div [] [
         viewLink "Dashboard" Page.Dashboard currentPage dispatch
         viewLink "Teabags" Page.Teabags currentPage dispatch
         viewLink "New" (Page.TeabagNew "") currentPage dispatch
@@ -70,11 +68,9 @@ let navMenu currentPage (model: Model) dispatch =
     ]
 
 let view currentPage (model: Model) dispatch =
-    nav [
-          Style []
-          Class "navbar is-fixed-top"
-          Role "navitation"
-          AriaLabel "main naviation"
+    Navbar.navbar [ Navbar.Props [Role "navigation"
+                                  AriaLabel "main naviation"]
+                    Navbar.CustomClass "is-fixed-top"
         ] [
           Container.container [] [
             brand model dispatch
