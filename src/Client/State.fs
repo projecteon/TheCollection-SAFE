@@ -46,10 +46,11 @@ let urlUpdate (result: Page option) (model: Model) =
     { model with PageModel = TeabagPageModel m; CurrentPage = (Page.TeabagNew str) },  Cmd.map TeabagMsg (tryRefreshJwtCmd (cmd None) model.User)
 
   | Some Page.Dashboard ->
-    let m, cmd, cmd2, cmd3 = Client.Dashboard.State.init
+    let m, cmd, cmd2, cmd3, cmd4 = Client.Dashboard.State.init
     { model with PageModel = DashboardPageModel m; CurrentPage = Page.Dashboard },  Cmd.batch [ Cmd.map DashboardMsg (tryJwtCmd cmd model.User)
                                                                                                 Cmd.map DashboardMsg (tryJwtCmd cmd2 model.User)
-                                                                                                Cmd.map DashboardMsg (tryJwtCmd cmd3 model.User) ]
+                                                                                                Cmd.map DashboardMsg (tryJwtCmd cmd3 model.User)
+                                                                                                Cmd.map DashboardMsg (tryJwtCmd cmd4 model.User) ]
 
 let init page =
   let m, cmd = Client.Login.State.init

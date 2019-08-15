@@ -79,6 +79,16 @@ let getCountByInsertedCmd (token: JWT) =
     GetCountByInsertedSuccess
     GetCountByInsertedError
 
+let getStatisticsCmd (token: JWT) =
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<Statistics> "/api/teabags/statistics" (Decode.Auto.generateDecoder<Statistics>()) )
+    [Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+    ]]
+    GetStatisticsSuccess
+    GetStatisticsError
+
 let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) =
   countBy
   |> List.truncate (int count)
@@ -142,6 +152,7 @@ let dataCountToggle previousCount =
 
 let init =
     let initialModel = {
+      statistics = None
       countByBrands = None
       countByBagtypes = None
       countByInserted = None
@@ -152,11 +163,14 @@ let init =
       displayedByBrands = ReChartHelpers.DataCount.Ten
       displayedBrands = ReChartHelpers.DataCount.Ten
     }
-    initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByInsertedCmd
+    initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByInsertedCmd, getStatisticsCmd
 
 let moment: Fable.Import.Moment.IExports = importAll "moment"
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
+  | GetStatisticsSuccess data ->
+    { model with statistics = Some data }, Cmd.none
+  | GetStatisticsError exn -> model, Cmd.none
   | GetCountByBrandsSuccess data ->
     { model with countByBrands = Some data; countBrands = (mapToData data model.displayedBrands |> toBarChart (Some (ResizeArray [| "brands" |]))) }, Cmd.none
   | GetCountByBrandsError exn -> model, Cmd.none

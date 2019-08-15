@@ -25,7 +25,7 @@ module SharedTypes =
     with
     member this.String = let (Password s) = this in s
     static member Empty = Password ""
-  
+
   type RefreshToken = RefreshToken of string
     with
     member this.String = let (RefreshToken s) = this in s
@@ -58,6 +58,14 @@ module SharedTypes =
     | Brand
     | Bagtype
     | Country
+
+  type Statistics = {
+    TeabagCount: int
+    BagtypeCount: int
+    BrandCount: int
+    CountryCount: int
+    FlavourCount: int
+  }
 
   // https://fsharpforfunandprofit.com/posts/recipe-part2/
   type Result<'TSuccess,'TFailure> =

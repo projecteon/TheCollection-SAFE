@@ -33,6 +33,7 @@ type ChartTransformation =
 | BarToPie
 
 type Model = {
+  statistics: Statistics option
   countByBrands: CountBy<string> list option
   countByBagtypes: CountBy<string> list option
   countByInserted: CountBy<Moment> list option
@@ -45,6 +46,8 @@ type Model = {
 }
 
 type Msg =
+| GetStatisticsError of exn
+| GetStatisticsSuccess of Statistics
 | GetCountByBrandsError of exn
 | GetCountByBrandsSuccess of CountBy<string> list
 | GetCountByBagtypesError of exn

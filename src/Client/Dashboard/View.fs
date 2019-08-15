@@ -45,11 +45,46 @@ let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   else
     Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ][Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ][]]
 
+let statistics (model:Model) =
+  match model.statistics with
+  | Some x -> Level.level [ ]
+                [ Level.item [ Level.Item.HasTextCentered ]
+                    [ div [ ]
+                        [ Level.heading [ ]
+                            [ str "Total" ]
+                          Level.title [ ]
+                            [ sprintf "%i" x.TeabagCount |> str ] ] ]
+                  Level.item [ Level.Item.HasTextCentered ]
+                    [ div [ ]
+                        [ Level.heading [ ]
+                            [ str "Bagtypes" ]
+                          Level.title [ ]
+                            [ sprintf "%i" x.BagtypeCount |> str ] ] ]
+                  Level.item [ Level.Item.HasTextCentered ]
+                    [ div [ ]
+                        [ Level.heading [ ]
+                            [ str "Brands" ]
+                          Level.title [ ]
+                            [ sprintf "%i" x.BrandCount |> str ] ] ]
+                  Level.item [ Level.Item.HasTextCentered ]
+                    [ div [ ]
+                        [ Level.heading [ ]
+                            [ str "Countries" ]
+                          Level.title [ ]
+                            [ sprintf "%i" x.CountryCount |> str ] ] ]
+                  Level.item [ Level.Item.HasTextCentered ]
+                    [ div [ ]
+                        [ Level.heading [ ]
+                            [ str "Flavours" ]
+                          Level.title [ ]
+                            [ sprintf "%i" x.FlavourCount |> str ] ] ] ]
+  | None -> nothing
 
 let view (model:Model) dispatch =
     [
       Container.container [] [
         Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
+          statistics model
           Columns.columns [ Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
             Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
               Panel.panel [] [

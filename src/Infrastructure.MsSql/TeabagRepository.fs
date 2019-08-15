@@ -190,7 +190,7 @@ module TeabagRepository =
       |> Seq.map mapData
       |> Seq.toList
 
-    
+
     let pageNumberOrDefault queryFilter =
       match queryFilter.Page with
       | Some x -> int64 x
@@ -254,7 +254,7 @@ module TeabagRepository =
     let  SQLInsertedCountQry = "
         DECLARE @MIN_YEAR DATETIME;
         DECLARE @MAX_YEAR DATETIME;
-        SELECT @MIN_YEAR = MIN(d_created), @MAX_YEAR = MAX(d_created) FROM tcd_teabag; 
+        SELECT @MIN_YEAR = MIN(d_created), @MAX_YEAR = MAX(d_created) FROM tcd_teabag;
 
         DECLARE @DateFrom DATETIME;
         DECLARE @DateTo DATETIME;
@@ -265,8 +265,8 @@ module TeabagRepository =
 
         WITH MonthYearCalendar(date)
         AS
-        ( 
-        SELECT @DateFrom 
+        (
+        SELECT @DateFrom
         UNION ALL
         SELECT DATEADD(month,1,MonthYearCalendar.date) FROM MonthYearCalendar WHERE MonthYearCalendar.date < DATEADD(month, -1, @DateTo)
         ), teabagCalCTE (d_inserted, i_count) as (
@@ -285,7 +285,7 @@ module TeabagRepository =
         LEFT JOIN teabagCalCTE b ON a.date = b.d_inserted
         OPTION (MAXRECURSION 5000)
     "
-    
+
     type InsertedCountQry = SqlCommandProvider<SQLInsertedCountQry, DevConnectionString>
 
     let insertedCount (config: DbConfig) : Task<CountBy<Instant> list> =
@@ -298,4 +298,39 @@ module TeabagRepository =
             description = toInstant <| (mapOptionalDateTimeValue <| x.d_inserted)
           })
         |> Seq.toList
+      }
+
+    [<Literal>]
+    let  SQLStatistcsQry = "
+         SELECT
+          	COUNT(*) as teabagcount,
+          	COUNT(DISTINCT ro_brand) as brandcount,
+          	COUNT(DISTINCT ro_bagtype) as bagcount,
+          	COUNT(DISTINCT rs_country) as countrycount,
+          	COUNT(DISTINCT s_flavour) as flavourcount
+          FROM tcd_teabag
+      "
+    type StatistcsQry = SqlCommandProvider<SQLStatistcsQry, DevConnectionString, SingleRow = true>
+
+    let mapStatiscs (record: StatistcsQry.Record) = {
+        TeabagCount = mapOptionalIntValue record.teabagcount
+        BagtypeCount = mapOptionalIntValue record.bagcount
+        BrandCount = mapOptionalIntValue record.brandcount
+        CountryCount = mapOptionalIntValue record.countrycount
+        FlavourCount = mapOptionalIntValue record.flavourcount
+      }
+
+    let statistics (config: DbConfig) : Task<Statistics> =
+      task {
+        let cmd = new StatistcsQry(config.ReadOnly.String)
+        let! statistcs = cmd.AsyncExecute()
+        return match statistcs with
+                | Some x -> x |> mapStatiscs
+                | _ -> {
+                          TeabagCount = 0
+                          BagtypeCount = 0
+                          BrandCount = 0
+                          CountryCount = 0
+                          FlavourCount = 0
+                        }
       }

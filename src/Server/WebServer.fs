@@ -7,37 +7,38 @@ module WebServer =
   open Security.Authorization
   open TeaCollection.Infrastructure.MsSql.DbContext
 
-  let DevDbCondig = {
+  let DbConfig = {
     PageSize = 100 |> int64 |> PageSize
     Default = Config.connectionString
     ReadOnly = Config.connectionString
   }
 
-  let searchAllTeabags = TeabagRepository.searchAll DevDbCondig
-  let getByIdTeabags = TeabagRepository.getById DevDbCondig
-  let getByIdBrands = BrandRepository.getById DevDbCondig
-  let getAllBrands = BrandRepository.getAll DevDbCondig
-  let getByIdBagtypes = BagtypeRepository.getById DevDbCondig
-  let getAllBagtypes = BagtypeRepository.getAll DevDbCondig
-  let getByIdCountries = CountryRepository.getById DevDbCondig
-  let getAllCountries = CountryRepository.getAll DevDbCondig
-  let getCountByInserted = (TeabagRepository.insertedCount DevDbCondig)
-  let getAllRefValues = RefValueRepository.getAll DevDbCondig
-  let getUserByEmail = UserRepository.getByEmail DevDbCondig
-  let getFileById = FileRepository.getById DevDbCondig
+  let statistics = TeabagRepository.statistics DbConfig
+  let searchAllTeabags = TeabagRepository.searchAll DbConfig
+  let getByIdTeabags = TeabagRepository.getById DbConfig
+  let getByIdBrands = BrandRepository.getById DbConfig
+  let getAllBrands = BrandRepository.getAll DbConfig
+  let getByIdBagtypes = BagtypeRepository.getById DbConfig
+  let getAllBagtypes = BagtypeRepository.getAll DbConfig
+  let getByIdCountries = CountryRepository.getById DbConfig
+  let getAllCountries = CountryRepository.getAll DbConfig
+  let getCountByInserted = (TeabagRepository.insertedCount DbConfig)
+  let getAllRefValues = RefValueRepository.getAll DbConfig
+  let getUserByEmail = UserRepository.getByEmail DbConfig
+  let getFileById = FileRepository.getById DbConfig
   let getBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
   let getThumbBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ThumbnailsContainerReferance
 
-  let updateUser = UserRepository.update DevDbCondig
-  let insertTeabag = TeabagRepository.insert DevDbCondig
-  let updateTeabag = TeabagRepository.update DevDbCondig
-  let insertBagtype = BagtypeRepository.insert DevDbCondig
-  let updateBagtype = BagtypeRepository.update DevDbCondig
-  let insertBrand = BrandRepository.insert DevDbCondig
-  let updateBrand = BrandRepository.update DevDbCondig
-  let insertCountry = CountryRepository.insert DevDbCondig
-  let updateCountry = CountryRepository.update DevDbCondig
-  let insertFile = FileRepository.insert DevDbCondig
+  let updateUser = UserRepository.update DbConfig
+  let insertTeabag = TeabagRepository.insert DbConfig
+  let updateTeabag = TeabagRepository.update DbConfig
+  let insertBagtype = BagtypeRepository.insert DbConfig
+  let updateBagtype = BagtypeRepository.update DbConfig
+  let insertBrand = BrandRepository.insert DbConfig
+  let updateBrand = BrandRepository.update DbConfig
+  let insertCountry = CountryRepository.insert DbConfig
+  let updateCountry = CountryRepository.update DbConfig
+  let insertFile = FileRepository.insert DbConfig
   let insertBlob = AzureBlobRepository.insertAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
 
   let validate (model: 'a) =
@@ -54,9 +55,10 @@ module WebServer =
           GET >=> authorize >=> choose [
             route "/teabags" >=> (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
             routef "/teabags/%i" (Api.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
-            route "/teabags/countby/brands" >=> (Api.Generic.handleGetAll (TeabagRepository.brandCount DevDbCondig))
-            route "/teabags/countby/bagtypes" >=> (Api.Generic.handleGetAll (TeabagRepository.bagtypeCount DevDbCondig))
+            route "/teabags/countby/brands" >=> (Api.Generic.handleGetAll (TeabagRepository.brandCount DbConfig))
+            route "/teabags/countby/bagtypes" >=> (Api.Generic.handleGetAll (TeabagRepository.bagtypeCount DbConfig))
             route "/teabags/countby/inserteddate" >=> Api.Generic.handleGetTransformAll getCountByInserted Transformers.transform
+            route "/teabags/statistics" >=> Api.Generic.handleGetAll statistics
             route "/brands" >=> (Api.Generic.handleGetAllSearch getAllBrands)
             routef "/brands/%i" (Api.Generic.handleGet getByIdBrands Transformers.transformBrand)
             route "/bagtypes" >=> (Api.Generic.handleGetAllSearch getAllBagtypes)
