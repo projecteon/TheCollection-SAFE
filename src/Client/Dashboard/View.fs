@@ -57,12 +57,6 @@ let statistics (model:Model) =
                   Level.item [ Level.Item.HasTextCentered ]
                     [ div [ ]
                         [ Level.heading [ ]
-                            [ str "Bagtypes" ]
-                          Level.title [ ]
-                            [ sprintf "%i" x.BagtypeCount |> str ] ] ]
-                  Level.item [ Level.Item.HasTextCentered ]
-                    [ div [ ]
-                        [ Level.heading [ ]
                             [ str "Brands" ]
                           Level.title [ ]
                             [ sprintf "%i" x.BrandCount |> str ] ] ]
@@ -71,13 +65,7 @@ let statistics (model:Model) =
                         [ Level.heading [ ]
                             [ str "Countries" ]
                           Level.title [ ]
-                            [ sprintf "%i" x.CountryCount |> str ] ] ]
-                  Level.item [ Level.Item.HasTextCentered ]
-                    [ div [ ]
-                        [ Level.heading [ ]
-                            [ str "Flavours" ]
-                          Level.title [ ]
-                            [ sprintf "%i" x.FlavourCount |> str ] ] ] ]
+                            [ sprintf "%i" x.CountryCount |> str ] ] ] ]
   | None -> nothing
 
 let view (model:Model) dispatch =

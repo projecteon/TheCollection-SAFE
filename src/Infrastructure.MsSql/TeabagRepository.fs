@@ -305,19 +305,15 @@ module TeabagRepository =
          SELECT
           	COUNT(*) as teabagcount,
           	COUNT(DISTINCT ro_brand) as brandcount,
-          	COUNT(DISTINCT ro_bagtype) as bagcount,
-          	COUNT(DISTINCT rs_country) as countrycount,
-          	COUNT(DISTINCT s_flavour) as flavourcount
+          	COUNT(DISTINCT rs_country) as countrycount
           FROM tcd_teabag
       "
     type StatistcsQry = SqlCommandProvider<SQLStatistcsQry, DevConnectionString, SingleRow = true>
 
     let mapStatiscs (record: StatistcsQry.Record) = {
         TeabagCount = mapOptionalIntValue record.teabagcount
-        BagtypeCount = mapOptionalIntValue record.bagcount
         BrandCount = mapOptionalIntValue record.brandcount
         CountryCount = mapOptionalIntValue record.countrycount
-        FlavourCount = mapOptionalIntValue record.flavourcount
       }
 
     let statistics (config: DbConfig) : Task<Statistics> =
@@ -328,9 +324,7 @@ module TeabagRepository =
                 | Some x -> x |> mapStatiscs
                 | _ -> {
                           TeabagCount = 0
-                          BagtypeCount = 0
                           BrandCount = 0
                           CountryCount = 0
-                          FlavourCount = 0
                         }
       }

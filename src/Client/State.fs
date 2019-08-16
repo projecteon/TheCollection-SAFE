@@ -18,33 +18,26 @@ let urlUpdate (result: Page option) (model: Model) =
   match result with
   | None ->
     handleNotFound model
-
   | Some Page.Logout ->
     Client.Login.State.clearUserData()
     let m, cmd = Client.Login.State.init
     { model with User = None; PageModel = LoginPageModel m }, (Navigation.modifyUrl (toPath Page.Login))
-
   | Some Page.Login ->
     let m, cmd = Client.Login.State.init
     { model with PageModel = LoginPageModel m }, Cmd.map LoginMsg cmd
-
   | _ when model.User.IsNone ->
     let m, cmd = Client.Login.State.init
     { model with PageModel = LoginPageModel m }, Cmd.batch [  (Navigation.modifyUrl (toPath Page.Login))
                                                               Cmd.map LoginMsg cmd ]
-
   | Some Page.Teabags ->
-    let m = Client.Teabags.State.init
+    let m = Client.Teabags.State.init()
     { model with PageModel = TeabagsPageModel m; CurrentPage = Page.Teabags }, Cmd.none
-
   | Some (Page.Teabag id) ->
     let m, cmd = Client.Teabag.State.init
     { model with PageModel = TeabagPageModel m; CurrentPage = (Page.Teabag id) }, Cmd.map TeabagMsg (tryRefreshJwtCmd (id |> Some |> cmd) model.User)
-
   | Some (Page.TeabagNew str) ->
     let m, cmd = Client.Teabag.State.init
     { model with PageModel = TeabagPageModel m; CurrentPage = (Page.TeabagNew str) },  Cmd.map TeabagMsg (tryRefreshJwtCmd (cmd None) model.User)
-
   | Some Page.Dashboard ->
     let m, cmd, cmd2, cmd3, cmd4 = Client.Dashboard.State.init
     { model with PageModel = DashboardPageModel m; CurrentPage = Page.Dashboard },  Cmd.batch [ Cmd.map DashboardMsg (tryJwtCmd cmd model.User)

@@ -1,6 +1,5 @@
 module Client.Components.Navbar.View
 
-
 open Elmish.Navigation
 open Fable.Core.JsInterop
 open Fable.React
@@ -23,15 +22,17 @@ let goToUrl (e: Browser.Types.MouseEvent) =
     let href = !!e.target?href
     Navigation.newUrl href |> List.map (fun f -> f ignore) |> ignore
 
-let goToUrlAndToggleBurger dispatch (e: Browser.Types.MouseEvent) =
-    dispatch ToggleBurger |> ignore
-    goToUrl e |> ignore
+let goToUrlAndToggleBurger page dispatch (e: Browser.Types.MouseEvent) =
+  if page = Page.Teabags then
+    Client.SessionStorage.delete "thecollection:search"
+  dispatch ToggleBurger |> ignore
+  goToUrl e |> ignore
 
 let viewLink description page currentPage dispatch =
   Navbar.Item.a [ Navbar.Item.IsActive (page = currentPage)
                   Navbar.Item.Props [ Style [ Padding "0 20px" ]
                                       Href (Client.Navigation.toPath page)
-                                      OnClick (goToUrlAndToggleBurger dispatch) ] ]
+                                      OnClick (goToUrlAndToggleBurger page dispatch) ] ]
                   [ str description]
 
 let brand (model: Model) dispatch =

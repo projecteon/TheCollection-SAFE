@@ -61,10 +61,8 @@ module SharedTypes =
 
   type Statistics = {
     TeabagCount: int
-    BagtypeCount: int
     BrandCount: int
     CountryCount: int
-    FlavourCount: int
   }
 
   // https://fsharpforfunandprofit.com/posts/recipe-part2/

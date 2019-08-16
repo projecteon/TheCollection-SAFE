@@ -8,6 +8,8 @@ type SearchResult = {
   searchCount: int64
 }
 
+type SearchSessionData = {searchedTerms: string option; result: SearchResult<Teabag list>}
+
 type Model = {
   result: Teabag list
   resultCount: int option

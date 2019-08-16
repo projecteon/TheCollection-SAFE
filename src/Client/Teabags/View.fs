@@ -1,5 +1,6 @@
 module Client.Teabags.View
 
+open Elmish.Navigation
 open Fable.React
 open Fable.React.Props
 open Fable.FontAwesome
@@ -49,12 +50,18 @@ let resultItem (teabag: Teabag) dispatch =
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
       ]
-      Card.footer [] [
-        Card.Footer.a [ Props [ Href (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))); OnClick goToUrl ] ][
-          Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
+      Card.footer [ Props [ Style [BorderTop "none"] ] ] [
+        Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
+          Button.button [ Button.Color IsInfo; Button.OnClick (fun _ -> Navigation.newUrl (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))) |> List.map (fun f -> f ignore) |> ignore ) ][
+            Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
+            span [] [ str "Edit" ]
+          ]
         ]
-        Card.Footer.a [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
-          Icon.icon [ Icon.Size IsSmall ] [ Fa.i [ Fa.Solid.Search ][] ]
+        Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
+          Button.button [ Button.Color IsPrimary; Button.Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
+            Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.Search ][] ]
+            span [] [ str "Image" ]
+          ]
         ]
       ]
     ]
