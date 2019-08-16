@@ -30,6 +30,7 @@ let goToUrlAndToggleBurger page dispatch (e: Browser.Types.MouseEvent) =
 
 let viewLink description page currentPage dispatch =
   Navbar.Item.a [ Navbar.Item.IsActive (page = currentPage)
+                  Navbar.Item.Modifiers [Modifier.TextSize (Screen.Mobile, TextSize.Is3)]
                   Navbar.Item.Props [ Style [ Padding "0 20px" ]
                                       Href (Client.Navigation.toPath page)
                                       OnClick (goToUrlAndToggleBurger page dispatch) ] ]
@@ -56,25 +57,25 @@ let brand (model: Model) dispatch =
 
 // https://github.com/Fulma/Fulma/issues/46
 // https://github.com/MangelMaxime/fulma-demo/blob/master/src/App.fs#L16-L65
-let navMenu currentPage (model: Model) dispatch =
+let navMenu currentPage canAdd (model: Model) dispatch =
   Navbar.menu [
      Navbar.Menu.IsActive model.isBurgerOpen
     ] [
       Navbar.End.div [] [
-        viewLink "Dashboard" Page.Dashboard currentPage dispatch
-        viewLink "Teabags" Page.Teabags currentPage dispatch
-        viewLink "New" (Page.TeabagNew "") currentPage dispatch
-        viewLink "Logout" Page.Logout currentPage dispatch
+        yield viewLink "Dashboard" Page.Dashboard currentPage dispatch
+        yield viewLink "Teabags" Page.Teabags currentPage dispatch
+        if canAdd then yield viewLink "New" (Page.TeabagNew "") currentPage dispatch
+        yield viewLink "Logout" Page.Logout currentPage dispatch
       ]
     ]
 
-let view currentPage (model: Model) dispatch =
+let view currentPage canAdd (model: Model) dispatch =
     Navbar.navbar [ Navbar.Props [Role "navigation"
                                   AriaLabel "main naviation"]
                     Navbar.CustomClass "is-fixed-top"
         ] [
           Container.container [] [
             brand model dispatch
-            navMenu currentPage model dispatch
+            navMenu currentPage canAdd model dispatch
           ]
         ]

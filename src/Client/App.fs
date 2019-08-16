@@ -24,7 +24,7 @@ let viewPage model dispatch =
   | DashboardPageModel m ->
     Client.Dashboard.View.view m (DashboardMsg >> dispatch)
   | TeabagsPageModel m ->
-    Client.Teabags.View.view m (TeabagsMsg >> dispatch)
+    Client.Teabags.View.view model.User m (TeabagsMsg >> dispatch)
   | TeabagPageModel m ->
     Client.Teabag.View.view m (TeabagMsg >> dispatch)
 
@@ -35,7 +35,7 @@ let view model dispatch =
     div [ Class "loginPage" ] (viewPage model dispatch)
   | _ ->
     Container.container [ ] [
-      Client.Components.Navbar.View.view model.CurrentPage model.Navbar (NavbarMsg >> dispatch)
+      Client.Components.Navbar.View.view model.CurrentPage (Client.Extensions.canEdit model.User) model.Navbar (NavbarMsg >> dispatch)
       hr [Style [MarginTop 0]]
       div [ ] (viewPage model dispatch)
     ]

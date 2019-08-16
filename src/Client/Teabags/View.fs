@@ -33,7 +33,7 @@ let renderImage(imageId: ImageId) =
                       [ ] ] ]
 
 
-let resultItem (teabag: Teabag) dispatch =
+let resultItem (userData: UserData option) (teabag: Teabag) dispatch =
   Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneQuarter); Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
@@ -51,13 +51,14 @@ let resultItem (teabag: Teabag) dispatch =
         ]
       ]
       Card.footer [ Props [ Style [BorderTop "none"] ] ] [
-        Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
-          Button.button [ Button.Color IsInfo; Button.OnClick (fun _ -> Navigation.newUrl (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))) |> List.map (fun f -> f ignore) |> ignore ) ][
-            Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
-            span [] [ str "Edit" ]
+        if Client.Extensions.canEdit userData then
+          yield Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
+            Button.button [ Button.Color IsInfo; Button.OnClick (fun _ -> Navigation.newUrl (Client.Navigation.toPath (Page.Teabag (teabag.id.Int))) |> List.map (fun f -> f ignore) |> ignore ) ][
+              Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.PencilAlt ][] ]
+              span [] [ str "Edit" ]
+            ]
           ]
-        ]
-        Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
+        yield Card.Footer.p [ Props [ Style [BorderRight "none"] ] ][
           Button.button [ Button.Color IsPrimary; Button.Props [ OnClick (fun _ -> dispatch (ZoomImageToggle (Some teabag.imageid))) ] ][
             Icon.icon[ Icon.Size IsSmall; ] [ Fa.i [ Fa.Solid.Search ][] ]
             span [] [ str "Image" ]
@@ -67,9 +68,9 @@ let resultItem (teabag: Teabag) dispatch =
     ]
   ];
 
-let searchResult (model:Model) dispatch =
+let searchResult userData (model:Model) dispatch =
   model.result
-  |> List.map (fun teabag -> resultItem teabag dispatch)
+  |> List.map (fun teabag -> resultItem userData teabag dispatch)
   |> ofList
 
 
@@ -133,13 +134,13 @@ let zoomImage model dispatch =
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
   | None -> nothing
 
-let view (model:Model) (dispatch: Msg -> unit) =
+let view userData (model:Model) (dispatch: Msg -> unit) =
   [
     Container.container [] [
       Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
         searchBar model dispatch
         Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsCentered ] [
-           searchResult model dispatch
+           searchResult userData model dispatch
         ]
         zoomImage model dispatch
       ]

@@ -1,4 +1,6 @@
 module Client.Extensions
+let canEdit (user: Server.Api.Dtos.UserData option) =
+  user.IsSome && user.Value.UserName.String <> "mcw201@hotmail.com"
 
 module Seq =
     // http://www.fssnip.net/es/title/Split-A-Seq-Into-Chunks
@@ -18,3 +20,4 @@ module Seq =
       match (Seq.length seq) with
       | 0 -> None
       | _ -> Some (Seq.head seq)
+
