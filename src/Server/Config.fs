@@ -5,6 +5,31 @@ namespace Server
   open TeaCollection.Infrastructure.MsSql
   open TeaCollection.Infrastructure.MsSql.DbContext
 
+  module TryParser =
+    // convenient, functional TryParse wrappers returning option<'a>
+    let tryParseWith (tryParseFunc: string -> bool * _) = tryParseFunc >> function
+        | true, v    -> Some v
+        | false, _   -> None
+
+    let tryParseOPtionWith (tryParseFunc: string -> bool * _) (value: string option) =
+      match value with
+      | Some x    -> (tryParseWith tryParseFunc) x
+      | None      -> None
+
+    let parseDate   = tryParseWith System.DateTime.TryParse
+    let parseInt    = tryParseWith System.Int32.TryParse
+    let parseSingle = tryParseWith System.Single.TryParse
+    let parseDouble = tryParseWith System.Double.TryParse
+    // etc.
+
+    let parseIntOption = tryParseOPtionWith System.Int32.TryParse
+
+    // active patterns for try-parsing strings
+    let (|Date|_|)   = parseDate
+    let (|Int|_|)    = parseInt
+    let (|Single|_|) = parseSingle
+    let (|Double|_|) = parseDouble
+
   module Config =
     // type DbConfig = {
     //   Database: DbContext.DbConfig
@@ -21,3 +46,10 @@ namespace Server
     let JwtIssuer = tryGetEnv "jwt_issuer" |> Option.defaultValue "thecollection.net"
     let PublicPath = tryGetEnv "public_path" |> Option.defaultValue "../Client/public" |> Path.GetFullPath
     let Port = 8085us
+
+    let pageSize = tryGetEnv "api_pagesize" |> TryParser.parseIntOption  |> Option.defaultValue 100
+    let DbConfig = {
+      PageSize = pageSize |> int64 |> PageSize
+      Default = connectionString
+      ReadOnly = connectionString
+    }
