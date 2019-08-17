@@ -13,19 +13,19 @@ module StringValidations =
   let notNull (value: string) =
     if (value = null && value.Length > 0) then
       Failure (sprintf "Is required")
-    else 
+    else
       Success value
 
   let minimumLength (length: int) (value: string) =
     if (value.Length < length) then
       Failure (sprintf "Must contain more than %i characters" length)
-    else 
+    else
       Success value
 
   let maximumLength (length: int) (value: string) =
     if (value.Length > length) then
       Failure (sprintf "Cannot contain more than %i characters" length)
-    else 
+    else
       Success value
 
 module PasswordValidation =
@@ -40,10 +40,10 @@ module PasswordValidation =
     let passwordString = password.String
     if (passwordString.Length <= 6) then
       Failure "Password should contain more than 6 characters"
-    else if (passwordString.Length <= 10) then
+    else if (passwordString.Length <= 20) then
       Success password
     else
-      Failure "Password should not contain more than 10 characters"
+      Failure "Password should not contain more than 20 characters"
 
   let validate (password: Password) =
     password
