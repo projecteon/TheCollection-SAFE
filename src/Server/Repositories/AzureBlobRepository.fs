@@ -39,7 +39,7 @@ module AzureBlobRepository =
 
   let insertAsync (container: CloudBlobContainer) stream id = async {
     let blockBlob = container.GetBlockBlobReference(id)
-    do! blockBlob.UploadFromStreamAsync(stream) |> Async.AwaitIAsyncResult |> Async.Ignore
+    do! blockBlob.UploadFromStreamAsync(stream, AccessCondition.GenerateIfNotExistsCondition(), Unchecked.defaultof<BlobRequestOptions>, Unchecked.defaultof<OperationContext>) |> Async.AwaitIAsyncResult |> Async.Ignore
     return blockBlob.Uri;
   }
 
@@ -53,6 +53,6 @@ module AzureBlobRepository =
   let insertAsync2 (config: CloudStorageAccount) containerReferance  (filename, stream: Stream) = async {
     let! container = createContainer config containerReferance
     let blockBlob = container.GetBlockBlobReference(filename)
-    do! blockBlob.UploadFromStreamAsync(stream) |> Async.AwaitIAsyncResult |> Async.Ignore
+    do! blockBlob.UploadFromStreamAsync(stream, AccessCondition.GenerateIfNotExistsCondition(), Unchecked.defaultof<BlobRequestOptions>, Unchecked.defaultof<OperationContext>) |> Async.AwaitIAsyncResult |> Async.Ignore
     return (blockBlob.Uri, filename);
   }
