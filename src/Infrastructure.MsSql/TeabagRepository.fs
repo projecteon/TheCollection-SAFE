@@ -156,7 +156,7 @@ module TeabagRepository =
         			ELSE '0'
         		END
         	FROM OPENJSON(@json))
-        ORDER BY t_ro_brand, s_serie, s_hallmark, s_flavour, t_ro_bagtype
+        ORDER BY t_ro_brand, s_serie, s_hallmark, t_ro_bagtype, s_flavour
         OFFSET @pageOffset ROWS
         FETCH NEXT @pageSize ROWS ONLY;
     "
