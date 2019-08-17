@@ -6,11 +6,11 @@ type FileUrl = string
 
 let getThumbnailUrl (dbId: DbId) =
   dbId.Int
-  |> sprintf "/api/thumbnails/%i"
+  |> sprintf "/resource/teabags/thumbnails/%i"
 
 let getImageUrl (dbId: DbId) =
   dbId.Int
-  |> sprintf "/api/images/%i"
+  |> sprintf "/resource/teabags/images/%i"
 
 let getUrl (imageId: ImageId): FileUrl =
   match imageId.Option with

@@ -28,6 +28,7 @@
     <Compile Include="Security\JsonWebToken.fs" />
     <Compile Include="Security\Authorization.fs" />
     <Compile Include="WebServer.fs" />
+    <Compile Include="Router.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="fsc.props" />

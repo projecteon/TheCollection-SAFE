@@ -55,6 +55,7 @@ let getCountByBrandsCmd (token: JWT) =
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
     ]]
     GetCountByBrandsSuccess
     GetCountByBrandsError
@@ -65,6 +66,7 @@ let getCountByBagtypesCmd (token: JWT) =
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
     ]]
     GetCountByBagtypesSuccess
     GetCountByBagtypesError
@@ -75,6 +77,7 @@ let getCountByInsertedCmd (token: JWT) =
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
     ]]
     GetCountByInsertedSuccess
     GetCountByInsertedError
@@ -85,6 +88,7 @@ let getStatisticsCmd (token: JWT) =
     [Fetch.requestHeaders [
         HttpRequestHeaders.Authorization ("Bearer " + token.String)
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
     ]]
     GetStatisticsSuccess
     GetStatisticsError

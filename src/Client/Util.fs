@@ -62,6 +62,7 @@ module Http =
       RequestProperties.Body !^(Encode.Auto.toString(0, data))
       Fetch.requestHeaders [
         HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
       ]
     ]
     return! fetchAs url decoder options
@@ -101,7 +102,7 @@ module Auth =
         | Ok successValue -> return successValue
         | Error error ->
           notifySessionExpired
-          return failwith error 
+          return failwith error
       | BadStatus response ->
         notifySessionExpired
         return response |> errorString |> failwith
@@ -125,7 +126,7 @@ module Auth =
       | NetworkError ->
         return failwith "Network error"
       | Unauthorized response ->
-        let! fetchRes = fetch "/api/refreshtoken" [ RequestProperties.Method HttpMethod.POST; RequestProperties.Body !^(Encode.Auto.toString(0, token)); requestHeaders [ ContentType "application/json; charset=utf-8" ] ]
+        let! fetchRes = fetch "/api/refreshtoken" [ RequestProperties.Method HttpMethod.POST; RequestProperties.Body !^(Encode.Auto.toString(0, token)); requestHeaders [ ContentType "application/json; charset=utf-8"; HttpRequestHeaders.Accept "application/json" ] ]
         let! res = handleNoRetry fetchRes
         let! secondRes = httpRequest res.Token
         printf "retry result %O" secondRes
@@ -148,7 +149,8 @@ module Auth =
       let defaultProps =
         [ RequestProperties.Method method
           requestHeaders [ Authorization ("Bearer " + token.String)
-                           ContentType "application/json; charset=utf-8" ] ]
+                           ContentType "application/json; charset=utf-8"
+                           Accept "application/json" ] ]
       List.append defaultProps properties
       |> fetch url
 

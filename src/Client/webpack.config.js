@@ -22,6 +22,10 @@ var CONFIG = {
         '/api/*': {
             target: 'http://localhost:' + (process.env.SUAVE_FABLE_PORT || "8085"),
             changeOrigin: true
+        },
+        '/resource/*': {
+            target: 'http://localhost:' + (process.env.SUAVE_FABLE_PORT || "8085"),
+            changeOrigin: true
         }
     },
     historyApiFallback: {

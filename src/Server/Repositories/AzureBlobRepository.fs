@@ -49,6 +49,7 @@ module AzureBlobRepository =
     return! mapBlop blockBlob
   }
 
+  // https://stackoverflow.com/questions/14938606/how-do-i-upload-to-azure-blob-storage-without-overwriting
   let insertAsync2 (config: CloudStorageAccount) containerReferance  (filename, stream: Stream) = async {
     let! container = createContainer config containerReferance
     let blockBlob = container.GetBlockBlobReference(filename)
