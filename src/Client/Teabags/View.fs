@@ -34,21 +34,25 @@ let renderImage(imageId: ImageId) =
 
 
 let resultItem (userData: UserData option) (teabag: Teabag) dispatch =
-  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneQuarter); Column.Width (Screen.Mobile, Column.IsFull); ][
+  Column.column [ Column.Props [Key (teabag.id.Int.ToString())]; Column.Width (Screen.WideScreen, Column.IsOneFifth); Column.Width (Screen.Tablet, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull); ][
     Card.card [] [
       Card.image [] [
         renderImage teabag.imageid
       ]
-      Card.content [] [
-        Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.description ]
-        Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ][ str teabag.flavour ]
-        Content.content [ ] [
+      Card.content [ Props [ Style [Position PositionOptions.Relative]]] [
+        yield Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ][ str teabag.brand.description ]
+        yield Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ][ str teabag.flavour ]
+        yield Content.content [ ] [
           div [] [ small [] [ str teabag.serie ] ]
           div [] [ small [] [ str teabag.hallmark ] ]
           div [] [ small [] [ str teabag.serialnumber ] ]
           div [] [ small [] [ str teabag.bagtype.description ] ]
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
+        match teabag.imageid.Option with
+        | Some x -> yield div [Style [Position PositionOptions.Absolute; Top -5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"][
+          x.Int |> sprintf "#%i" |> str]
+        | None -> yield nothing
       ]
       Card.footer [ Props [ Style [BorderTop "none"] ] ] [
         if Client.Extensions.canEdit userData then
@@ -129,7 +133,9 @@ let zoomImage model dispatch =
   | Some x ->
     Modal.modal [ Modal.IsActive true; Modal.Props [ Style [ MaxWidth "100vw"] ] ]
       [ Modal.background [ Props [ OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] ] [ ]
-        Modal.content [ ] [ img [ Src (getUrl x); Style [ObjectFit "contain"] ] ]
+        Modal.content [ ] [
+          img [ Src (getUrl x); Style [ObjectFit "contain"] ]
+        ]
         Modal.close [ Modal.Close.Size IsLarge
                       Modal.Close.OnClick (fun _ -> dispatch (ZoomImageToggle None)) ] [ ] ]
   | None -> nothing
