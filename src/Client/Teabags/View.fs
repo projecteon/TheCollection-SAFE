@@ -107,7 +107,7 @@ let searchError model =
 let resultCount model =
   match model.resultCount with
   | Some x ->  Notification.notification [ Notification.Color IsInfo ]
-                [ str <| (sprintf "Result count: %i" <| x) ]
+                [ str <| (sprintf "Showing: %i / %i" model.result.Length x) ]
   | None -> nothing
 
 let searchBar (model:Model) dispatch =
