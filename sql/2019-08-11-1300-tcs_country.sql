@@ -1,0 +1,10 @@
+CREATE TABLE [dbo].[tcs_country](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[s_name] [nvarchar](255) NOT NULL,
+	[dt_created] [datetime2](7) NOT NULL,
+	[dt_modified] [datetime2](7) NOT NULL,
+ CONSTRAINT [PK__tcs_coun__3213E83FD6254ED2] PRIMARY KEY CLUSTERED
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
+) ON [PRIMARY]
