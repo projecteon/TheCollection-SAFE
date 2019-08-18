@@ -147,7 +147,13 @@ let view (model:Model) (dispatch: Msg -> unit) =
             ]
             yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
               Card.card [] [
-                Card.content [] [ teabagForm x model dispatch ]
+                Card.content [] [
+                  yield teabagForm x model dispatch
+                  match x.imageid.Option with
+                  | Some x -> yield div [Style [Position PositionOptions.Absolute; Top 5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"][
+                    x.Int |> sprintf "#%i" |> str]
+                  | None -> yield nothing
+                ]
               ]
             ]
           | _ ->
