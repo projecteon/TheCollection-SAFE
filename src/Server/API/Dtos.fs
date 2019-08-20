@@ -81,6 +81,7 @@ module Dtos =
     bagtype: RefValue;
     country: RefValue option;
     serialnumber: string;
+    archiveNumber: int option;
     imageid: ImageId;
     inserted: DateTime;
   }

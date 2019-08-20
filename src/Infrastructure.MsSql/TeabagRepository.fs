@@ -122,6 +122,7 @@ module TeabagRepository =
         hallmark = record.s_hallmark |> Hallmark.From
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
+        archiveNumber = record.i_archive
         imageid = ImageId (toDbId record.rf_image)
         created = (toInstant <| record.d_created) |> CreatedDate
       }
@@ -172,6 +173,7 @@ module TeabagRepository =
         hallmark = record.s_hallmark |> Hallmark.From
         serie = record.s_serie |> Serie.From
         serialnumber = record.s_serialnumber |> SerialNumber.From
+        archiveNumber = record.i_archive
         imageid = ImageId (toDbId record.rf_image)
         created = (toInstant <| record.d_created) |> CreatedDate
       }

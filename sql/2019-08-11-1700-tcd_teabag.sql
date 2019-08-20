@@ -4,6 +4,7 @@ CREATE TABLE [dbo].[tcd_teabag](
 	[ro_bagtype] [int] NOT NULL,
 	[rs_country] [int] NULL,
 	[rf_image] [int] NULL,
+	[i_archive] [int] NULL,
 	[s_flavour] [nvarchar](255) NOT NULL,
 	[s_hallmark] [nvarchar](255) NULL,
 	[s_serie] [nvarchar](255) NULL,

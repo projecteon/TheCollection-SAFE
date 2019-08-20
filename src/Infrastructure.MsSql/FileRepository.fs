@@ -38,7 +38,7 @@ module FileRepository =
 
     let mapByIdData (record: FileById.Record): File = {
         id = DbId record.id
-        importId = record.i_import_id
+        importId = record.i_archive
         uri = record.s_uri
         filename = record.s_filename
         created = (Mapping.toInstant <| record.dt_created) |> CreatedDate

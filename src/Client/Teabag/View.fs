@@ -149,9 +149,9 @@ let view (model:Model) (dispatch: Msg -> unit) =
               Card.card [] [
                 Card.content [] [
                   yield teabagForm x model dispatch
-                  match x.imageid.Option with
+                  match x.archiveNumber with
                   | Some x -> yield div [Style [Position PositionOptions.Absolute; Top 5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"][
-                    x.Int |> sprintf "#%i" |> str]
+                    x |> sprintf "#%i" |> str]
                   | None -> yield nothing
                 ]
               ]

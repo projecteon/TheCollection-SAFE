@@ -104,6 +104,7 @@ let transformTeabag (teabag: Domain.Tea.Teabag): Server.Api.Dtos.Teabag = {
   bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
   country = transformRefValue teabag.country
   serialnumber = transformOption teabag.serialnumber
+  archiveNumber = teabag.archiveNumber
   imageid = teabag.imageid
   inserted = teabag.created.Instant.ToDateTimeUtc()
 }
@@ -134,6 +135,7 @@ let transformDtoToInsertTeabag (teabag: Server.Api.Dtos.Teabag) : Domain.Tea.Tea
     bagtype = { id = teabag.bagtype.id; description = teabag.bagtype.description }
     country = teabag.country |> transformDomainRefValue
     serialnumber = teabag.serialnumber |> SerialNumber |> Some
+    archiveNumber = teabag.archiveNumber
     imageid = teabag.imageid
     created = created |> CreatedDate
   }

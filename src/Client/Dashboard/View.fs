@@ -73,7 +73,7 @@ let view (model:Model) dispatch =
       Container.container [] [
         Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
           statistics model
-          Columns.columns [ Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
+          Columns.columns [ Columns.IsCentered; Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
             Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
               Panel.panel [] [
                 Panel.heading [ ] [

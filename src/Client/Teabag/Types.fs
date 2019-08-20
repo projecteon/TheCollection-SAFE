@@ -38,8 +38,9 @@ let NewTeabag = {
   bagtype = EmptyRefValue
   country = None
   serialnumber = ""
-  imageid = ImageId None;
-  inserted = System.DateTime.Now;
+  imageid = ImageId None
+  archiveNumber = None
+  inserted = System.DateTime.Now
 }
 
 type Msg =

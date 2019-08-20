@@ -1,6 +1,6 @@
 CREATE TABLE [dbo].[tcd_files](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[i_import_id] [int] NOT NULL,
+	[i_archive] [int] NOT NULL,
 	[s_uri] [nvarchar](255) NOT NULL,
 	[s_filename] [nvarchar](255) NOT NULL,
 	[dt_created] [datetime2](7) NOT NULL,

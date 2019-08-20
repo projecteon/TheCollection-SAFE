@@ -49,9 +49,9 @@ let resultItem (userData: UserData option) (teabag: Teabag) dispatch =
           div [] [ small [] [ str teabag.bagtype.description ] ]
           div [] [ small [] [ str teabag.country.Value.description ] ]
         ]
-        match teabag.imageid.Option with
+        match teabag.archiveNumber with
         | Some x -> yield div [Style [Position PositionOptions.Absolute; Top -5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"][
-          x.Int |> sprintf "#%i" |> str]
+          x |> sprintf "#%i" |> str]
         | None -> yield nothing
       ]
       Card.footer [ Props [ Style [BorderTop "none"] ] ] [

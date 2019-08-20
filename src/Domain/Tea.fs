@@ -43,5 +43,6 @@ type Teabag = {
   [<Searchable()>] country: RefValue option;
   [<Searchable()>] serialnumber: SerialNumber option;
   imageid: ImageId;
+  archiveNumber: int option;
   created: CreatedDate;
 }
