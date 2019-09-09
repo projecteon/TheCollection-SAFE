@@ -52,6 +52,7 @@ module.exports = {
     entry : CONFIG.fsharpEntry,
     output: {
       path: resolve(CONFIG.outputDir),
+      publicPath: '/',
       filename: isProduction ? '[name].[hash].js' : '[name].js'
     },
     mode: isProduction ? "production" : "development",
