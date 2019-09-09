@@ -92,7 +92,7 @@ module Router =
     pipe_through api
 
     post "/token" (handlePostToken getUserByEmail updateUser)
-    post"/refreshtoken" (handlePostRefreshToken getUserByEmail updateUser)
+    post "/refreshtoken" (handlePostRefreshToken getUserByEmail updateUser)
 
     forward "/refvalues" refvaluesRouter
     forward "/teabags" teabagsRouter
