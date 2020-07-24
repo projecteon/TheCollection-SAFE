@@ -40,9 +40,9 @@ module SearchStringGenerator =
     |> fun x -> x.Split  [|' '|]
     |> Array.filter (fun x -> (not (System.String.IsNullOrWhiteSpace x)))
     |> Array.distinct
-    
-  let GenerateSearchTerms (tagString: string) =
+
+  let FilterSearchTerms (tagString: string) =
     tagString.ToLower()
-    |> strip notValidSearchWords
     |> replaceInvalidChars
     |> strip NotValidSearchChars
+    |> System.String.Concat

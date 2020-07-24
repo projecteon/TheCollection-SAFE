@@ -50,7 +50,7 @@ let init() =
 let update (msg:Msg) model userData : Model*Cmd<Msg> =
   match msg with
   | OnSearchTermChange searchTerms ->
-    let filteredSearchTerms = Domain.SearchStringGenerator.GenerateSearchTerms searchTerms |> System.String.Concat
+    let filteredSearchTerms = Domain.SearchStringGenerator.FilterSearchTerms searchTerms
     {model with searchedTerms = Some filteredSearchTerms; searchError = None}, Cmd.none
   | Search ->
     let result = validateSearchTerm model
