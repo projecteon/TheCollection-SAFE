@@ -18,19 +18,10 @@ jobs:
         dotnet: [ '6.0.x' ]
 
     steps:
-    # - name: Run Debug variables
-    #   run:  |
-    #     gci -recurse -filter "fsc.exe" -ErrorAction SilentlyContinue –Path C:\
-    #     Write-Host  $env:UserName $env:UserDomain $env:ComputerName
-    - name: Install MS SQL 2019 local db
-      run: |
-        Write-Host "Downloading"
-        Import-Module BitsTransfer
-        Start-BitsTransfer -Source https://download.microsoft.com/download/7/c/1/7c14e92e-bdcb-4f89-b7cf-93543e7112d1/SqlLocalDB.msi -Destination SqlLocalDB.msi
-        Write-Host "Installing"
-        Start-Process -FilePath "SqlLocalDB.msi" -Wait -ArgumentList "/qn", "/norestart", "/l*v SqlLocalDBInstall.log", "IACCEPTSQLLOCALDBLICENSETERMS=YES";
-        Write-Host "Checking"
-        sqlcmd -l 60 -S "(localdb)\MSSQLLocalDB" -Q "SELECT @@VERSION;"
+    - name: Install MS SQL local db
+      uses: potatoqualitee/mssqlsuite@v1.5.1
+      with:
+        install: localdb
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup Node.js ${{ matrix.node-version }}
