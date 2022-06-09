@@ -1,4 +1,4 @@
-name: .NET
+name: Continuous Deployment Build
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: CD Build
 
     runs-on: windows-latest
 
