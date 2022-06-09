@@ -53,8 +53,8 @@ let private onPieEnter data index event = // should have sig (data, activeIndex,
 let private renderChart data =
     pieChart
         [ ReChartHelpers.margin 15. 20. 5. 0. ] [
-          tooltip [][]
-          legend [ Legend.IconType ShapeType.Square; Legend.OnMouseEnter onPieEnter ][]
+          tooltip [] []
+          legend [ Legend.IconType ShapeType.Square; Legend.OnMouseEnter onPieEnter ] []
           pie [
             Polar.Data data;
             Polar.DataKey "count";
@@ -81,6 +81,6 @@ let private renderData data =
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: 'a[] option) =
-  responsiveContainer [Responsive.Width "100%"; Responsive.Aspect (4.0/3.0)][
+  responsiveContainer [Responsive.Width "100%"; Responsive.Aspect (4.0/3.0)] [
       renderData data
   ]

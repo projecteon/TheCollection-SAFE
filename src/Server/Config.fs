@@ -2,8 +2,8 @@ namespace Server
   open System.IO
   open Microsoft.WindowsAzure.Storage;
   open Microsoft.WindowsAzure.Storage.Blob;
-  open TeaCollection.Infrastructure.MsSql
-  open TeaCollection.Infrastructure.MsSql.DbContext
+  open Infrastructure.Data
+  open Infrastructure.Data.DbContext
 
   module TryParser =
     // convenient, functional TryParse wrappers returning option<'a>

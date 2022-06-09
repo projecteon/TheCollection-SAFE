@@ -26,6 +26,8 @@ type Bagtype = {
 type Country = {
     id: DbId
     name: CountryName
+    tlp_code: CountryCodeTLP
+    name_nl: CountryName
 }
 
 type RefValue = {

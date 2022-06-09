@@ -48,12 +48,6 @@ module Dtos =
     member this.String = let (UtcDateTimeString s) = this in s
 
   [<ReferenceEquality>]
-  type RefValue = {
-    id: DbId;
-    description: string;
-  }
-
-  [<ReferenceEquality>]
   type Bagtype = {
     id: DbId;
     name: Name;

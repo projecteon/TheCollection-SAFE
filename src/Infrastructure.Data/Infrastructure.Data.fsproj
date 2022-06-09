@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <DisableAutoSetFscCompilerPath>true</DisableAutoSetFscCompilerPath>
+    <DotnetFscToolPath>
+    </DotnetFscToolPath>
+    <DotnetFscCompilerPath>
+    </DotnetFscCompilerPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="..\..\paket-files\rspeele\TaskBuilder.fs\TaskBuilder.fs" Link="TaskBuilder.fs" />
+    <Compile Include="DbContext.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="Util.fs" />
+    <Compile Include="Mapping.fs" />
+    <Compile Include="UserRepository.fs" />
+    <Compile Include="BagtypeRepository.fs" />
+    <Compile Include="BrandRepository.fs" />
+    <Compile Include="CountryRepository.fs" />
+    <Compile Include="RefValueRepository.fs" />
+    <Compile Include="TeabagRepository.fs" />
+    <Compile Include="FileRepository.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.fsproj" />
+    <ProjectReference Include="..\Shared\Shared.fsproj" />
+  </ItemGroup>
+  <Import Project="..\..\fsc.props" />
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

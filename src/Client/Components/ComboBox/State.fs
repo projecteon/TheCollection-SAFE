@@ -77,7 +77,7 @@ let update (msg : Msg) (currentModel : Model) userData : Model * Cmd<Msg> * Exte
     let nextModel = { currentModel with Value = None; SearchTerm = None; SearchResult = None; HasFocus = false }
     nextModel, Cmd.none, ExternalMsg.OnChange None
   | OnSearchTermChange x ->
-    if x.Equals(currentModel.SearchTerm.Value)
+    if currentModel.SearchTerm.IsSome && x.Equals(currentModel.SearchTerm.Value)
       then currentModel, Cmd.none, ExternalMsg.UnChanged
     else
       let nextModel = { currentModel with SearchTerm = Some x }

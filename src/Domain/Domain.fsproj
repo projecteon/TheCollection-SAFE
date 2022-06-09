@@ -1,16 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-    </PropertyGroup>
-    <ItemGroup>
-        <Compile Include="SharedTypes.fs" />
-        <Compile Include="ReflectionUtil.fs" />
-        <Compile Include="Searchable.fs" />
-        <Compile Include="SearchStringGenerator.fs" />
-        <Compile Include="Types.fs" />
-        <Compile Include="Tea.fs" />
-        <Compile Include="Validation.fs" />
-    </ItemGroup>
-    <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="SharedTypes.fs" />
+    <Compile Include="ReflectionUtil.fs" />
+    <Compile Include="Searchable.fs" />
+    <Compile Include="SearchStringGenerator.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="Validation.fs" />
+    <Compile Include="Tea.fs" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

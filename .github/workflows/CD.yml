@@ -1,0 +1,57 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+        node-version: [14.x]
+        dotnet: [ '6.0.x' ]
+
+    steps:
+    # - name: Run Debug variables
+    #   run:  |
+    #     gci -recurse -filter "fsc.exe" -ErrorAction SilentlyContinue –Path C:\
+    #     Write-Host  $env:UserName $env:UserDomain $env:ComputerName
+    - name: Install MS SQL 2019 local db
+      run: |
+        Write-Host "Downloading"
+        Import-Module BitsTransfer
+        Start-BitsTransfer -Source https://download.microsoft.com/download/7/c/1/7c14e92e-bdcb-4f89-b7cf-93543e7112d1/SqlLocalDB.msi -Destination SqlLocalDB.msi
+        Write-Host "Installing"
+        Start-Process -FilePath "SqlLocalDB.msi" -Wait -ArgumentList "/qn", "/norestart", "/l*v SqlLocalDBInstall.log", "IACCEPTSQLLOCALDBLICENSETERMS=YES";
+        Write-Host "Checking"
+        sqlcmd -l 60 -S "(localdb)\MSSQLLocalDB" -Q "SELECT @@VERSION;"
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Setup .NET ${{ matrix.dotnet }}
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+    - name: Install Dotnet Tools
+      run: dotnet tool restore
+    - name: Run migrations
+      run:  dotnet run RunMigrations --project .\devops\Build\Build.fsproj
+    # - name: Login via Az module
+    #   uses: azure/login@v1.1
+    #   with:
+    #     creds: ${{secrets.AZURE_CREDENTIALS_TEST}}
+    #     enable-AzPSSession: true
+    - name: Build application and publish to test
+      run: dotnet run Azure --project .\devops\Build\Build.fsproj
+      env: # https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md
+        environment: 'test'
+        credentials: ${{ secrets.AZURE_CREDENTIALS_TEST }}
+        dbPassword: ${{ secrets.DB_PASSWORD_TEST }}
+        jwtSecret: ${{ secrets.JWT_SECRET_TEST }}

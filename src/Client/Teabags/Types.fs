@@ -16,18 +16,20 @@ type Model = {
   searchedTerms: string option
   searchError: string option
   zoomImageId: ImageId option
-  page: int64
+  page: int
   isLoading: bool
 }
 
 type Msg =
 | OnSearchTermChange of string
+| PerformSearch
 | Search
 | SearchError of exn
 | SearchSuccess of SearchResult<Teabag list>
 | SearchTermChanged
 | SearchTermError
 | ZoomImageToggle of ImageId option
+| SearchPageCmd of Client.Components.Pagination.ExternalMsg
 
 type Result<'TSuccess,'TFailure> =
     | Success of 'TSuccess
