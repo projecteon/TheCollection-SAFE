@@ -29,7 +29,7 @@ let queryString model =
 
 let getTeabagsCmd model (token: RefreshTokenViewModel) =
   Cmd.OfPromise.either
-    (Client.Auth.fetchRecord<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString model)) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()))
+    (Client.Auth.fetchRecord<SearchResult<Teabag list>> (sprintf "/api/teabags%s" (queryString { model with page = model.page - 1 })) (Decode.Auto.generateDecoder<SearchResult<Teabag list>>()))
     token
     SearchSuccess
     SearchError
@@ -42,7 +42,7 @@ let init() =
     searchedTerms=sessionData.searchedTerms
     searchError=None
     zoomImageId = None
-    page = int64 0
+    page = 1
     isLoading = false
   }
   initialModel
@@ -52,10 +52,12 @@ let update (msg:Msg) model userData : Model*Cmd<Msg> =
   | OnSearchTermChange searchTerms ->
     let filteredSearchTerms = Domain.SearchStringGenerator.FilterSearchTerms searchTerms
     {model with searchedTerms = Some filteredSearchTerms; searchError = None}, Cmd.none
+  | PerformSearch ->
+    {model with result = []; isLoading=true}, tryRefreshJwtCmd (getTeabagsCmd model) userData
   | Search ->
     let result = validateSearchTerm model
     match result with
-    | Success x -> {model with searchError = None; result = []; resultCount=None; isLoading=true}, tryRefreshJwtCmd (getTeabagsCmd model) userData
+    | Success x -> {model with searchError = None; resultCount=None; page=1}, Cmd.ofMsg PerformSearch
     | Failure x -> {model with searchError = Some x}, Cmd.none
   | SearchSuccess result ->
     saveSearchData {searchedTerms = model.searchedTerms; result = result}
@@ -65,4 +67,12 @@ let update (msg:Msg) model userData : Model*Cmd<Msg> =
     { model with isLoading=false }, Cmd.none
   | ZoomImageToggle id ->
     { model with zoomImageId = id }, Cmd.none
+  | SearchPageCmd msg ->
+    let nextModel =
+      match msg with
+      | Client.Components.Pagination.ExternalMsg.SearchPageNext -> { model with page = model.page + 1 }
+      | Client.Components.Pagination.ExternalMsg.SearchPagePrevious -> { model with page = model.page - 1 }
+      | Client.Components.Pagination.ExternalMsg.SearchPage page -> { model with page = page }
+
+    nextModel, Cmd.ofMsg PerformSearch
   | _ -> model, Cmd.none

@@ -1,7 +1,5 @@
-group Server
-  FSharp.Core
-  Saturn
-  Thoth.Json.Giraffe
-  WindowsAzure.Storage
-  BCrypt.Net-Next
-  NodaTime
+Saturn
+Fable.Remoting.Giraffe
+WindowsAzure.Storage
+BCrypt.Net-Next
+Thoth.Json.Giraffe

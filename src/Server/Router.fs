@@ -3,10 +3,13 @@ namespace Server
 module Router =
   open Giraffe
   open Saturn
+  open System.Threading.Tasks
+  open FSharp.Control.Tasks.V2
 
-  open TeaCollection.Infrastructure.MsSql
+  open Infrastructure.Data
   open Security.Authorization
-  open TeaCollection.Infrastructure.MsSql.DbContext
+  open Infrastructure.Data.DbContext
+  open Server.Api
 
   let validate (model: 'a) =
     Domain.SharedTypes.Result.Success model
@@ -17,7 +20,7 @@ module Router =
   let updateTeabag = TeabagRepository.update Config.DbConfig
 
   let statistics = TeabagRepository.statistics Config.DbConfig
-  let getCountByInserted = (TeabagRepository.insertedCount Config.DbConfig)
+  let getCountByInserted = TeabagRepository.insertedCount Config.DbConfig
 
   let teabagsRouter = router {
     pipe_through authorize
@@ -28,6 +31,7 @@ module Router =
     putf "/%i" (Api.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
 
     get "/statistics" (Api.Generic.handleGetAll statistics)
+    get "/countby/countrytlp" (Api.Generic.handleGetAll (TeabagRepository.countryTLDCount Config.DbConfig))
     get "/countby/brands" (Api.Generic.handleGetAll (TeabagRepository.brandCount Config.DbConfig))
     get "/countby/bagtypes" (Api.Generic.handleGetAll (TeabagRepository.bagtypeCount Config.DbConfig))
     get "/countby/inserteddate" (Api.Generic.handleGetTransformAll getCountByInserted Transformers.transform)

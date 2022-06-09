@@ -17,6 +17,10 @@ type CountryName  = CountryName of string
     with
     member this.String = let (CountryName s) = this in s
 
+type CountryCodeTLP  = CountryCodeTLP of string
+    with
+    member this.String = let (CountryCodeTLP s) = this in s
+
 type CreatedDate = CreatedDate of Instant
     with
     member this.Instant = let (CreatedDate instant) = this in instant

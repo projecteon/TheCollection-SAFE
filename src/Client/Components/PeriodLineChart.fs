@@ -27,8 +27,8 @@ let private legendIcon color =
         P.Height 14
         P.ViewBox (sprintf "0 0 %f %f" SIZE SIZE)
         P.Version "1.1"
-        P.Style [Display DisplayOptions.InlineBlock; VerticalAlign "middle"; MarginRight 4]][
-          path [P.ClassName "recharts-legend-icon"; P.StrokeWidth 4; P.Stroke color; P.Fill "none"; P.D pathD ][]
+        P.Style [Display DisplayOptions.InlineBlock; VerticalAlign "middle"; MarginRight 4]] [
+          path [P.ClassName "recharts-legend-icon"; P.StrokeWidth 4; P.Stroke color; P.Fill "none"; P.D pathD ] []
         ]
 
 let private createXAxisLabels (model: CountBy<Moment> list) =
@@ -54,7 +54,7 @@ let private transformToChartData (model: CountBy<Moment> list) =
   |> createXAxisLabels
   |> Seq.mapi (fun i x -> createObj (["period" ==> x] |> List.append yearData.[i]))
 
-let inline objectKeys (o: obj) : string seq = upcast Fable.Core.JS.Object.keys(o)
+let inline objectKeys (o: obj) : string seq = upcast Fable.Core.JS.Constructors.Object.keys(o)
 
 let private lineOpacity hoveredKey currentKey =
   match hoveredKey with
@@ -87,13 +87,13 @@ type private LegenDataPayload = {
   value: int
 }
 let private renderToolTipItem data =
-  tr [ Key data.name; Style [ Border "1px solid #CCC" ] ][
-    td [ Style [ Padding "3px 6px"; FontSize "13px"; ] ][
+  tr [ Key data.name; Style [ Border "1px solid #CCC" ] ] [
+    td [ Style [ Padding "3px 6px"; FontSize "13px"; ] ] [
       legendIcon data.stroke
       //span [Style [Display "inline-block"; Height "10px"; Width "10px"; MarginRight "6px"; BackgroundColor data.stroke ]][]
       str data.name
     ]
-    td [ Style [ Padding "3px 6px"; FontSize "13px"; TextAlign TextAlignOptions.Right; BorderLeft "1px dotted #999" ]][ str (sprintf "%i" data.value) ]
+    td [ Style [ Padding "3px 6px"; FontSize "13px"; TextAlign TextAlignOptions.Right; BorderLeft "1px dotted #999" ]] [ str (sprintf "%i" data.value) ]
   ]
 
 type private LegendData = {
@@ -104,10 +104,10 @@ type private LegendData = {
 let private CustomTooltip (legendData: LegendData) =
   if legendData.active then
     let childrenData = legendData.payload |> Array.sortByDescending (fun x -> x.value) |> Array.map (fun x -> renderToolTipItem x)
-    table [ P.Style [ BackgroundColor "#fff"; Opacity 0.9; BoxShadow "7px 7px 12px -9px rgb(119,119,119)"; BorderCollapse "collapse"; BorderSpacing 0.0; EmptyCells "show" ] ][
-      thead [][
-        tr [][
-          td [ P.ColSpan 2; P.Style [ Color "#fff"; BackgroundColor "#aaa"; Padding "2px 5px"] ][ str legendData?label ]
+    table [ P.Style [ BackgroundColor "#fff"; Opacity 0.9; BoxShadow "7px 7px 12px -9px rgb(119,119,119)"; BorderCollapse "collapse"; BorderSpacing 0.0; EmptyCells "show" ] ] [
+      thead [] [
+        tr [] [
+          td [ P.ColSpan 2; P.Style [ Color "#fff"; BackgroundColor "#aaa"; Padding "2px 5px"] ] [ str legendData?label ]
         ]
       ]
       tbody [] [
@@ -144,6 +144,6 @@ let private renderData data hoverLegend opacityKey =
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: CountBy<Moment> list option) hoverLegend opacityKey =
-  responsiveContainer [Responsive.Width "100%"][
+  responsiveContainer [Responsive.Width "100%"] [
       renderData data hoverLegend opacityKey
   ]

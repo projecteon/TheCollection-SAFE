@@ -36,6 +36,6 @@ let private renderData data =
 
 // https://github.com/recharts/recharts/issues/196
 let view (data: 'a[] option) =
-  responsiveContainer [Responsive.Width "100%"; Responsive.Aspect (4.0/3.0)][
+  responsiveContainer [Responsive.Width "100%"; Responsive.Aspect (4.0/3.0)] [
       renderData data
   ]

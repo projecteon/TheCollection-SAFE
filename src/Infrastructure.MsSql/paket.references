@@ -1,5 +1,0 @@
-group Infrastructure.MsSql
-  FSharp.Core
-  FSharp.Data
-  FSharp.Data.SqlClient
-  NodaTime

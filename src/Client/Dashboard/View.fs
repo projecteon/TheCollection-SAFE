@@ -1,5 +1,6 @@
 module Client.Dashboard.View
 
+open Fable.Core
 open Fable.React
 open Fable.React.Props
 open Fable.FontAwesome
@@ -13,6 +14,12 @@ open Fable.C3
 open Fulma
 
 module C3 = Fable.C3.React
+
+type IHighchartsMap = 
+  abstract HighchartPage: props: obj -> ReactElement;
+
+[<ImportAll("../HighchartsMap.js")>]
+let mighchartsMap: IHighchartsMap = jsNative
 
 let renderBarChart data (count: ReChartHelpers.DataCount) =
   match data with
@@ -35,15 +42,15 @@ let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
     | None -> nothing
     | Some chartType ->
       match chartType with
-      | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]][Fa.i [ Fa.Solid.ChartPie ][]])
-      | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]][Fa.i [ Fa.Solid.ChartBar ][]])
+      | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]] [Fa.i [ Fa.Solid.ChartPie ] []])
+      | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]] [Fa.i [ Fa.Solid.ChartBar ] []])
       | _ -> nothing
 
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
-    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ][Fa.i [ Fa.Solid.ExpandArrowsAlt ][]]
+    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ] [Fa.i [ Fa.Solid.ExpandArrowsAlt ] []]
   else
-    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ][Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ][]]
+    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ] [Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ] []]
 
 let statistics (model:Model) =
   match model.statistics with
@@ -78,21 +85,21 @@ let view (model:Model) dispatch =
               Panel.panel [] [
                 Panel.heading [ ] [
                   div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                    str "Brands ReChart"
-                    div [][
+                    str (sprintf "Top %i Brands" (int model.displayedByBrands))
+                    div [] [
                       ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
                     ]
                   ]
                 ]
-                Panel.block [ ] [
+                Panel.Block.div [ ] [
                   renderBarChart model.countByBrands model.displayedByBrands
                 ]
               ]
             ]
             Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
               Panel.panel [] [
-                Panel.heading [ ] [ str "Bagtypes ReChart"]
-                Panel.block [ ] [
+                Panel.heading [ ] [ str "Bagtypes distribution"]
+                Panel.Block.div [ ] [
                   renderPieChart model.countByBagtypes
                 ]
               ]
@@ -101,11 +108,26 @@ let view (model:Model) dispatch =
               Panel.panel [] [
                 Panel.heading [ ] [
                   div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                    str "Inserted ReChart"
+                    str "Inserts per month"
                   ]
                 ]
-                Panel.block [ ] [
+                Panel.Block.div [ ] [
                   PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+                ]
+              ]
+            ]
+            Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
+              Panel.panel [] [
+                Panel.heading [ ] [
+                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
+                    str "Per country"
+                  ]
+                ]
+                Panel.Block.div [ ] [
+                  //mighchartsMap.HighchartPage {|data = data|}
+                   match model.countCountryTLD with
+                    | Some x -> mighchartsMap.HighchartPage {|data = x|}
+                    | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
                 ]
               ]
             ]

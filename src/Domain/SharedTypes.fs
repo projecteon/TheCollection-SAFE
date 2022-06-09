@@ -65,6 +65,12 @@ module SharedTypes =
     CountryCount: int
   }
 
+  [<ReferenceEquality>]
+  type RefValue = {
+    id: DbId;
+    description: string;
+  }
+
   // https://fsharpforfunandprofit.com/posts/recipe-part2/
   type Result<'TSuccess,'TFailure> =
     | Success of 'TSuccess
@@ -80,5 +86,6 @@ module SharedTypes =
 
   let (>=>) switch1 switch2 =
     switch1 >> (bind switch2)
+
 
 

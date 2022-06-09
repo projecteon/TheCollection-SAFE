@@ -11,9 +11,9 @@ open Client.Components.ComboBox.Types
 open Elmish.React
 open Fulma
 
-let CarrigeReturnKeyCode = 13.0
-let ArrowUpKeyCode = 38.0
-let ArrowDownKeyCode = 40.0
+let CarrigeReturnKeyCode = "Enter"
+let ArrowUpKeyCode = "ArrowUp"
+let ArrowDownKeyCode = "ArrowDown"
 
 let onChange dispatch (ev: Browser.Types.MouseEvent) (newValue: RefValue) =
   let isLeftButtonClick = ev.button = 0.0;
@@ -27,16 +27,16 @@ let onKeyDown (model: Model) dispatch (ev: Browser.Types.KeyboardEvent) =
   if (not model.HasFocus) && model.SearchResult.IsNone && model.Value.IsNone then
     ev |> ignore
   else
-    let isUpOrDownArrow = [|ArrowDownKeyCode; ArrowUpKeyCode|] |> Array.tryFindIndex ((=) ev.keyCode) |> function | None -> false | _ -> true
+    let isUpOrDownArrow = [|ArrowDownKeyCode; ArrowUpKeyCode|] |> Array.tryFindIndex ((=) ev.code) |> function | None -> false | _ -> true
     if isUpOrDownArrow then
       ev.preventDefault();
       ev.stopPropagation();
 
-    if ev.keyCode = ArrowUpKeyCode then
+    if ev.code = ArrowUpKeyCode then
       dispatch DecreaseSearchResultHoverIndex |> ignore
-    else if ev.keyCode = ArrowDownKeyCode then
+    else if ev.code = ArrowDownKeyCode then
       dispatch IncreaseSearchResultHoverIndex |> ignore
-    else if ev.keyCode = CarrigeReturnKeyCode then
+    else if ev.code = CarrigeReturnKeyCode then
       dispatch SelectSearchResultHoverIndex |> ignore
       (ev.currentTarget :?> Browser.Types.HTMLInputElement).blur()
     else
@@ -131,7 +131,7 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
     ]
     Field.div [ Field.HasAddons ] [
       Control.p [ ] [
-        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ][] ] ]
+        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ] [] ] ]
       ]
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
         inputElement model dispatch
@@ -166,7 +166,7 @@ let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
     ]
     Field.div [ Field.HasAddons ] [
       Control.p [ ] [
-        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ][] ] ]
+        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ] [] ] ]
       ]
       Control.div [ Control.IsExpanded; Control.HasIconRight ] [
         inputElement model dispatch

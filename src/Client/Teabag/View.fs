@@ -10,6 +10,7 @@ open Client.Components
 open Client.FileUrlHandler
 open Client.Teabag
 open Client.Teabag.Types
+open Domain.SharedTypes
 open Server.Api.Dtos
 open HtmlProps
 
@@ -150,7 +151,7 @@ let view (model:Model) (dispatch: Msg -> unit) =
                 Card.content [] [
                   yield teabagForm x model dispatch
                   match x.archiveNumber with
-                  | Some x -> yield div [Style [Position PositionOptions.Absolute; Top 5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"][
+                  | Some x -> yield div [Style [Position PositionOptions.Absolute; Top 5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"] [
                     x |> sprintf "#%i" |> str]
                   | None -> yield nothing
                 ]

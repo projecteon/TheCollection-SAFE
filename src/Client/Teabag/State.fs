@@ -71,7 +71,7 @@ let private reloadTeabagCmd (teabag: Teabag option) (token: RefreshTokenViewMode
 // https://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-js-fetch-api
 let private uploadImage (teabagId: DbId) (file : Browser.Types.File) (token: JWT) =
   let filename = System.Text.RegularExpressions.Regex.Replace(file.name, @"^(.*)\.(.*)$", sprintf @"%i.$2" teabagId.Int)
-  let formData = Browser.XMLHttpRequest.FormData.Create()
+  let formData = Browser.Blob.FormData.Create()
   formData.append(filename, file)
   let defaultProps =
     [ RequestProperties.Method HttpMethod.POST

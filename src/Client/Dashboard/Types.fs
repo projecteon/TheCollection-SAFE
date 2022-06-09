@@ -32,14 +32,17 @@ type ChartTransformation =
 | PieToBar
 | BarToPie
 
+type HighchartData = {value: int; key: string}
 type Model = {
   statistics: Statistics option
   countByBrands: CountBy<string> list option
   countByBagtypes: CountBy<string> list option
+  countByCountryTLD: CountBy<string> list option
   countByInserted: CountBy<Moment> list option
   countByInsertedHoveredKey: string option
   countBrands: ChartConfig option
   countBagtypes: ChartConfig option
+  countCountryTLD: HighchartData array option
   countInserted: ChartConfig option
   displayedByBrands: ReChartHelpers.DataCount
   displayedBrands: ReChartHelpers.DataCount
@@ -52,6 +55,8 @@ type Msg =
 | GetCountByBrandsSuccess of CountBy<string> list
 | GetCountByBagtypesError of exn
 | GetCountByBagtypesSuccess of CountBy<string> list
+| GetCountByCountryTLDError of exn
+| GetCountByCountryTLDSuccess of CountBy<string> list
 | GetCountByInsertedError of exn
 | GetCountByInsertedSuccess of CountBy<UtcDateTimeString> list
 | TransformCountByBrand of ChartTransformation

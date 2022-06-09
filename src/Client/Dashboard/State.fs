@@ -71,6 +71,17 @@ let getCountByBagtypesCmd (token: JWT) =
     GetCountByBagtypesSuccess
     GetCountByBagtypesError
 
+let getCountByCountryTLDCmd (token: JWT) =
+  Cmd.OfPromise.either
+    (Client.Http.fetchAs<CountBy<string> list> "/api/teabags/countby/countrytlp" (Decode.Auto.generateDecoder<CountBy<string> list>()) )
+    [Fetch.requestHeaders [
+        HttpRequestHeaders.Authorization ("Bearer " + token.String)
+        HttpRequestHeaders.ContentType "application/json; charset=utf-8"
+        HttpRequestHeaders.Accept "application/json"
+    ]]
+    GetCountByCountryTLDSuccess
+    GetCountByCountryTLDError
+
 let getCountByInsertedCmd (token: JWT) =
   Cmd.OfPromise.either
     (Client.Http.fetchAs<CountBy<UtcDateTimeString> list> "/api/teabags/countby/inserteddate" (Decode.Auto.generateDecoder<CountBy<UtcDateTimeString> list>()) )
@@ -154,20 +165,27 @@ let dataCountToggle previousCount =
   | ReChartHelpers.DataCount.Twenty -> ReChartHelpers.DataCount.Ten
   | _ -> ReChartHelpers.DataCount.Ten
 
+let mapToHighchatData (data: CountBy<string> list): HighchartData array =
+  data
+  |> Seq.map (fun x -> {value = x.count; key = x.description})
+  |> Seq.toArray
+
 let init =
     let initialModel = {
       statistics = None
       countByBrands = None
       countByBagtypes = None
+      countByCountryTLD = None
       countByInserted = None
       countByInsertedHoveredKey = None
       countBrands = None
       countBagtypes = None
+      countCountryTLD = None
       countInserted = None
       displayedByBrands = ReChartHelpers.DataCount.Ten
       displayedBrands = ReChartHelpers.DataCount.Ten
     }
-    initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByInsertedCmd, getStatisticsCmd
+    initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByCountryTLDCmd, getCountByInsertedCmd, getStatisticsCmd
 
 let moment: Fable.Import.Moment.IExports = importAll "moment"
 let update (msg:Msg) model : Model*Cmd<Msg> =
@@ -180,11 +198,14 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | GetCountByBrandsError exn -> model, Cmd.none
   | GetCountByBagtypesSuccess data ->
     { model with countByBagtypes = Some data; countBagtypes = (mapToData data ReChartHelpers.DataCount.Ten |> toPieChart)}, Cmd.none
+  | GetCountByBagtypesError exn -> model, Cmd.none
+  | GetCountByCountryTLDSuccess data ->
+    { model with countByCountryTLD = Some data; countCountryTLD = Some (mapToHighchatData data)}, Cmd.none
+  | GetCountByCountryTLDError exn -> model, Cmd.none
   | GetCountByInsertedSuccess data ->
     let dashboardData = data |> List.map(fun x -> {count = x.count; description = moment(U7.Case3 x.description.String)})
     let config =  dashboardData |> toPeriodMonthChart2
     { model with countByInserted = Some dashboardData; countInserted = config }, Cmd.none
-  | GetCountByBagtypesError exn -> model, Cmd.none
   | GetCountByInsertedError exn -> model, Cmd.none
   | TransformCountByBrand transformation ->
     {model with countBrands = (transform model.countBrands transformation)}, Cmd.none

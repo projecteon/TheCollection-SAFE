@@ -1,13 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <DefineConstants>FABLE_COMPILER</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="..\..\paket-files\client\CompositionalIT\fshelpers\src\FsHelpers\Elmish.Debounce\Elmish.Debounce.fs" Link="Elmish.Debounce.fs" />
-        <Compile Include="..\..\paket-files\client\projecteon\Fable.C3\src\Fable.C3\Fable.C3.fs" Link="Fable.C3.fs" />
-        <Compile Include="..\..\paket-files\client\projecteon\Fable.C3\src\Fable.C3.React\Chart.fs" Link="Chart.fs" />
+        <None Include="HighchartsMap.js" />
+        <None Include="index.html" />
+        <None Include="index.scss" />
+        <None Include="paket.references" />
+        <Compile Include="..\..\paket-files\projecteon\fshelpers\src\FsHelpers\Elmish.Debounce\Elmish.Debounce.fs" Link="Elmish.Debounce.fs" />
+        <Compile Include="..\..\paket-files\projecteon\Fable.C3\src\Fable.C3\Fable.C3.fs" Link="Fable.C3.fs" />
+        <Compile Include="..\..\paket-files\projecteon\Fable.C3\src\Fable.C3.React\Chart.fs" Link="Chart.fs" />
         <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="../Domain/Validation.fs" />
         <Compile Include="../Domain/SearchStringGenerator.fs" />
@@ -29,6 +33,7 @@
         <Compile Include="Components/BarChart.fs" />
         <Compile Include="Components/PieChart.fs" />
         <Compile Include="Components/PeriodLineChart.fs" />
+        <Compile Include="Components\Pagination.fs" />
         <Compile Include="Login/Types.fs" />
         <Compile Include="Login/State.fs" />
         <Compile Include="Login/View.fs" />
@@ -52,7 +57,11 @@
         <Compile Include="Teabag/View.fs" />
         <Compile Include="ClientTypes.fs" />
         <Compile Include="State.fs" />
+        <Compile Include="Index.fs" />
         <Compile Include="App.fs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Shared\Shared.fsproj" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -1,17 +1,19 @@
-group Client
-  FSharp.Core
-  Fable.Core
-  Fable.Browser.Dom
-  Fable.Browser.XMLHttpRequest
-  Fable.Fetch
-  Fable.Promise
-  Fable.Elmish.Browser
-  Fable.Elmish.Debugger
-  Fable.Elmish.React
-  Fable.Elmish.HMR
-  Fable.React
-  Fable.Recharts
-  Fulma
-  Fable.FontAwesome
-  Fable.FontAwesome.Free
-  dotnet-fable
+Fable.Core
+Fable.Browser.Dom
+Fable.Browser.XMLHttpRequest
+Fable.Promise
+Fable.Fetch
+Fable.Elmish
+Fable.Elmish.Browser
+Fable.Elmish.React
+Fable.Elmish.Debugger
+Fable.Elmish.HMR
+Fable.FontAwesome
+Fable.FontAwesome.Free
+Fable.Mocha
+Fable.React
+Fable.Recharts
+Fable.Remoting.Client
+Feliz
+Feliz.Bulma
+Fulma
