@@ -2,7 +2,7 @@
 {
 	"editor.tabSize": 2,
   "editor.insertSpaces": true,
-  "editor.autoClosingBrackets": false,
+  "editor.autoClosingBrackets": "never",
 
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 3000,
@@ -26,5 +26,7 @@
     "**/.paket": true,
     "**/paket-files": true,
     "**/yarn.lock": true
-  }
+  },
+  "editor.autoClosingQuotes": "never",
+  "editor.autoSurround": "never"
 }
