@@ -1,12 +1,12 @@
-name: Continuous Deployment Action
+name: Publish Action
 
 on:
-  push:
-    branches: [ master ]
+  release:
+    types: [published]
 
 jobs:
   build:
-    name: CD Build, Test & Deploy
+    name: Publish Build & Deploy
 
     runs-on: windows-latest
 
@@ -35,15 +35,10 @@ jobs:
       run: dotnet tool restore
     - name: Run migrations
       run:  dotnet run RunMigrations --project .\devops\Build\Build.fsproj
-    # - name: Login via Az module
-    #   uses: azure/login@v1.1
-    #   with:
-    #     creds: ${{secrets.AZURE_CREDENTIALS_TEST}}
-    #     enable-AzPSSession: true
     - name: Build application and publish to test
       run: dotnet run Azure --project .\devops\Build\Build.fsproj
       env: # https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md
         environment: 'test'
-        credentials: ${{ secrets.AZURE_CREDENTIALS_TEST }}
-        dbPassword: ${{ secrets.DB_PASSWORD_TEST }}
-        jwtSecret: ${{ secrets.JWT_SECRET_TEST }}
+        credentials: ${{ secrets.AZURE_CREDENTIALS_PRODUCTION }}
+        dbPassword: ${{ secrets.DB_PASSWORD_PRODUCTION }}
+        jwtSecret: ${{ secrets.JWT_SECRET_PRODUCTION }}
