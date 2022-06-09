@@ -21,13 +21,17 @@ $fa-font-path: "../../node_modules/@fortawesome/fontawesome-free/WebFonts" !defa
   a.navbar-item.is-active, .navbar-link.is-active {
     border-bottom: $navbar-item-active-color 1px solid;
   }
+
+  a.navbar-item:hover:not(.is-active), .navbar-link:hover:not(.is-active), a.navbar-item:active:not(.is-active), .navbar-link:active:not(.is-active) {
+    border-bottom: $pink 1px solid;
+  }
 }
 
 a.navbar-item.is-active, .navbar-link.is-active {
   color: $navbar-item-active-color;
 }
 
-a.navbar-item:focus, a.navbar-item:focus-within, a.navbar-item:hover, .navbar-link:focus, .navbar-link:focus-within, .navbar-link:hover {
+a.navbar-item:hover:not(.is-active), .navbar-link:hover:not(.is-active), a.navbar-item:active:not(.is-active), .navbar-link:active:not(.is-active) {
   color: $pink;
 }
 
@@ -116,6 +120,6 @@ font-size: 0.8em;
 
 .pagination.is-sticky-top {
   position: sticky;
-  top: 52px;
+  top: 55px;
   z-index: 30;
 }
