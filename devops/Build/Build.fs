@@ -7,7 +7,7 @@ open Helpers
 
 initializeContext()
 
-let migrationsPath = Path.getFullName "src/Migrations"
+let migrationsPath = Path.getFullName "devops/Migrations"
 let sharedPath = Path.getFullName "src/Shared"
 let serverPath = Path.getFullName "src/Server"
 let clientPath = Path.getFullName "src/Client"
