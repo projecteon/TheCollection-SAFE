@@ -61,7 +61,7 @@ export const HighchartPage = (props) => {
     ]
   };
 
-  console.dir(options);
-  console.dir(Highcharts);
+  //console.dir(options);
+  //console.dir(Highcharts);
   return (React.createElement(HighchartsReact, { highcharts: Highcharts, constructorType: "mapChart", options: options }));
 };
