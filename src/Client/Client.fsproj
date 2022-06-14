@@ -5,13 +5,11 @@
         <DefineConstants>FABLE_COMPILER</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
+        <None Include="paket.references" />
         <None Include="HighchartsMap.js" />
         <None Include="index.html" />
         <None Include="index.scss" />
-        <None Include="paket.references" />
         <Compile Include="..\..\paket-files\projecteon\fshelpers\src\FsHelpers\Elmish.Debounce\Elmish.Debounce.fs" Link="Elmish.Debounce.fs" />
-        <Compile Include="..\..\paket-files\projecteon\Fable.C3\src\Fable.C3\Fable.C3.fs" Link="Fable.C3.fs" />
-        <Compile Include="..\..\paket-files\projecteon\Fable.C3\src\Fable.C3.React\Chart.fs" Link="Chart.fs" />
         <Compile Include="../Domain/SharedTypes.fs" />
         <Compile Include="../Domain/Validation.fs" />
         <Compile Include="../Domain/SearchStringGenerator.fs" />
