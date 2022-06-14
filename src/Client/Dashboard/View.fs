@@ -9,11 +9,7 @@ open Client
 open Client.Components
 open Client.Dashboard.Types
 
-open Fable.C3
-
 open Fulma
-
-module C3 = Fable.C3.React
 
 type IHighchartsMap = 
   abstract HighchartPage: props: obj -> ReactElement;

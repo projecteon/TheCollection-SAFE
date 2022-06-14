@@ -5,7 +5,6 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fetch
 
-open Fable.C3
 open Fable.Import.Moment.Moment
 open Thoth.Json
 

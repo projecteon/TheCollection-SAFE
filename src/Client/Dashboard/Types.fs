@@ -1,6 +1,5 @@
 module Client.Dashboard.Types
 
-open Fable.C3
 open Server.Api.Dtos
 open Domain.SharedTypes
 open Fable.Import.Moment.Moment
