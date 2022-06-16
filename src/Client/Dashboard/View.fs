@@ -9,11 +9,7 @@ open Client
 open Client.Components
 open Client.Dashboard.Types
 
-open Fable.C3
-
 open Fulma
-
-module C3 = Fable.C3.React
 
 type IHighchartsMap = 
   abstract HighchartPage: props: obj -> ReactElement;
@@ -33,18 +29,6 @@ let renderPieChart data =
 
 let lineChartHoverLegend dispatch key =
   dispatch (ToggleCountByInsertedHoveredKey key)
-
-let TransformationsIcon  (chart: ChartConfig option) dispatch cmd =
-  match chart with
-  | None -> nothing
-  | Some chartConfig ->
-    match chartConfig.data.``type`` with
-    | None -> nothing
-    | Some chartType ->
-      match chartType with
-      | ChartType.Bar -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd BarToPie)) ]] [Fa.i [ Fa.Solid.ChartPie ] []])
-      | ChartType.Pie -> (Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch (cmd PieToBar)) ]] [Fa.i [ Fa.Solid.ChartBar ] []])
-      | _ -> nothing
 
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then

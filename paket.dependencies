@@ -38,8 +38,6 @@ nuget Feliz.Bulma
 nuget Fulma
 
 github projecteon/fshelpers src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs
-github projecteon/Fable.C3 src/Fable.C3/Fable.C3.fs
-github projecteon/Fable.C3 src/Fable.C3.React/Chart.fs
 
 nuget Fake.Core.Target
 nuget Fake.IO.FileSystem

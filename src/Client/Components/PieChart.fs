@@ -54,7 +54,9 @@ let private renderChart data =
     pieChart
         [ ReChartHelpers.margin 15. 20. 5. 0. ] [
           tooltip [] []
-          legend [ Legend.IconType ShapeType.Square; Legend.OnMouseEnter onPieEnter ] []
+          legend [ Legend.IconType ShapeType.Square;
+                   //Legend.OnMouseEnter onPieEnter
+                   ] []
           pie [
             Polar.Data data;
             Polar.DataKey "count";
@@ -64,7 +66,7 @@ let private renderChart data =
             Polar.LabelLine false;
             //Polar.ActiveIndex 1
             //Polar.ActiveShape renderActiveShape
-            Polar.OnMouseEnter onPieEnter
+            //Polar.OnMouseEnter onPieEnter
             P.Fill "#8884d8"
           ] [
             cells data
