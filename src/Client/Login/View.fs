@@ -1,79 +1,113 @@
 module Client.Login.View
 
 open Fable.React
-open Fable.React.Props
-open Fable.FontAwesome
-
-open Fulma
+open Feliz
+open Feliz.Bulma
 
 open Types
-open HtmlProps
 open Client.Login
 open Domain.SharedTypes
 
 let private loginBtnContent model =
-      if model.isWorking then Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
-      else str "Login"
+      if model.isWorking then Html.i [ prop.className "fa-solid fa-circle-notch fa-spin" ]
+      else Html.text "Login"
 
 let private loginError model =
   match model.loginError with
-  | Some x -> Notification.notification [ Notification.Color IsDanger ] [ str x ]
-  | None -> nothing
+  | Some x -> Bulma.notification [ color.isDanger; prop.text x ] 
+  | None -> Html.none
 
 let view  (model : Model) (dispatch : Msg -> unit) =
-    [ Hero.hero [
-        Hero.Color IsLight
-        Hero.IsFullHeight ] [
-        Hero.body [] [
-          Container.container [Container.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ]] [
-            Column.column [ Column.Width (Screen.All, Column.Is4); Column.Offset (Screen.All, Column.Is4); Column.CustomClass "login" ] [
-              Heading.h3 [ Heading.Modifiers [ Modifier.TextColor IsGrey ] ] [ str "The Collection" ]
-              Box.box' [] [
-                Image.image [ Image.CustomClass "avatar" ] [
-                  img [ Src "/svg/teapot.svg" ]
+  [
+    Bulma.hero [
+      Bulma.color.isLight
+      Bulma.hero.isFullHeight
+      prop.children [
+        Bulma.heroBody [
+          Bulma.container [
+          text.hasTextCentered
+          prop.children [
+            Bulma.column [
+              column.is4
+              column.isOffset4
+              prop.className "login"
+              prop.children [
+                Bulma.title.h3 [
+                  Bulma.color.hasTextGrey
+                  prop.text "The Collection"
                 ]
-                loginError model
-                form [AutoComplete Off] [
-                  Field.div [] [
-                    Control.p [ Control.HasIconLeft ] [
-                      Input.email [
-                        yield Input.Option.Id "email"
-                        yield Input.Placeholder "your@email.com"
-                        yield Input.ValueOrDefault model.userName.String
-                        yield Input.Disabled model.isWorking
-                        yield Input.OnChange (fun ev -> dispatch (ChangeUserName (EmailAddress ev.Value)))
-                        if (not (List.isEmpty model.userNameError)) then
-                          yield Input.Color IsDanger
-                        else if model.hasTriedToLogin then
-                          yield Input.Color IsSuccess
-                      ]
-                      Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
-                        Fa.i [ Fa.Solid.Envelope ] [ ]
-                      ]
-                      (Client.FulmaHelpers.inputError model.userNameError) |> ofList
+                Bulma.box [
+                  Bulma.image [
+                    prop.className "avatar"
+                    prop.children [
+                      Html.img [ prop.src "/svg/teapot.svg" ]
                     ]
                   ]
-                  Field.div [] [
-                    Control.p [ Control.HasIconLeft ] [
-                      Input.password [
-                        yield Input.Option.Id "password"
-                        yield Input.Placeholder (sprintf "password")
-                        yield Input.ValueOrDefault model.password.String
-                        yield Input.Disabled model.isWorking
-                        yield Input.OnChange (fun ev -> dispatch (ChangePassword (Password ev.Value)))
-                        if (not (List.isEmpty model.passwordError)) then
-                          yield Input.Color IsDanger
-                        else if model.hasTriedToLogin then
-                          yield Input.Color IsSuccess
+                  loginError model
+                  Html.form [
+                    Bulma.field.div [
+                      Bulma.control.p [
+                        Bulma.control.hasIconsLeft
+                        prop.children [
+                          Bulma.input.email [
+                            prop.id "email"
+                            prop.placeholder "your@email.com"
+                            prop.valueOrDefault model.userName.String
+                            prop.disabled model.isWorking
+                            prop.onChange (fun value -> dispatch (ChangeUserName (EmailAddress value)))
+                            if (not (List.isEmpty model.userNameError)) then
+                              color.isDanger
+                            else if model.hasTriedToLogin then
+                              color.isSuccess
+                          ]
+                          Bulma.icon [
+                            Bulma.icon.isSmall
+                            Bulma.icon.isLeft
+                            prop.children [
+                              Html.i [
+                                prop.className "fas fa-envelope"
+                              ]
+                            ]
+                          ]
+                          (Client.FulmaHelpers.inputError model.userNameError) |> ofList
+                        ]
                       ]
-                      Icon.icon [ Icon.Size IsSmall; Icon.IsLeft ] [
-                        Fa.i [ Fa.Solid.Key ] [ ]
-                      ]
-                      (Client.FulmaHelpers.inputError model.passwordError) |> ofList
                     ]
-                  ]
-                  Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model)) || model.isWorking); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin) ] [
-                    loginBtnContent model
+                    Bulma.field.div [
+                      Bulma.control.p [
+                        Bulma.control.hasIconsLeft
+                        prop.children [
+                          Bulma.input.password [
+                            prop.id "password"
+                            prop.placeholder (sprintf "password")
+                            prop.valueOrDefault model.password.String
+                            prop.disabled model.isWorking
+                            prop.onChange (fun value -> dispatch (ChangePassword (Password value)))
+                            if (not (List.isEmpty model.passwordError)) then
+                              color.isDanger
+                            else if model.hasTriedToLogin then
+                              color.isSuccess
+                          ]
+                          Bulma.icon [
+                            Bulma.icon.isSmall
+                            Bulma.icon.isLeft
+                            prop.children [
+                              Html.i [
+                                prop.className "fas fa-key"
+                              ]
+                            ]
+                          ]
+                          (Client.FulmaHelpers.inputError model.passwordError) |> ofList
+                        ]
+                      ]
+                    ]
+                    Bulma.button.button [
+                      Bulma.color.isPrimary
+                      Bulma.button.isFullWidth
+                      prop.disabled ((not (State.isValid model)) || model.isWorking);
+                      prop.onClick (fun (ev: Browser.Types.MouseEvent) -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndLogin)
+                      prop.children [ loginBtnContent model ]
+                    ]
                   ]
                 ]
               ]
@@ -82,3 +116,5 @@ let view  (model : Model) (dispatch : Msg -> unit) =
         ]
       ]
     ]
+  ]
+]
