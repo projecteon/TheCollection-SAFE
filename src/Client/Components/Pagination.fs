@@ -1,8 +1,8 @@
 module Client.Components.Pagination
 
 open Fable.React
-open Fable.React.Props
-open Fulma
+open Feliz
+open Feliz.Bulma
 open System
 
 [<Literal>]
@@ -49,26 +49,29 @@ let createPageButtons (currentPage: int) (dispatch: ExternalMsg -> unit) pageLis
   pageList
   |> Seq.mapi (fun i page ->
     if page = 0 then
-      Pagination.ellipsis [ GenericOption.Props [Key (i.ToString())] ]
+      Bulma.paginationEllipsis [ prop.key (i.ToString()) ]
     else
-      Pagination.link [ Pagination.Link.Props [Key (i.ToString()); OnClick (fun ev -> dispatch (SearchPage page))]; Pagination.Link.Current (page = currentPage) ] [ page |> sprintf "%i" |> str ])
+      Bulma.paginationLink.a [ prop.key (i.ToString()); prop.onClick (fun _ -> dispatch (SearchPage page)); prop.text page; if (page = currentPage) then Bulma.paginationLink.isCurrent])
   |> Seq.toList
   |> ofList
 
 let view (model: Model) (dispatch: ExternalMsg -> unit) =
   let numberOfPages = totalPages model
   match numberOfPages with
-  | 0 -> nothing
-  | 1 -> nothing
+  | 0 -> Html.none
+  | 1 -> Html.none
   | _ ->
-    Pagination.pagination [ Pagination.IsCentered; Pagination.CustomClass "is-sticky-top" ]
-      [
-        Pagination.previous [ Props [ Key "previous"; Disabled (model.currentPage < 2); OnClick (fun ev -> dispatch SearchPagePrevious) ] ]
-          [ str "Previous" ]
-        Pagination.next [ Props [ Key "next"; Disabled (model.currentPage = numberOfPages); OnClick (fun ev -> dispatch SearchPageNext)] ]
-          [ str "Next page" ]
-        Pagination.list [ Props [Key "list" ] ]
-          [
+    Bulma.pagination [
+      Bulma.pagination.isCentered
+      prop.className "is-sticky-top"
+      prop.children [
+        Bulma.paginationPrevious.a [ prop.key "previous"; prop.disabled (model.currentPage < 2); prop.onClick (fun _ -> dispatch SearchPagePrevious); prop.text "Previous" ]
+        Bulma.paginationNext.a [ prop.key "next"; prop.disabled (model.currentPage = numberOfPages); prop.onClick (fun _ -> dispatch SearchPageNext); prop.text "Next page" ]
+        Bulma.paginationList [
+          prop.key "list"
+          prop.children [
             model|> getPageList numberOfPages |> createPageButtons model.currentPage dispatch
           ]
+        ]
       ]
+    ]
