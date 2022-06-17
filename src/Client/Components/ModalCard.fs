@@ -1,17 +1,21 @@
 module Client.Components.ModalCard
 
 open Fable.React
-open Fable.React.Props
-open Fulma
+open Feliz
+open Feliz.Bulma
 
 let view (model: 'a) (dispatch: 'b -> unit) closeDisplay (headerText: 'a -> string) view =
-  Modal.modal [ Modal.IsActive true ]
-    [ Modal.background [ Props [ OnClick closeDisplay ] ] [ ]
-      Modal.Card.card [ ]
-        [ Modal.Card.head [ ]
-            [ Modal.Card.title [ ]
-                [ model |> headerText |> str ]
-              Delete.delete [ Delete.OnClick closeDisplay ] [ ] ]
-          Modal.Card.body [ ]
-            [ view model dispatch ] ] ]
+  Bulma.modal [
+    modal.isActive
+    prop.children [
+      Bulma.modalBackground [ prop.onClick closeDisplay ]
+      Bulma.modalCard [
+        Bulma.modalCardHead [
+          Bulma.modalCardTitle [ model |> headerText |> str ]
+          Bulma.delete [ prop.onClick closeDisplay ]
+        ]
+        Bulma.modalCardBody [ prop.children [ view model dispatch ] ]
+      ]
+    ]
+  ]
 
