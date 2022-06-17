@@ -51,7 +51,7 @@ let createPageButtons (currentPage: int) (dispatch: ExternalMsg -> unit) pageLis
     if page = 0 then
       Bulma.paginationEllipsis [ prop.key (i.ToString()) ]
     else
-      Bulma.paginationLink.a [ prop.key (i.ToString()); prop.onClick (fun _ -> dispatch (SearchPage page)); prop.text page; if (page = currentPage) then Bulma.paginationLink.isCurrent])
+      Bulma.paginationLink.button [ prop.key (i.ToString()); prop.onClick (fun _ -> dispatch (SearchPage page)); prop.text page; if (page = currentPage) then Bulma.paginationLink.isCurrent])
   |> Seq.toList
   |> ofList
 
@@ -65,8 +65,8 @@ let view (model: Model) (dispatch: ExternalMsg -> unit) =
       Bulma.pagination.isCentered
       prop.className "is-sticky-top"
       prop.children [
-        Bulma.paginationPrevious.a [ prop.key "previous"; prop.disabled (model.currentPage < 2); prop.onClick (fun _ -> dispatch SearchPagePrevious); prop.text "Previous" ]
-        Bulma.paginationNext.a [ prop.key "next"; prop.disabled (model.currentPage = numberOfPages); prop.onClick (fun _ -> dispatch SearchPageNext); prop.text "Next page" ]
+        Bulma.paginationPrevious.button [ prop.key "previous"; prop.disabled (model.currentPage < 2); prop.onClick (fun _ -> dispatch SearchPagePrevious); prop.text "Previous" ]
+        Bulma.paginationNext.button [ prop.key "next"; prop.disabled (model.currentPage = numberOfPages); prop.onClick (fun _ -> dispatch SearchPageNext); prop.text "Next page" ]
         Bulma.paginationList [
           prop.key "list"
           prop.children [
