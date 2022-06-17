@@ -51,6 +51,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                         prop.children [
                           Bulma.input.email [
                             prop.id "email"
+                            prop.autoComplete "off"
                             prop.placeholder "your@email.com"
                             prop.valueOrDefault model.userName.String
                             prop.disabled model.isWorking
@@ -79,6 +80,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                         prop.children [
                           Bulma.input.password [
                             prop.id "password"
+                            prop.autoComplete "off"
                             prop.placeholder (sprintf "password")
                             prop.valueOrDefault model.password.String
                             prop.disabled model.isWorking
