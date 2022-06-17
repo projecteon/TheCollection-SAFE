@@ -210,12 +210,12 @@ module ReactHelpers =
     ev.button <> 0.0
 
 module FulmaHelpers =
-  open Fable.React.Props
-  open Fulma
+  open Feliz
+  open Feliz.Bulma
 
   let inputError errorList =
     errorList
-    |> List.mapi (fun index x -> Help.help [ Help.Props [Key (index.ToString())]; Help.Color IsDanger ] [ str x ])
+    |> List.mapi (fun index x -> Bulma.help [ prop.key (index.ToString()); color.isDanger; prop.children [ str x ] ])
 
 module ReChartHelpers =
   type DataCount = Ten=10 | Twenty=20
