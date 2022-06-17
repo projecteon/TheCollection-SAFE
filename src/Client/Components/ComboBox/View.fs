@@ -1,15 +1,13 @@
 module Client.Components.ComboBox.View
 
+open Elmish.React
 open Fable.React
-open Fable.React.Props
 open Fable.FontAwesome
-open Fulma
+open Feliz
+open Feliz.Bulma
 
-open Server.Api.Dtos
 open Domain.SharedTypes
 open Client.Components.ComboBox.Types
-open Elmish.React
-open Fulma
 
 let CarrigeReturnKeyCode = "Enter"
 let ArrowUpKeyCode = "ArrowUp"
@@ -63,30 +61,33 @@ let private hasValue (value: RefValue option) =
 
 let private getHoveredStyle index  searchResultHoverIndex =
   if index = searchResultHoverIndex then
-    [ CSSProp.BackgroundColor "whitesmoke"; CSSProp.Color "#0a0a0a" ]
+    [ style.backgroundColor "whitesmoke"; style.color "#0a0a0a" ]
   else
     []
 
 let viewChoices (model: Model) (dispatch : Msg -> unit) =
   match model.HasFocus with
   | true when model.Value.IsSome || model.SearchResult.IsSome ->
-    Dropdown.dropdown [ Dropdown.CustomClass "isDisplayed" ] [
-      div [] []
-      Dropdown.menu [ ] [
-        Dropdown.content [ ] [
-          match model.Value with
-          | Some x when x.id.Int > 0 ->
-            yield Dropdown.Item.a [ Dropdown.Item.Props [ Key (x.id.ToString()); OnMouseDown (fun ev -> onChange dispatch ev x); Style (getHoveredStyle 0 model.SearchResultHoverIndex) ] ] [ str x.description ]
-            if model.SearchResult.IsSome then
-              yield Dropdown.divider [ ]
-          | _ -> ()
+    Bulma.dropdown [
+      prop.className "isDisplayed"
+      prop.children [
+        Html.div []
+        Bulma.dropdownMenu [
+          Bulma.dropdownContent [
+            match model.Value with
+            | Some x when x.id.Int > 0 ->
+              Bulma.dropdownItem.a [ prop.key (x.id.ToString()); prop.onMouseDown (fun ev -> onChange dispatch ev x); prop.style (getHoveredStyle 0 model.SearchResultHoverIndex); prop.text x.description ] 
+              if model.SearchResult.IsSome then
+                Bulma.dropdownDivider [ ]
+            | _ -> ()
 
-          match model.SearchResult with
-          | Some results ->
-            yield results
-            |> List.mapi (fun index refvalue -> Dropdown.Item.a [ Dropdown.Item.Props [ Key (refvalue.id.ToString()); OnMouseDown (fun ev -> onChange dispatch ev refvalue); Style (getHoveredStyle (if model.Value.IsSome then index + 1 else index) model.SearchResultHoverIndex) ] ] [ str refvalue.description ])
-            |> ofList
-          | _ -> ()
+            match model.SearchResult with
+            | Some results ->
+              results
+              |> List.mapi (fun index refvalue -> Bulma.dropdownItem.a [ prop.key (refvalue.id.ToString()); prop.onMouseDown (fun ev -> onChange dispatch ev refvalue); prop.style (getHoveredStyle (if model.Value.IsSome then index + 1 else index) model.SearchResultHoverIndex); prop.text refvalue.description ])
+              |> ofList
+            | _ -> ()
+          ]
         ]
       ]
     ]
@@ -94,50 +95,54 @@ let viewChoices (model: Model) (dispatch : Msg -> unit) =
 
 let inputIcon model =
   match model.Value with
-  | Some x -> Icon.icon [
-        yield Icon.Size IsSmall
-        yield Icon.IsRight
-        if model.Value |> hasValue then
-          yield Icon.Modifiers [Modifier.TextColor IsSuccess]] [
-        Fa.i [ match model.HasFocus, model.IsSearching with
-                | true, false -> yield Fa.Solid.Search
-                | true, true -> yield Fa.Solid.CircleNotch
-                | _ -> yield Fa.Solid.Check ] [ ]
-
-    ]
+  | Some x -> Bulma.icon [
+                Bulma.icon.isSmall
+                Bulma.icon.isRight
+                if model.Value |> hasValue then
+                  Bulma.color.hasTextSuccess
+                prop.children [
+                  Fa.i [ match model.HasFocus, model.IsSearching with
+                          | true, false -> Fa.Solid.Search
+                          | true, true -> Fa.Solid.CircleNotch
+                          | _ -> Fa.Solid.Check ] [ ]
+                ]
+              ]
   | None -> nothing
 
 let inputElement model dispatch =
-  Input.text [
-    yield Input.Option.Id (model.Label |> lowercase |> ReplaceWhitespace)
-    yield Input.Placeholder (sprintf "Ex: Some %s" (model.Label |> lowercase |> ReplaceWhitespace))
-    yield Input.ValueOrDefault (getDisplayValue model)
-    yield Input.OnChange (fun ev -> dispatch (OnSearchTermChange ev.Value))
-    yield Input.Props [
-      DOMAttr.OnFocus (fun ev -> dispatch OnFocused)
-      DOMAttr.OnBlur (fun ev -> dispatch OnBlur)
-      DOMAttr.OnKeyDown (fun ev -> onKeyDown model dispatch ev)
-    ]
-    if (not (Seq.isEmpty model.Errors)) then
-      yield Input.Color IsDanger
+  Bulma.input.text [
+    prop.id (model.Label |> lowercase |> ReplaceWhitespace)
+    prop.placeholder (sprintf "Ex: Some %s" (model.Label |> lowercase |> ReplaceWhitespace))
+    prop.valueOrDefault (getDisplayValue model)
+    prop.onChange (fun value -> dispatch (OnSearchTermChange value))
+    prop.onFocus (fun _ -> dispatch OnFocused)
+    prop.onBlur (fun _ -> dispatch OnBlur)
+    prop.onKeyDown (fun ev -> onKeyDown model dispatch ev)
+    if (not (Seq.isEmpty model.Errors)) then  
+      color.isDanger
     else if model.Value |> hasValue then
-      yield Input.Color IsSuccess
+      color.isSuccess
   ]
 
 let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
-  Field.div [ ] [
-    Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
-      str model.Label
-    ]
-    Field.div [ Field.HasAddons ] [
-      Control.p [ ] [
-        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ] [] ] ]
-      ]
-      Control.div [ Control.IsExpanded; Control.HasIconRight ] [
-        inputElement model dispatch
-        inputIcon model
-        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
-        viewChoices model dispatch
+  Bulma.field.div [
+    Bulma.label [ prop.for' (model.Label |> lowercase |> ReplaceWhitespace); prop.text model.Label ]
+    Bulma.field.div [
+      Bulma.field.hasAddons
+      prop.children [
+        Bulma.control.p [
+          Bulma.button.button [ prop.disabled (model.Value.IsNone); prop.onClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear); prop.children [ Bulma.icon [ Fa.i [ Fa.Solid.Times ] [] ] ] ]
+        ]
+        Bulma.control.div [
+          Bulma.control.isExpanded
+          Bulma.control.hasIconsRight
+          prop.children [
+            inputElement model dispatch
+            inputIcon model
+            (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+            viewChoices model dispatch
+          ]
+        ]
       ]
     ]
   ]
@@ -145,36 +150,43 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
 let lazyViewWithButtons = Common.lazyView2 viewWithButtons
 
 let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
-  Field.div [ ] [
-    Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
-      str model.Label
-    ]
-    Control.div [ Control.IsExpanded; Control.HasIconRight ] [
-      inputElement model dispatch
-      inputIcon model
-      (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
-      viewChoices model dispatch
+  Bulma.field.div [
+    Bulma.label [ prop.for' (model.Label |> lowercase |> ReplaceWhitespace); prop.text model.Label ]
+    Bulma.control.div [
+      Bulma.control.isExpanded
+      Bulma.control.hasIconsRight
+      prop.children [
+        inputElement model dispatch
+        inputIcon model
+        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+        viewChoices model dispatch
+      ]
     ]
   ]
 
 let lazyViewWithoutButtons = Common.lazyView2 lazyViewWithButtons
 
 let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
-  Field.div [ ] [
-    Label.label [ Label.Option.For (model.Label |> lowercase |> ReplaceWhitespace) ] [
-      str model.Label
-    ]
-    Field.div [ Field.HasAddons ] [
-      Control.p [ ] [
-        Button.button [ Button.Disabled (model.Value.IsNone); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear)  ] [ Icon.icon [ ] [ Fa.i [ Fa.Solid.Times ] [] ] ]
+  Bulma.field.div [
+    Bulma.label [ prop.for' (model.Label |> lowercase |> ReplaceWhitespace); prop.text model.Label ]
+    Bulma.field.div [
+      Bulma.field.hasAddons
+      prop.children [
+        Bulma.control.p [
+          Bulma.button.button [ prop.disabled (model.Value.IsNone); prop.onClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Clear); prop.children [ Bulma.icon [ Fa.i [ Fa.Solid.Times ] [] ] ] ]
+        ]
+        Bulma.control.div [
+          Bulma.control.isExpanded
+          Bulma.control.hasIconsRight
+          prop.children [
+            inputElement model dispatch
+            inputIcon model
+            (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+            viewChoices model dispatch
+          ]
+        ]
+        customComp
       ]
-      Control.div [ Control.IsExpanded; Control.HasIconRight ] [
-        inputElement model dispatch
-        inputIcon model
-        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
-        viewChoices model dispatch
-      ]
-      customComp
     ]
   ]
 
