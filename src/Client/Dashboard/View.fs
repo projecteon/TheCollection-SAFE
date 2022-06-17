@@ -34,7 +34,7 @@ let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
     Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ] [Fa.i [ Fa.Solid.ExpandArrowsAlt ] []]
   else
-    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ] [Fa.i [ Fable.FontAwesome.Fa.Icon "fas fa-compress-arrows-alt" ] []]
+    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ] [Fa.i [ Fa.Solid.CompressArrowsAlt ] []]
 
 let statistics (model:Model) =
   match model.statistics with

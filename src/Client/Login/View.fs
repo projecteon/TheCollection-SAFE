@@ -1,6 +1,7 @@
 module Client.Login.View
 
 open Fable.React
+open Fable.FontAwesome
 open Feliz
 open Feliz.Bulma
 
@@ -65,9 +66,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                             Bulma.icon.isSmall
                             Bulma.icon.isLeft
                             prop.children [
-                              Html.i [
-                                prop.className "fas fa-envelope"
-                              ]
+                              Fa.i [ Fa.Solid.Envelope ] [ ]
                             ]
                           ]
                           (Client.FulmaHelpers.inputError model.userNameError) |> ofList
@@ -94,9 +93,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                             Bulma.icon.isSmall
                             Bulma.icon.isLeft
                             prop.children [
-                              Html.i [
-                                prop.className "fas fa-key"
-                              ]
+                              Fa.i [ Fa.Solid.Key ] [ ]
                             ]
                           ]
                           (Client.FulmaHelpers.inputError model.passwordError) |> ofList
