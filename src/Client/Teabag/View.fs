@@ -1,10 +1,8 @@
 module Client.Teabag.View
 
-open Fable.React
-open Fable.React.Helpers
-open Fable.React.Props
 open Fable.FontAwesome
-open Fulma
+open Feliz
+open Feliz.Bulma
 
 open Client.Components
 open Client.FileUrlHandler
@@ -12,20 +10,21 @@ open Client.Teabag
 open Client.Teabag.Types
 open Domain.SharedTypes
 open Server.Api.Dtos
-open HtmlProps
 
 let customComp (refValue: RefValue) msg dispatch =
-  Control.p [ ] [
-    Button.button [
+  Bulma.control.p [
+    Bulma.button.button [
       if refValue.id.Int = 0 then
-        yield Button.Color IsSuccess
+        color.isSuccess
       else
-        yield Button.Color IsInfo
-      yield Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (msg true)) ] [
+        color.isInfo
+      prop.onClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (msg true))
+      prop.children [
         if refValue.id.Int = 0 then
-          yield Icon.icon [ ] [ Fa.i [ Fa.Solid.Plus ] [] ]
+          Bulma.icon [ Fa.i [ Fa.Solid.Plus ] [] ]
         else
-          yield Icon.icon [ ] [ Fa.i [ Fa.Solid.EllipsisH ] [] ]
+          Bulma.icon [ Fa.i [ Fa.Solid.EllipsisH ] [] ]
+      ]
     ]
   ]
 
@@ -35,141 +34,165 @@ let customCompOptional (refValue: RefValue option) msg dispatch =
   | None -> customComp EmptyRefValue msg dispatch
 
 let teabagForm (teabag: Teabag) (model:Model) dispatch =
-  form [AutoComplete Off; Disabled model.isWorking] [
-    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.brand ToggleAddBrandModal dispatch) model.brandCmp (BrandCmp >> dispatch))
-    Field.div [ ] [
-      Label.label [ Label.Option.For "flavour" ] [
-        str "Flavour"
-      ]
-      Control.div [ ] [
-        Input.text [
-          yield Input.Placeholder "Ex: English breakfast";
-          yield Input.ValueOrDefault teabag.flavour;
-          yield Input.Option.Id "flavour";
-          yield Input.OnChange (fun ev -> dispatch (FlavourChanged ev.Value))
-          if teabag.flavour.Length > 0 then
-            yield Input.Color IsSuccess
+  Html.form [
+    prop.autoComplete "off"
+    prop.disabled model.isWorking
+    prop.children [
+      (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.brand ToggleAddBrandModal dispatch) model.brandCmp (BrandCmp >> dispatch))
+      Bulma.field.div [
+        Bulma.label [ prop.for' "flavour"; prop.text "Flavour" ]
+        Bulma.control.div [
+          Bulma.input.text [
+            prop.placeholder "Ex: English breakfast";
+            prop.valueOrDefault teabag.flavour;
+            prop.id "flavour";
+            prop.onChange (fun value -> dispatch (FlavourChanged value))
+            if teabag.flavour.Length > 0 then
+              color.isSuccess
+          ]
         ]
       ]
-    ]
-    (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype ToggleAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
-    (ComboBox.View.lazyViewWithCustomGrouped (customCompOptional teabag.country ToggleAddCountryModal dispatch) model.countryCmp (CountryCmp >> dispatch))
-    Field.div [ ] [
-      Label.label [ Label.Option.For "hallmark" ] [
-        str "Hallmark"
-      ]
-      Control.div [ ] [
-        Textarea.textarea [ Textarea.Placeholder "Ex: Hallmark"; Textarea.ValueOrDefault teabag.hallmark; Textarea.Option.Id "hallmark"; Textarea.OnChange (fun ev -> dispatch (HallmarkChanged ev.Value)) ] []
-      ]
-    ]
-    Field.div [ ] [
-      Label.label [ Label.Option.For "serialnumber" ] [
-        str "Serialnumber"
-      ]
-      Control.div [ ] [
-        Input.text [ Input.Placeholder "Ex: 0123456789"; Input.ValueOrDefault teabag.serialnumber; Input.Option.Id "serialnumber"; Input.OnChange (fun ev -> dispatch (SerialnumberChanged ev.Value)) ]
-      ]
-    ]
-    Field.div [ ] [
-      Label.label [ Label.Option.For "serie" ] [
-        str "Serie"
-      ]
-      Control.div [ ] [
-        Input.text [ Input.Placeholder "Ex: With logo"; Input.ValueOrDefault teabag.serie; Input.Option.Id "serie"; Input.OnChange (fun ev -> dispatch (SerieChanged ev.Value)) ]
-      ]
-    ]
-    Field.div [ ] [
-      Label.label [ Label.Option.For "inserted" ] [
-        str "Inserted"
-      ]
-      Control.div [ ] [
-        Input.text [ Input.ValueOrDefault (teabag.inserted.ToShortDateString()); Input.Option.Id "inserted"; Input.Disabled true ]
-      ]
-    ]
-    Field.div [ Field.IsGrouped; Field.IsGroupedCentered ] [
-      Control.div [ ] [
-        Button.button [ Button.Color IsPrimary; Button.IsFullWidth; Button.Disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave) ] [
-          if model.isWorking then yield Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
-          else yield str "Save"
+      (ComboBox.View.lazyViewWithCustomGrouped (customComp teabag.bagtype ToggleAddBagtypeModal dispatch) model.bagtypeCmp (BagtypeCmp >> dispatch))
+      (ComboBox.View.lazyViewWithCustomGrouped (customCompOptional teabag.country ToggleAddCountryModal dispatch) model.countryCmp (CountryCmp >> dispatch))
+      Bulma.field.div [
+        Bulma.label [ prop.for' "hallmark"; prop.text "Hallmark" ]
+        Bulma.control.div [
+          Bulma.textarea [ prop.placeholder "Ex: Hallmark"; prop.valueOrDefault teabag.hallmark; prop.id "hallmark"; prop.onChange (fun value -> dispatch (HallmarkChanged value)) ]
         ]
       ]
-      Control.div [ ] [
-        Button.button [ Button.Color IsWarning; Button.IsFullWidth; Button.Disabled (model.isWorking || model.data = model.originaldata); Button.OnClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Reload) ] [ str "Undo" ]
+      Bulma.field.div [
+        Bulma.label [ prop.for' "serialnumber"; prop.text "Serialnumber" ]
+        Bulma.control.div [
+          Bulma.input.text [ prop.placeholder "Ex: 0123456789"; prop.valueOrDefault teabag.serialnumber; prop.id "serialnumber"; prop.onChange (fun value -> dispatch (SerialnumberChanged value)) ]
+        ]
+      ]
+      Bulma.field.div [
+        Bulma.label [ prop.for' "serie"; prop.text "Serie" ]
+        Bulma.control.div [
+          Bulma.input.text [ prop.placeholder "Ex: With logo"; prop.valueOrDefault teabag.serie; prop.id "serie"; prop.onChange (fun value -> dispatch (SerieChanged value)) ]
+        ]
+      ]
+      Bulma.field.div [
+        Bulma.label [ prop.for' "inserted"; prop.text "Inserted" ]
+        Bulma.control.div [
+          Bulma.input.text [ prop.valueOrDefault (teabag.inserted.ToShortDateString()); prop.id "inserted"; prop.disabled true ]
+        ]
+      ]
+      Bulma.field.div [
+        Bulma.field.isGrouped;
+        Bulma.field.isGroupedCentered;
+        prop.children [
+          Bulma.control.div [
+            Bulma.button.button [ color.isPrimary; Bulma.button.isFullWidth; prop.disabled ((not (State.isValid model.validationErrors)) || model.isWorking || model.data = model.originaldata); prop.onClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch ValidateAndSave); prop.children [
+                if model.isWorking then Fa.i [ Fa.Solid.CircleNotch; Fa.Spin ] [ ]
+                else Html.text "Save"
+              ]
+            ]
+          ]
+          Bulma.control.div [
+            Bulma.button.button [ color.isWarning; Bulma.button.isFullWidth; prop.disabled (model.isWorking || model.data = model.originaldata); prop.onClick (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch Reload); prop.text "Undo" ]
+          ]
+        ]
       ]
     ]
   ]
 
 let fileUploadForm dispatch =
-  form [] [
-    Field.div [ ]
-      [ File.file [ File.IsBoxed; File.Color IsPrimary; File.Size IsLarge; File.IsCentered ]
-          [ File.label [ ]
-              [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.BrowserHelpers.convertToFile |> Upload |> dispatch); Accept "image/png, image/jpeg" ] ]
-                File.cta [ ]
-                  [ File.icon [ ]
-                      [ Icon.icon [ ]
-                          [ Fa.i [ Fa.Solid.Upload ]
-                              [ ] ] ]
-                    File.label [ GenericOption.Props [ Props.HtmlFor "imageinput" ] ]
-                      [ str "Choose a file..." ] ] ] ] ]
+  Html.form [
+    Bulma.field.div [
+      Bulma.file [ Bulma.file.isBoxed; color.isPrimary; Bulma.file.isLarge; Bulma.file.isCentered; prop.children [
+          Bulma.fileLabel.label [
+            Bulma.fileInput [ prop.id "imageinput"; prop.onChange(fun (ev: Browser.Types.Event) -> ev.target |> Client.BrowserHelpers.convertToFile |> Upload |> dispatch); prop.accept "image/png, image/jpeg" ] 
+            Bulma.fileCta [
+              Bulma.fileIcon [
+                  Bulma.icon [ Fa.i [ Fa.Solid.Upload ] [ ] ]
+              ]
+              Bulma.fileLabel.label [ prop.for' "imageinput"; prop.text  "Choose a file..." ]
+            ]
+          ]
+        ]
+      ]
+    ]
   ]
 
 let uploadFormOrBan (teabag: Teabag) dispatch =
   match teabag.id.Int with
   | 0 ->
-    Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ] [
-      Icon.icon [Icon.Size IsLarge; Icon.Modifiers [Modifier.TextColor Color.IsGrey ; Modifier.TextAlignment (Screen.All, TextAlignment.Centered)]] [ Fa.i [ Fa.Solid.Ban; Fa.Size Fa.Fa6x ] [] ]
+    Bulma.content [
+      text.hasTextCentered;
+      prop.children [
+        Bulma.icon [ Bulma.icon.isLarge; color.hasTextGrey; text.hasTextCentered; prop.children [ Fa.i [ Fa.Solid.Ban; Fa.Size Fa.Fa6x ] [] ] ]
+      ]
     ]
   | _ -> fileUploadForm dispatch
 
 let viewImage x dispatch =
-  div [ ClassName "block"; Style [ Position PositionOptions.Relative ] ] [
-    Delete.delete [ Delete.Size IsLarge; Delete.Props [Style [Position PositionOptions.Absolute; Top ".5rem"; Right ".5rem"];  OnClick (fun ev -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)] ] [ ]
-    img [ Src (getImageUrl x) ]
+  Html.div [
+    prop.className "block";
+    prop.style [ style.position.relative ]
+    prop.children [
+      Bulma.delete [ Bulma.delete.isLarge; prop.style [ style.position.absolute; style.top (length.rem 0.5); style.right (length.rem 0.5) ]; prop.onClick (fun _ -> None |> Domain.SharedTypes.ImageId |> ImageChanged |> dispatch)]
+      Html.img [ prop.src (getImageUrl x) ]
+    ]
   ]
 
 let view (model:Model) (dispatch: Msg -> unit) =
   [
-    yield Columns.columns [ Columns.IsMultiline; Columns.IsMobile; Columns.IsVCentered ] [
-      match model.isWorking with
-      | true ->
-        yield Column.column [ ] [
-                div [ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Absolute; Height "calc(100vh - 60px)"]] []
-              ]
-      | false ->
-          match model.data with
-          | Some x ->
-            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull); ] [
-              Content.content [] [
-                match x.imageid.Option with
-                | Some x -> yield viewImage x dispatch
-                | None -> yield uploadFormOrBan x dispatch
-              ]
-            ]
-            yield Column.column [Column.Width (Screen.Desktop, Column.IsHalf);  Column.Width (Screen.Mobile, Column.IsFull);] [
-              Card.card [] [
-                Card.content [] [
-                  yield teabagForm x model dispatch
-                  match x.archiveNumber with
-                  | Some x -> yield div [Style [Position PositionOptions.Absolute; Top 5; Right 5]; ClassName "is-size-7 has-text-weight-semibold is-family-code"] [
-                    x |> sprintf "#%i" |> str]
-                  | None -> yield nothing
+    Bulma.columns [
+      Bulma.columns.isMultiline
+      Bulma.columns.isMobile
+      Bulma.columns.isVCentered
+      prop.children [
+        match model.isWorking with
+        | true ->
+          Bulma.column [
+            Html.div [ prop.className "pageloader is-white is-active"; prop.style [ style.position.absolute; style.height (length.calc "100vh - 60px") ] ]
+          ]
+        | false ->
+            match model.data with
+            | Some x ->
+              Bulma.column [
+                Bulma.column.isHalfDesktop
+                Bulma.column.isFullMobile
+                prop.children [
+                  Bulma.content [
+                    match x.imageid.Option with
+                    | Some x -> viewImage x dispatch
+                    | None -> uploadFormOrBan x dispatch
+                  ]
                 ]
               ]
-            ]
-          | _ ->
-            yield nothing
-      if model.editBagtypeCmp.IsSome then
-        yield Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
-      else
-        yield nothing
-      if model.editBrandCmp.IsSome then
-        yield Client.Components.ModalCard.view model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBrandModal false)) Client.Teabag.Brand.View.headerText Client.Teabag.Brand.View.view
-      else
-        yield nothing
-      if model.editCountryCmp.IsSome then
-        yield Client.Components.ModalCard.view model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddCountryModal false)) Client.Teabag.Country.View.headerText Client.Teabag.Country.View.view
-      else
-        yield nothing
+              Bulma.column [
+                Bulma.column.isHalfDesktop
+                Bulma.column.isFullMobile
+                prop.children [
+                  Bulma.card [
+                    Bulma.cardContent [
+                      teabagForm x model dispatch
+                      match x.archiveNumber with
+                      | Some x -> Html.div [ prop.style [ style.position.absolute; style.top 5; style.right 5]; prop.className "is-size-7 has-text-weight-semibold is-family-code"; prop.children [
+                                      x |> sprintf "#%i" |> Html.text
+                                    ]
+                                  ]
+                      | None -> Html.none
+                    ]
+                  ]
+                ]
+              ]
+            | _ ->
+              Html.none
+        if model.editBagtypeCmp.IsSome then
+          Client.Components.ModalCard.view model.editBagtypeCmp.Value (EditBagtypeCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBagtypeModal false)) Client.Teabag.Bagtype.View.headerText Client.Teabag.Bagtype.View.view
+        else
+          Html.none
+        if model.editBrandCmp.IsSome then
+          Client.Components.ModalCard.view model.editBrandCmp.Value (EditBrandCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddBrandModal false)) Client.Teabag.Brand.View.headerText Client.Teabag.Brand.View.view
+        else
+          Html.none
+        if model.editCountryCmp.IsSome then
+          Client.Components.ModalCard.view model.editCountryCmp.Value (EditCountryCmp >> dispatch) (fun ev -> ev.preventDefault(); ev.stopPropagation(); dispatch (ToggleAddCountryModal false)) Client.Teabag.Country.View.headerText Client.Teabag.Country.View.view
+        else
+          Html.none
+      ]
     ]
   ]
