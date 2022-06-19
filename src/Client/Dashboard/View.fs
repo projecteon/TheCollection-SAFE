@@ -2,14 +2,15 @@ module Client.Dashboard.View
 
 open Fable.Core
 open Fable.React
-open Fable.React.Props
 open Fable.FontAwesome
+open Fulma
+open Feliz
+open Feliz.Bulma
 
 open Client
 open Client.Components
 open Client.Dashboard.Types
 
-open Fulma
 
 type IHighchartsMap = 
   abstract HighchartPage: props: obj -> ReactElement;
@@ -32,86 +33,117 @@ let lineChartHoverLegend dispatch key =
 
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
-    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ] [Fa.i [ Fa.Solid.ExpandArrowsAlt ] []]
+    Bulma.icon [ prop.onClick (fun _ -> dispatch expandCmd); prop.children [ Fa.i [ Fa.Solid.ExpandArrowsAlt ] [] ] ]
   else
-    Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch collapseCmd) ] ] [Fa.i [ Fa.Solid.CompressArrowsAlt ] []]
+    Bulma.icon [ prop.onClick (fun _ -> dispatch collapseCmd); prop.children [ Fa.i [ Fa.Solid.CompressArrowsAlt ] [] ] ]
 
 let statistics (model:Model) =
   match model.statistics with
-  | Some x -> Level.level [ ]
-                [ Level.item [ Level.Item.HasTextCentered ]
-                    [ div [ ]
-                        [ Level.heading [ ]
-                            [ str "Total" ]
-                          Level.title [ ]
-                            [ sprintf "%i" x.TeabagCount |> str ] ] ]
-                  Level.item [ Level.Item.HasTextCentered ]
-                    [ div [ ]
-                        [ Level.heading [ ]
-                            [ str "Brands" ]
-                          Level.title [ ]
-                            [ sprintf "%i" x.BrandCount |> str ] ] ]
-                  Level.item [ Level.Item.HasTextCentered ]
-                    [ div [ ]
-                        [ Level.heading [ ]
-                            [ str "Countries" ]
-                          Level.title [ ]
-                            [ sprintf "%i" x.CountryCount |> str ] ] ] ]
-  | None -> nothing
-
-let view (model:Model) dispatch =
-    [
-      Container.container [] [
-        Section.section [ Section.Props [Style [ PaddingTop 0 ]] ] [
-          statistics model
-          Columns.columns [ Columns.IsCentered; Columns.IsMultiline; Columns.CustomClass "dashboard" ] [
-            Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-              Panel.panel [] [
-                Panel.heading [ ] [
-                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                    str (sprintf "Top %i Brands" (int model.displayedByBrands))
-                    div [] [
-                      ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands
+  | Some x -> Bulma.level [
+                Bulma.levelItem [
+                  text.hasTextCentered
+                  prop.children [
+                    Html.div [
+                      Level.heading [ ] [ str "Total" ]
+                      Level.title [ ] [ sprintf "%i" x.TeabagCount |> Html.text ]
                     ]
                   ]
                 ]
-                Panel.Block.div [ ] [
-                  renderBarChart model.countByBrands model.displayedByBrands
-                ]
-              ]
-            ]
-            Column.column [ Column.Width (Screen.Desktop, Column.IsOneThird); Column.Width (Screen.Mobile, Column.IsFull) ] [
-              Panel.panel [] [
-                Panel.heading [ ] [ str "Bagtypes distribution"]
-                Panel.Block.div [ ] [
-                  renderPieChart model.countByBagtypes
-                ]
-              ]
-            ]
-            Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-              Panel.panel [] [
-                Panel.heading [ ] [
-                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                    str "Inserts per month"
+                Bulma.levelItem [
+                  text.hasTextCentered
+                  prop.children [
+                    Html.div [
+                      Level.heading [ ] [ str "Brands" ]
+                      Level.title [ ] [ sprintf "%i" x.BrandCount |> Html.text ]
+                    ]
                   ]
                 ]
-                Panel.Block.div [ ] [
-                  PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
-                ]
-              ]
-            ]
-            Column.column [ Column.Width (Screen.Desktop, Column.IsTwoThirds); Column.Width (Screen.Mobile, Column.IsFull) ] [
-              Panel.panel [] [
-                Panel.heading [ ] [
-                  div [ Style [ Display DisplayOptions.Flex; JustifyContent "space-between"; AlignItems AlignItemsOptions.Center ]] [
-                    str "Per country"
+                Bulma.levelItem [
+                  text.hasTextCentered
+                  prop.children [
+                    Html.div [
+                      Level.heading [ ] [ str "Countries" ]
+                      Level.title [ ] [ sprintf "%i" x.CountryCount |> Html.text ]
+                    ]
                   ]
                 ]
-                Panel.Block.div [ ] [
-                  //mighchartsMap.HighchartPage {|data = data|}
-                   match model.countCountryTLD with
-                    | Some x -> mighchartsMap.HighchartPage {|data = x|}
-                    | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
+              ]
+  | None -> Html.none
+
+let view (model:Model) dispatch =
+    [
+      Bulma.container [
+        Bulma.section [
+          prop.style [ style.paddingTop 0]
+          prop.children [
+            statistics model
+            Bulma.columns [
+              Bulma.columns.isCentered
+              Bulma.columns.isMultiline
+              prop.className "dashboard"
+              prop.children [
+                Bulma.column [
+                  Bulma.column.isOneThirdDesktop
+                  Bulma.column.isFullMobile
+                  prop.children [
+                    Bulma.panel [
+                      Bulma.panelHeading [
+                        Html.div [
+                          prop.style [ style.display.flex; style.justifyContent.spaceBetween; style.alignItems.center ]
+                          prop.children [
+                            Html.text (sprintf "Top %i Brands" (int model.displayedByBrands))
+                            Html.div [ ExpandCollapseIcon  model.displayedBrands dispatch ExpandByBrands CollapseByBrands ]
+                          ]
+                        ]
+                      ]
+                      Bulma.panelBlock.div [
+                        renderBarChart model.countByBrands model.displayedByBrands
+                      ]
+                    ]
+                  ]
+                ]
+                Bulma.column [
+                  Bulma.column.isOneThirdDesktop
+                  Bulma.column.isFullMobile
+                  prop.children [
+                    Bulma.panel [
+                      Bulma.panelHeading [ prop.text "Bagtypes distribution"]
+                      Bulma.panelBlock.div [
+                        renderPieChart model.countByBagtypes
+                      ]
+                    ]
+                  ]
+                ]
+                Bulma.column [
+                  Bulma.column.isTwoThirdsDesktop
+                  Bulma.column.isFullMobile
+                  prop.children [
+                    Bulma.panel [
+                      Bulma.panelHeading [
+                        Html.div [ prop.style [ style.display.flex; style.justifyContent.spaceBetween; style.alignItems.center ]; prop.text "Inserts per month" ]
+                      ]
+                      Bulma.panelBlock.div [
+                        PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+                      ]
+                    ]
+                  ]
+                ]
+                Bulma.column [
+                  Bulma.column.isTwoThirdsDesktop
+                  Bulma.column.isFullMobile
+                  prop.children [
+                    Bulma.panel [
+                      Bulma.panelHeading [
+                        Html.div [ prop.style [ style.display.flex; style.justifyContent.spaceBetween; style.alignItems.center ]; prop.text "Per country" ]
+                      ]
+                      Bulma.panelBlock.div [
+                        //mighchartsMap.HighchartPage {|data = data|}
+                         match model.countCountryTLD with
+                          | Some x -> mighchartsMap.HighchartPage {|data = x|}
+                          | None -> Html.div [ prop.className "pageloader is-white is-active"; prop.style [ style.position.relative; style.minWidth (length.percent 100); style.minHeight 320 ] ]
+                      ]
+                    ]
+                  ]
                 ]
               ]
             ]
