@@ -24,6 +24,7 @@ module TeabagRepository =
            ,ro_bagtype
            ,rs_country
            ,rf_image
+           ,i_archive
            ,s_flavour
            ,s_hallmark
            ,s_serie
@@ -32,12 +33,13 @@ module TeabagRepository =
            ,d_created
            ,dt_created
            ,dt_modified)
-        OUTPUT INSERTED.ID
+        OUTPUT Inserted.id
         VALUES
            (@ro_brand
            ,@ro_bagtype
            ,@rs_country
            ,@rf_image
+           ,(SELECT MAX(i_archive) + 1 FROM tcd_teabag)
            ,@s_flavour
            ,@s_hallmark
            ,@s_serie
@@ -53,7 +55,7 @@ module TeabagRepository =
     let insert (config: DbConfig) (teabag: Domain.Tea.Teabag) =
       task {
         let cmd = new InsertTeabag(config.Default.String)
-        let searchString = teabag |> getSearchStrings |> String.Concat |> GenerateSearchString |> String.Concat
+        let searchString = teabag |> getSearchStrings |> String.concat " " |> GenerateSearchString |> String.concat " "
         let! id = cmd.AsyncExecute( teabag.brand.id.Int
                                     , teabag.bagtype.id.Int
                                     , teabag.country |> ToDbValue.RefValueOption |> toDbIntValue
@@ -87,7 +89,8 @@ module TeabagRepository =
     let update (config: DbConfig) (teabag: Domain.Tea.Teabag) =
       task {
         let cmd = new UpdateTeabag(config.Default.String)
-        let searchString = teabag |> getSearchStrings |> String.Concat |> GenerateSearchString |> String.Concat
+        let searchString = teabag |> getSearchStrings |> String.concat " " |> GenerateSearchString |> String.concat " "
+        printf "Updating %s" searchString
         let! id = cmd.AsyncExecute( teabag.brand.id.Int
                                     , teabag.bagtype.id.Int
                                     , teabag.country |> ToDbValue.RefValueOption |> toDbIntValue
@@ -98,7 +101,7 @@ module TeabagRepository =
                                     , teabag.serialnumber  |> toDbStringValue
                                     , searchString
                                     , teabag.id.Int)
-        return id
+        return teabag.id.Int
       }
 
     [<Literal>]
