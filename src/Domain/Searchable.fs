@@ -1,6 +1,7 @@
 namespace Domain
 
 open System
+open System.Linq
 open System.Reflection
 open Domain.ReflectionUtil
 
@@ -53,12 +54,14 @@ module Searchable =
                         | false ->
                             match x with
                             | y when y.PropertyType.IsSimpleType() -> TreeNode.LeafNode (y.GetValue(o).ToString())
+                            | _ when x.GetValue(o).GetType().GetProperties().Select(fun p -> p.Name).Contains("String") -> TreeNode.LeafNode (x.GetValue(o).GetType().GetProperty("String").GetValue(x.GetValue(o)).ToString())
                             | _ -> TreeNode.BranchNode (createSearchableNode (x.GetValue(o)))
                         | true ->
                             let unboxedValue = unboxOptionValue(x.GetValue(o))
                             match unboxedValue with
                             | null -> TreeNode.BranchNode (createSearchableNode (unboxedValue))
                             | b when b.GetType().IsSimpleType() -> TreeNode.LeafNode (unboxedValue.ToString())
+                            | _ when unboxOptionValue(x.GetValue(o)).GetType().GetProperties().Select(fun p -> p.Name).Contains("String") -> TreeNode.LeafNode (unboxOptionValue(x.GetValue(o)).GetType().GetProperty("String").GetValue(unboxOptionValue(x.GetValue(o))).ToString())
                             | _ -> TreeNode.BranchNode (createSearchableNode (unboxOptionValue(x.GetValue(o))))
                     )
 

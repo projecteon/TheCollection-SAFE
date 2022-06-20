@@ -27,6 +27,7 @@ module Router =
     get "" (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
     get "/" (Api.Generic.handleGetAllWithPaging searchAllTeabags Transformers.transformTeabags)
     getf "/%i" (Api.Generic.handleGet getByIdTeabags Transformers.transformTeabag)
+    post "" (Api.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
     post "/" (Api.Generic.handlePost insertTeabag Transformers.transformDtoToInsertTeabag validate)
     putf "/%i" (Api.Generic.handlePut getByIdTeabags updateTeabag Transformers.transformDtoToUpdateTeabag validate)
 
