@@ -7,9 +7,9 @@ open Fulma
 open Feliz
 open Feliz.Bulma
 
-open Client
 open Client.Components
 open Client.Dashboard.Types
+open Client.Recharts
 
 
 type IHighchartsMap = 
@@ -18,7 +18,7 @@ type IHighchartsMap =
 [<ImportAll("../HighchartsMap.js")>]
 let mighchartsMap: IHighchartsMap = jsNative
 
-let renderBarChart data (count: ReChartHelpers.DataCount) =
+let renderBarChart data (count: DataCount) =
   match data with
   | Some x -> x |> Array.ofList |> Array.truncate (int count) |> Some |> BarChart.view
   | None -> None |> BarChart.view
@@ -32,7 +32,7 @@ let lineChartHoverLegend dispatch key =
   dispatch (ToggleCountByInsertedHoveredKey key)
 
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
-  if currentCount = ReChartHelpers.DataCount.Ten then
+  if currentCount = DataCount.Ten then
     Bulma.icon [ prop.onClick (fun _ -> dispatch expandCmd); prop.children [ Fa.i [ Fa.Solid.ExpandArrowsAlt ] [] ] ]
   else
     Bulma.icon [ prop.onClick (fun _ -> dispatch collapseCmd); prop.children [ Fa.i [ Fa.Solid.CompressArrowsAlt ] [] ] ]

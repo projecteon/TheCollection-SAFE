@@ -17,9 +17,9 @@
         <Compile Include="Fable.Import.Moment.fs" />
         <Compile Include="Extensions.fs" />
         <Compile Include="LocalStorage.fs" />
-        <Compile Include="HtmlProps.fs" />
         <Compile Include="Util.fs" />
         <Compile Include="FileUrlHandler.fs" />
+        <Compile Include="Recharts.fs" />
         <Compile Include="Navigation.fs" />
         <Compile Include="Components/ComboBox/Types.fs" />
         <Compile Include="Components/ComboBox/State.fs" />

@@ -35,6 +35,7 @@ nuget Fable.Recharts
 nuget Fable.Remoting.Client
 nuget Feliz
 nuget Feliz.Bulma
+nuget Feliz.Recharts
 nuget Fulma
 
 github projecteon/fshelpers src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs

@@ -4,17 +4,13 @@ open Elmish
 open Fable.Core
 open Fable.Core.JsInterop
 open Fetch
-
-open Fable.Import.Moment.Moment
 open Thoth.Json
 
-open Client
 open Client.Extensions
-open Client.ElmishHelpers
 open Client.Dashboard.Types
+open Client.Recharts
 open Domain.SharedTypes
 open Server.Api.Dtos
-open Client
 
 // https://github.com/fable-compiler/fable-powerpack/blob/master/tests/FetchTests.fs
 let getCountByBrandsCmd (token: JWT) =
@@ -72,7 +68,7 @@ let getStatisticsCmd (token: JWT) =
     GetStatisticsSuccess
     GetStatisticsError
 
-let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) =
+let mapToData (countBy: CountBy<string> list) (count: DataCount) =
   countBy
   |> List.truncate (int count)
   |> List.map (fun x -> [| Some (U3.Case1 x.description); Some (U3.Case3 (float x.count)) |] )
@@ -82,9 +78,9 @@ let mapToData (countBy: CountBy<string> list) (count: ReChartHelpers.DataCount) 
 
 let dataCountToggle previousCount =
   match previousCount with
-  | ReChartHelpers.DataCount.Ten -> ReChartHelpers.DataCount.Twenty
-  | ReChartHelpers.DataCount.Twenty -> ReChartHelpers.DataCount.Ten
-  | _ -> ReChartHelpers.DataCount.Ten
+  | DataCount.Ten -> DataCount.Twenty
+  | DataCount.Twenty -> DataCount.Ten
+  | _ -> DataCount.Ten
 
 let mapToHighchatData (data: CountBy<string> list): HighchartData array =
   data
@@ -100,8 +96,8 @@ let init =
       countByInserted = None
       countByInsertedHoveredKey = None
       countCountryTLD = None
-      displayedByBrands = ReChartHelpers.DataCount.Ten
-      displayedBrands = ReChartHelpers.DataCount.Ten
+      displayedByBrands = DataCount.Ten
+      displayedBrands = DataCount.Ten
     }
     initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByCountryTLDCmd, getCountByInsertedCmd, getStatisticsCmd
 

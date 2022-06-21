@@ -1,25 +1,20 @@
 module Client.Dashboard.Types
 
-
-open System
-open Fable.Core
-open Browser.Types
-
 open Server.Api.Dtos
 open Domain.SharedTypes
 open Fable.Import.Moment.Moment
 
-open Client
+open Client.Recharts
 
 type PieChartData<'a> = {
   data: 'a list option
   hoveredIndex: int option
-  count: ReChartHelpers.DataCount
+  count: DataCount
 }
 
 type BarChartData<'a> = {
   data: 'a list option
-  count: ReChartHelpers.DataCount
+  count: DataCount
 }
 
 type LineChartData<'a> = {
@@ -36,8 +31,8 @@ type Model = {
   countByInserted: CountBy<Moment> list option
   countByInsertedHoveredKey: string option
   countCountryTLD: HighchartData array option
-  displayedByBrands: ReChartHelpers.DataCount
-  displayedBrands: ReChartHelpers.DataCount
+  displayedByBrands: DataCount
+  displayedBrands: DataCount
 }
 
 type Msg =
