@@ -28,7 +28,7 @@ let viewForm (bagtype: Bagtype) (model:Model) dispatch  =
               color.isSuccess
           ]
         ]
-        Client.FulmaHelpers.inputError (model.validationErrors |> State.getNameErrors |> List.ofSeq) |> ofList
+        Client.BulmaHelpers.inputError (model.validationErrors |> State.getNameErrors |> List.ofSeq) |> ofList
       ]
       Bulma.field.div [
         Bulma.field.isGrouped

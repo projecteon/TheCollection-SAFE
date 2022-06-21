@@ -69,7 +69,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                               Fa.i [ Fa.Solid.Envelope ] [ ]
                             ]
                           ]
-                          (Client.FulmaHelpers.inputError model.userNameError) |> ofList
+                          (Client.BulmaHelpers.inputError model.userNameError) |> ofList
                         ]
                       ]
                     ]
@@ -96,7 +96,7 @@ let view  (model : Model) (dispatch : Msg -> unit) =
                               Fa.i [ Fa.Solid.Key ] [ ]
                             ]
                           ]
-                          (Client.FulmaHelpers.inputError model.passwordError) |> ofList
+                          (Client.BulmaHelpers.inputError model.passwordError) |> ofList
                         ]
                       ]
                     ]

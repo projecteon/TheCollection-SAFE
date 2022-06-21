@@ -139,7 +139,7 @@ let viewWithButtons (model : Model) (dispatch : Msg -> unit) =
           prop.children [
             inputElement model dispatch
             inputIcon model
-            (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+            (Client.BulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
             viewChoices model dispatch
           ]
         ]
@@ -158,7 +158,7 @@ let viewWithoutButtons (model : Model) (dispatch : Msg -> unit) =
       prop.children [
         inputElement model dispatch
         inputIcon model
-        (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+        (Client.BulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
         viewChoices model dispatch
       ]
     ]
@@ -181,7 +181,7 @@ let viewWithCustomGrouped customComp (model : Model) (dispatch : Msg -> unit) =
           prop.children [
             inputElement model dispatch
             inputIcon model
-            (Client.FulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
+            (Client.BulmaHelpers.inputError (model.Errors |> List.ofSeq)) |> ofList
             viewChoices model dispatch
           ]
         ]
