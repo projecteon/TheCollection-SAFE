@@ -1,5 +1,6 @@
 module App
 
+open System
 open Elmish
 open Elmish.Navigation
 open Elmish.React
@@ -17,17 +18,18 @@ open Elmish.HMR
 // look into https://chriscourses.com/blog/loading-fonts-webpack
 //importAll "./index.scss"
 
-let sessionHandler initial =
-  let sub (dispatch: Msg -> unit) =
+let sessionHandler _initial : Sub<Msg> =
+  let subscribe (dispatch: Msg -> unit) =
     Browser.Dom.window.addEventListener(Client.Auth.SessionExpiredEvent, (fun e ->
       (dispatch LogOut)
       e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionExpiredEvent %s" )
-    ) |> ignore
+    )
     Browser.Dom.window.addEventListener(Client.Auth.SessionUpdatedEvent, (fun e ->
       (dispatch (e?detail |> unbox |> RefreshUser))
       e?detail |> Fable.Core.JS.JSON.stringify |> printf "SessionUpdatedEvent %s" )
-    ) |> ignore
-  Cmd.ofSub sub
+    )
+    { new IDisposable with member _.Dispose() = () }
+  [ [ "sessionHandler" ], subscribe ]
 
 //let withReact =
 //  if (!!Browser.Dom.window?__INIT_MODEL__)

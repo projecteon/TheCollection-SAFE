@@ -1,16 +1,19 @@
 source https://api.nuget.org/v3/index.json
-framework: net6.0
+framework: net8.0
 storage: none
 
-nuget FSharp.Core ~> 6.0
-nuget Fable.Remoting.Giraffe
+nuget FSharp.Core ~> 8.0
+nuget Fable.Remoting.Giraffe ~> 5.3
 nuget FSharp.Data.SqlClient
 nuget Microsoft.Data.SqlClient
 nuget NodaTime
 nuget Saturn
-nuget WindowsAzure.Storage
+nuget Azure.Storage.Blobs
 nuget BCrypt.Net-Next
 nuget Thoth.Json.Giraffe
+nuget Microsoft.AspNetCore.Authentication.JwtBearer ~> 8.0
+nuget Microsoft.AspNetCore.WebUtilities ~> 8.0
+nuget Microsoft.Net.Http.Headers ~> 8.0
 github rspeele/TaskBuilder.fs TaskBuilder.fs
 
 nuget Simple.Migrations
@@ -31,10 +34,10 @@ nuget Fable.FontAwesome
 nuget Fable.FontAwesome.Free
 nuget Fable.Mocha
 nuget Fable.React
-nuget Fable.Recharts
-nuget Fable.Remoting.Client
+nuget Fable.Remoting.Client ~> 7.16
 nuget Feliz
 nuget Feliz.Bulma
+nuget Feliz.Recharts
 nuget Fulma
 
 github projecteon/fshelpers src/FsHelpers/Elmish.Debounce/Elmish.Debounce.fs

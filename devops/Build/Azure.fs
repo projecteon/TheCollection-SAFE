@@ -57,6 +57,7 @@ let webApp = webApp {
     name webAppName
     //use_keyvault
     sku WebApp.Sku.F1
+    runtime_stack Runtime.DotNet80
     link_to_app_insights appinsights
     secret_setting "jwt_secret"
     setting "jwt_issuer" "thecollection.net"

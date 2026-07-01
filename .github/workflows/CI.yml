@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        node-version: [14.x]
-        dotnet: [ '6.0.x' ]
+        node-version: [20.x]
+        dotnet: [ '10.0.x' ]
 
     steps:
     - name: Install MS SQL local db
@@ -23,13 +23,13 @@ jobs:
       with:
         install: localdb
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
     - name: Setup .NET ${{ matrix.dotnet }}
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet }}
     - name: Install Dotnet Tools

@@ -53,8 +53,10 @@ module PasswordValidation =
 module EmailValidation =
   let private isValidEmailAddress (emailAddress: EmailAddress) =
     // https://emailregex.com/
+    // NOTE: the IP-literal group's closing ']' is escaped (\]) — Fable 5 emits the
+    // JS 'u' (unicode) flag, under which a lone ']' is a SyntaxError and breaks login.
     let emailAddrRegex =
-      @"^(([^<>()\[\]\\.,;:\s@]+(\.[^<>()\[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
+      @"^(([^<>()\[\]\\.,;:\s@]+(\.[^<>()\[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
     let regex = Regex.IsMatch((emailAddress.String), emailAddrRegex, RegexOptions.IgnoreCase)
     match regex with
     | true -> Success emailAddress

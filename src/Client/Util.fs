@@ -232,7 +232,3 @@ module ReChartHelpers =
       else
         tailRecursiveFactorial (acc - colorCount)
     tailRecursiveFactorial x
-
-
-  let margin t r b l =
-      Fable.Recharts.Props.Chart.Margin { top = t; bottom = b; right = r; left = l }

@@ -107,10 +107,10 @@ module Router =
   }
 
   let getFileById = FileRepository.getById Config.DbConfig
-  let getBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
-  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 Config.storageAccount AzureBlobRepository.ThumbnailsContainerReferance
+  let getBlobByFilename = AzureBlobRepository.getAsync2 Config.storageConnectionString AzureBlobRepository.ImagesContainerReferance
+  let getThumbBlobByFilename = AzureBlobRepository.getAsync2 Config.storageConnectionString AzureBlobRepository.ThumbnailsContainerReferance
   let insertFile = FileRepository.insert Config.DbConfig
-  let insertBlob = AzureBlobRepository.insertAsync2 Config.storageAccount AzureBlobRepository.ImagesContainerReferance
+  let insertBlob = AzureBlobRepository.insertAsync2 Config.storageConnectionString AzureBlobRepository.ImagesContainerReferance
   let fileRouter = router {
     not_found_handler (setStatusCode 404 >=> text "File 404")
 

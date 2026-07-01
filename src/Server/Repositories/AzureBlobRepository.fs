@@ -1,11 +1,9 @@
 namespace Server
 
 open System.IO;
-open Microsoft.WindowsAzure.Storage;
-open Microsoft.WindowsAzure.Storage.Blob;
+open Azure.Storage.Blobs;
 
-// https://docs.microsoft.com/en-us/dotnet/fsharp/using-fsharp-on-azure/blob-storage
-// http://thorium.github.io/FSharpAzure/2-AzureStorage/AzureStorageEng.html
+// https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet
 module AzureBlobRepository =
   [<Literal>]
   let ImagesContainerReferance = "images"
@@ -13,46 +11,25 @@ module AzureBlobRepository =
   [<Literal>]
   let ThumbnailsContainerReferance = "thumbnails"
 
-  let CreateContainerIfNotExistsAsync (container: CloudBlobContainer) = async {
-      do! container.CreateIfNotExistsAsync() |> Async.AwaitIAsyncResult |> Async.Ignore
-  }
-
-  let createContainer (storageAccount: CloudStorageAccount) containerReferance = async {
-      let blobClient = storageAccount.CreateCloudBlobClient()
-      let container = blobClient.GetContainerReference(containerReferance)
-      do! CreateContainerIfNotExistsAsync container
+  let private getContainer (connectionString: string) (containerReferance: string) = async {
+      let container = BlobContainerClient(connectionString, containerReferance)
+      do! container.CreateIfNotExistsAsync() |> Async.AwaitTask |> Async.Ignore
       return container
   }
 
-  // https://stackoverflow.com/questions/8022909/how-to-async-awaittask-on-plain-task-not-taskt
-  let mapBlop (blockBlob: CloudBlockBlob) = async {
+  let getAsync2 (connectionString: string) containerReferance filename = async {
+      let! container = getContainer connectionString containerReferance
+      let blob = container.GetBlobClient(filename)
       use memoryStream = new MemoryStream()
-      do! blockBlob.DownloadToStreamAsync(memoryStream) |> Async.AwaitIAsyncResult |> Async.Ignore
+      do! blob.DownloadToAsync(memoryStream) |> Async.AwaitTask |> Async.Ignore
       memoryStream.Position <- int64 0 // https://stackoverflow.com/questions/51247073/returning-an-image-with-memorystream-and-webapi
       return memoryStream.ToArray();
   }
 
-  let getAsync (container: CloudBlobContainer) filename = async {
-      let blockBlob = container.GetBlockBlobReference(filename)
-      return! mapBlop blockBlob
-  }
-
-  let insertAsync (container: CloudBlobContainer) stream id = async {
-    let blockBlob = container.GetBlockBlobReference(id)
-    do! blockBlob.UploadFromStreamAsync(stream, AccessCondition.GenerateIfNotExistsCondition(), Unchecked.defaultof<BlobRequestOptions>, Unchecked.defaultof<OperationContext>) |> Async.AwaitIAsyncResult |> Async.Ignore
-    return blockBlob.Uri;
-  }
-
-  let getAsync2 (config: CloudStorageAccount) containerReferance filename = async {
-    let! container = createContainer config containerReferance
-    let blockBlob = container.GetBlockBlobReference(filename)
-    return! mapBlop blockBlob
-  }
-
   // https://stackoverflow.com/questions/14938606/how-do-i-upload-to-azure-blob-storage-without-overwriting
-  let insertAsync2 (config: CloudStorageAccount) containerReferance  (filename, stream: Stream) = async {
-    let! container = createContainer config containerReferance
-    let blockBlob = container.GetBlockBlobReference(filename)
-    do! blockBlob.UploadFromStreamAsync(stream, AccessCondition.GenerateIfNotExistsCondition(), Unchecked.defaultof<BlobRequestOptions>, Unchecked.defaultof<OperationContext>) |> Async.AwaitIAsyncResult |> Async.Ignore
-    return (blockBlob.Uri, filename);
+  let insertAsync2 (connectionString: string) containerReferance (filename: string, stream: Stream) = async {
+      let! container = getContainer connectionString containerReferance
+      let blob = container.GetBlobClient(filename)
+      do! blob.UploadAsync(stream, false) |> Async.AwaitTask |> Async.Ignore
+      return (blob.Uri, filename);
   }

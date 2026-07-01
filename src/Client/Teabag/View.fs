@@ -103,14 +103,14 @@ let fileUploadForm dispatch =
   form [] [
     Field.div [ ]
       [ File.file [ File.IsBoxed; File.Color IsPrimary; File.Size IsLarge; File.IsCentered ]
-          [ File.label [ ]
+          [ File.Label.label [ ]
               [ File.input [ GenericOption.Props [ Id "imageinput"; OnChange(fun ev -> ev.target |> Client.BrowserHelpers.convertToFile |> Upload |> dispatch); Accept "image/png, image/jpeg" ] ]
                 File.cta [ ]
                   [ File.icon [ ]
                       [ Icon.icon [ ]
                           [ Fa.i [ Fa.Solid.Upload ]
                               [ ] ] ]
-                    File.label [ GenericOption.Props [ Props.HtmlFor "imageinput" ] ]
+                    File.Label.label [ GenericOption.Props [ Props.HtmlFor "imageinput" ] ]
                       [ str "Choose a file..." ] ] ] ] ]
   ]
 

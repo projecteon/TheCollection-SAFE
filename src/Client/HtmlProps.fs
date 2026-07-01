@@ -2,7 +2,7 @@ module HtmlProps
 
 open Fable.React.Props
 
-type AutoComplete =
+type AutoCompleteValue =
  | Off
  | On
  override this.ToString () =
@@ -10,7 +10,7 @@ type AutoComplete =
         | Off -> "off"
         | On -> "on"
 
-type HTMLAttr =
-     | [<CompiledName("autoComplete")>] AutoComplete of AutoComplete
-     interface IHTMLProp
-
+// Fable.React 9 removed the IHTMLProp interface; custom attributes are now
+// expressed via HTMLAttr.Custom.
+let AutoComplete (value: AutoCompleteValue) : HTMLAttr =
+    HTMLAttr.Custom ("autoComplete", string value)

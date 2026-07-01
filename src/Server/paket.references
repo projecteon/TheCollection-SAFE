@@ -1,5 +1,5 @@
 Saturn
 Fable.Remoting.Giraffe
-WindowsAzure.Storage
+Azure.Storage.Blobs
 BCrypt.Net-Next
 Thoth.Json.Giraffe

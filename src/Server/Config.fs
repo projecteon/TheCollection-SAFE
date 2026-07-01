@@ -1,7 +1,5 @@
 namespace Server
   open System.IO
-  open Microsoft.WindowsAzure.Storage;
-  open Microsoft.WindowsAzure.Storage.Blob;
   open Infrastructure.Data
   open Infrastructure.Data.DbContext
 
@@ -38,7 +36,7 @@ namespace Server
 
     let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
     let connectionString = tryGetEnv "SQLCONNSTR_DB_CONNECTIONSTRING" |> Option.defaultValue DevConnectionString |> ConnectionString
-    let storageAccount = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true" |> CloudStorageAccount.Parse
+    let storageConnectionString = tryGetEnv "STORAGE_CONNECTIONSTRING" |> Option.defaultValue "UseDevelopmentStorage=true"
 
     // https://medium.com/@dsincl12/json-web-token-with-giraffe-and-f-4cebe1c3ef3b
     // https://github.com/giraffe-fsharp/Giraffe/blob/master/samples/JwtApp/JwtApp/Program.fs
