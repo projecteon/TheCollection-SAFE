@@ -40,7 +40,7 @@ namespace Server
 
     // https://medium.com/@dsincl12/json-web-token-with-giraffe-and-f-4cebe1c3ef3b
     // https://github.com/giraffe-fsharp/Giraffe/blob/master/samples/JwtApp/JwtApp/Program.fs
-    let JwtSecret = tryGetEnv "jwt_secret" |> Option.defaultValue "spadR2dre#u-ruBrE@TepA&*Uf@U"
+    let JwtSecret = tryGetEnv "jwt_secret" |> Option.defaultValue "spadR2dre#u-ruBrE@TepA&*Uf@UAWDW212"
     let JwtIssuer = tryGetEnv "jwt_issuer" |> Option.defaultValue "thecollection.net"
     let PublicPath = tryGetEnv "public_path" |> Option.defaultValue "../Client/public" |> Path.GetFullPath
     let Port = 8085us

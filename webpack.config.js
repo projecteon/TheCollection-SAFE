@@ -67,6 +67,8 @@ module.exports = {
     },
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'eval-source-map',
+    // Bundle-size hints are just noise for this SPA; keep the build output clean.
+    performance: { hints: false },
     optimization: {
         splitChunks: {
             chunks: 'all'
@@ -98,7 +100,12 @@ module.exports = {
         proxy: CONFIG.devServerProxy,
         hot: true,
         historyApiFallback: true,
-        allowedHosts: 'all'
+        allowedHosts: 'all',
+        // Don't let build warnings (e.g. SCSS deprecations) throw a full-screen
+        // overlay over the app in debug mode; still surface real errors.
+        client: {
+            overlay: { errors: true, warnings: false }
+        }
     },
     // - sass-loaders: transforms SASS/SCSS into JS
     // - asset/resource: Moves files referenced in the code (fonts, images) into output folder
@@ -113,7 +120,19 @@ module.exports = {
                     'css-loader',
                     {
                         loader: 'sass-loader',
-                        options: { implementation: require('sass') }
+                        options: {
+                            implementation: require('sass'),
+                            // Bulma/FontAwesome + our index.scss use legacy Sass
+                            // features (@import, if(), global color fns, /-division).
+                            // Silence the legacy JS-API notice and route all other Sass
+                            // deprecation warnings through a no-op logger so they don't
+                            // flood the build or trigger the dev-server overlay.
+                            sassOptions: {
+                                quietDeps: true,
+                                silenceDeprecations: ['legacy-js-api'],
+                                logger: { warn() {}, debug() {} }
+                            }
+                        }
                     }
                 ],
             },
