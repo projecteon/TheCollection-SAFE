@@ -11,6 +11,9 @@
 </head>
 <body>
   <div id="elmish-app"></div>
+  <!-- Fable compiles App.fs -> output/App.js (the `-o output` flag); Vite bundles
+       from this entry. App.fs runs Program.run and mounts #elmish-app. -->
+  <script type="module" src="/output/App.js"></script>
   <script>
     if (navigator.serviceWorker.controller) {
       console.log('[PWA Builder] active service worker found, no need to register')

@@ -8,7 +8,7 @@ nuget FSharp.Data.SqlClient
 nuget Microsoft.Data.SqlClient
 nuget NodaTime
 nuget Saturn
-nuget Azure.Storage.Blobs
+nuget Azure.Storage.Blobs ~> 12.26.0 // pin: 12.26.x default wire version 2025-11-05 is the newest Azurite accepts
 nuget BCrypt.Net-Next
 nuget Thoth.Json.Giraffe
 nuget Microsoft.AspNetCore.Authentication.JwtBearer ~> 8.0

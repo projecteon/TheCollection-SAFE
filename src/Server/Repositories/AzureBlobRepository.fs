@@ -11,6 +11,10 @@ module AzureBlobRepository =
   [<Literal>]
   let ThumbnailsContainerReferance = "thumbnails"
 
+  // Azure.Storage.Blobs pinned to 12.26.x (see paket.dependencies): its default
+  // wire version 2025-11-05 is the newest Azurite (<= 3.35) accepts, so no
+  // per-client ServiceVersion override is needed. Newer SDKs default to a wire
+  // version Azurite rejects ("The API version ... is not supported by Azurite").
   let private getContainer (connectionString: string) (containerReferance: string) = async {
       let container = BlobContainerClient(connectionString, containerReferance)
       do! container.CreateIfNotExistsAsync() |> Async.AwaitTask |> Async.Ignore

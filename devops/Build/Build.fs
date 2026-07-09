@@ -18,14 +18,16 @@ let clientTestsPath = Path.getFullName "tests/Client"
 
 Target.create "Clean" (fun _ ->
     Shell.cleanDir deployPath
-    run dotnet "fable clean --yes" clientPath // Delete *.fs.js files created by Fable
+    run dotnet "fable clean --yes" clientPath // delete *.fs.js files created by Fable
 )
 
-Target.create "InstallClient" (fun _ -> run npm "install" ".")
+Target.create "InstallClient" (fun _ ->
+    run npm "install" "."
+)
 
 Target.create "Bundle" (fun _ ->
     [ "server", dotnet $"publish -c Release -o \"{deployPath}\"" serverPath
-      "client", dotnet "fable -o output -s --run webpack --config ../../webpack.config.js --mode production" clientPath ]
+      "client", dotnet "fable -o output -s --run npx vite build" clientPath ]
     |> runParallel
 )
 
@@ -36,21 +38,23 @@ Target.create "Azure" (fun _ ->
 
 Target.create "Build" (fun _ ->
     [ "server", dotnet $"build -c Release -o \"{deployPath}\"" serverPath
-      "client", dotnet "fable -o output -s --run webpack --config ../../webpack.config.js --mode production" clientPath ]
+      "client", dotnet "fable -o output -s --run npx vite build" clientPath ]
     |> runParallel
 )
 
 Target.create "Run" (fun _ ->
     run dotnet "build" sharedPath
     [ "server", dotnet "watch run" serverPath
-      "client", dotnet "fable watch -o output -s --run webpack serve --config ../../webpack.config.js" clientPath ]
+      "client", dotnet "fable watch -o output -s --run npx vite" clientPath ]
     |> runParallel
 )
 
 Target.create "RunTests" (fun _ ->
     run dotnet "build" sharedTestsPath
     [ "server", dotnet "watch run" serverTestsPath
-      "client", dotnet "fable watch -o output -s --run webpack serve --config ../../webpack.tests.config.js" clientTestsPath ]
+      // Fable compiles the test project to output/, then --run launches mocha on it
+      // (headless; exits with the test result code).
+      "client", dotnet "fable -o output --run npx mocha output" clientTestsPath ]
     |> runParallel
 )
 

@@ -105,7 +105,9 @@ let init =
     }
     initialModel, getCountByBrandsCmd, getCountByBagtypesCmd, getCountByCountryTLDCmd, getCountByInsertedCmd, getStatisticsCmd
 
-let moment: Fable.Import.Moment.IExports = importAll "moment"
+// importDefault (not importAll): under Vite/Rollup ESM interop `import * as moment`
+// yields the namespace object (not callable). moment's callable is the default export.
+let moment: Fable.Import.Moment.IExports = importDefault "moment"
 let update (msg:Msg) model : Model*Cmd<Msg> =
   match msg with
   | GetStatisticsSuccess data ->

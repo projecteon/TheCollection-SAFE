@@ -1,0 +1,317 @@
+Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+Resolving dependency graph...
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.blobs\12.29.1\Azure.Storage.Blobs.12.29.1.nupkg\Azure.Storage.Blobs.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in BCrypt.Net-Next 4.2.1, please tell the package authors
+     BCrypt.Net-Next 4.2.1 was unlisted
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\bcrypt.net-next\4.2.0\BCrypt.Net-Next.4.2.0.nupkg\BCrypt.Net-Next.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.common\12.28.0\Azure.Storage.Common.12.28.0.nupkg\Azure.Storage.Common.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.configuration.configurationmanager\10.0.9\System.Configuration.ConfigurationManager.10.0.9.nupkg\System.Configuration.ConfigurationManager.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.jsonwebtokens\8.19.1\Microsoft.IdentityModel.JsonWebTokens.8.19.1.nupkg\Microsoft.IdentityModel.JsonWebTokens.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols.openidconnect\8.19.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.8.19.1.nupkg\Microsoft.IdentityModel.Protocols.OpenIdConnect.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.memory\10.0.9\Microsoft.Extensions.Caching.Memory.10.0.9.nupkg\Microsoft.Extensions.Caching.Memory.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.pkcs\10.0.9\System.Security.Cryptography.Pkcs.10.0.9.nupkg\System.Security.Cryptography.Pkcs.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.pipelines\10.0.9\System.IO.Pipelines.10.0.9.nupkg\System.IO.Pipelines.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.core\1.59.0\Azure.Core.1.59.0.nupkg\Azure.Core.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.abstractions\10.0.9\Microsoft.Extensions.Caching.Abstractions.10.0.9.nupkg\Microsoft.Extensions.Caching.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\10.0.9\Microsoft.Extensions.DependencyInjection.Abstractions.10.0.9.nupkg\Microsoft.Extensions.DependencyInjection.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.logging.abstractions\10.0.9\Microsoft.Extensions.Logging.Abstractions.10.0.9.nupkg\Microsoft.Extensions.Logging.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.options\10.0.9\Microsoft.Extensions.Options.10.0.9.nupkg\Microsoft.Extensions.Options.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.primitives\10.0.9\Microsoft.Extensions.Primitives.10.0.9.nupkg\Microsoft.Extensions.Primitives.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.eventlog\10.0.9\System.Diagnostics.EventLog.10.0.9.nupkg\System.Diagnostics.EventLog.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.protecteddata\10.0.9\System.Security.Cryptography.ProtectedData.10.0.9.nupkg\System.Security.Cryptography.ProtectedData.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.bcl.cryptography\10.0.9\Microsoft.Bcl.Cryptography.10.0.9.nupkg\Microsoft.Bcl.Cryptography.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.formats.asn1\10.0.9\System.Formats.Asn1.10.0.9.nupkg\System.Formats.Asn1.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.configuration.abstractions\10.0.9\Microsoft.Extensions.Configuration.Abstractions.10.0.9.nupkg\Microsoft.Extensions.Configuration.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.hosting.abstractions\10.0.9\Microsoft.Extensions.Hosting.Abstractions.10.0.9.nupkg\Microsoft.Extensions.Hosting.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.memory.data\10.0.9\System.Memory.Data.10.0.9.nupkg\System.Memory.Data.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.encodings.web\10.0.9\System.Text.Encodings.Web.10.0.9.nupkg\System.Text.Encodings.Web.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.hashing\10.0.9\System.IO.Hashing.10.0.9.nupkg\System.IO.Hashing.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.tokens\8.19.1\Microsoft.IdentityModel.Tokens.8.19.1.nupkg\Microsoft.IdentityModel.Tokens.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols\8.19.1\Microsoft.IdentityModel.Protocols.8.19.1.nupkg\Microsoft.IdentityModel.Protocols.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.identitymodel.tokens.jwt\8.19.1\System.IdentityModel.Tokens.Jwt.8.19.1.nupkg\System.IdentityModel.Tokens.Jwt.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.collections.immutable\10.0.9\System.Collections.Immutable.10.0.9.nupkg\System.Collections.Immutable.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.clientmodel\1.14.0\System.ClientModel.1.14.0.nupkg\System.ClientModel.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.diagnostics.abstractions\10.0.9\Microsoft.Extensions.Diagnostics.Abstractions.10.0.9.nupkg\Microsoft.Extensions.Diagnostics.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.fileproviders.abstractions\10.0.9\Microsoft.Extensions.FileProviders.Abstractions.10.0.9.nupkg\Microsoft.Extensions.FileProviders.Abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.diagnosticsource\10.0.9\System.Diagnostics.DiagnosticSource.10.0.9.nupkg\System.Diagnostics.DiagnosticSource.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.json\10.0.9\System.Text.Json.10.0.9.nupkg\System.Text.Json.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.logging\8.19.1\Microsoft.IdentityModel.Logging.8.19.1.nupkg\Microsoft.IdentityModel.Logging.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.abstractions\8.19.1\Microsoft.IdentityModel.Abstractions.8.19.1.nupkg\Microsoft.IdentityModel.Abstractions.nuspec', please tell the package authors
+Updated packages:
+  Group: Main
+    - Azure.Core: 1.59.0 (added)
+    - Azure.Storage.Blobs: 12.29.1 (added)
+    - Azure.Storage.Common: 12.28.0 (added)
+    - BCrypt.Net-Next: 4.2.0 (added)
+    - Expecto: 11.1.0 (added)
+    - Fable.AST: 5.0.0 (added)
+    - Fable.Browser.Blob: 1.4.0 (added)
+    - Fable.Browser.Dom: 2.20.0 (added)
+    - Fable.Browser.Event: 1.7.0 (added)
+    - Fable.Browser.Gamepad: 1.3.0 (added)
+    - Fable.Browser.WebStorage: 1.3.0 (added)
+    - Fable.Browser.XMLHttpRequest: 1.4.0 (added)
+    - Fable.Core: 5.1.0 (added)
+    - Fable.Elmish: 5.0.2 (added)
+    - Fable.Elmish.Browser: 4.1.0 (added)
+    - Fable.Elmish.Debugger: 4.2.2 (added)
+    - Fable.Elmish.HMR: 9.0.0 (added)
+    - Fable.Elmish.React: 5.6.0 (added)
+    - Fable.Elmish.UrlParser: 1.0.2 (added)
+    - Fable.Fetch: 2.7.0 (added)
+    - Fable.FontAwesome: 3.0.0 (added)
+    - Fable.FontAwesome.Free: 3.0.0 (added)
+    - Fable.Mocha: 2.17.0 (added)
+    - Fable.Parsimmon: 4.1.0 (added)
+    - Fable.Promise: 3.2.0 (added)
+    - Fable.React: 9.4.0 (added)
+    - Fable.React.Types: 18.4.0 (added)
+    - Fable.ReactDom.Types: 18.2.0 (added)
+    - Fable.Remoting.Client: 7.35.0 (added)
+    - Fable.Remoting.Giraffe: 5.24.0 (added)
+    - Fable.Remoting.Json: 2.25.0 (added)
+    - Fable.Remoting.MsgPack: 2.0.0 (added)
+    - Fable.Remoting.Server: 5.42.0 (added)
+    - Fable.SimpleJson: 3.24.0 (added)
+    - Fake.Core.CommandLineParsing: 6.1.4 (added)
+    - Fake.Core.Context: 6.1.4 (added)
+    - Fake.Core.Environment: 6.1.4 (added)
+    - Fake.Core.FakeVar: 6.1.4 (added)
+    - Fake.Core.Process: 6.1.4 (added)
+    - Fake.Core.String: 6.1.4 (added)
+    - Fake.Core.Target: 6.1.4 (added)
+    - Fake.Core.Trace: 6.1.4 (added)
+    - Fake.IO.FileSystem: 6.1.4 (added)
+    - Farmer: 1.9.27 (added)
+    - Feliz: 3.3.3 (added)
+    - Feliz.Bulma: 5.0.0 (added)
+    - Feliz.CompilerPlugins: 3.2.0 (added)
+    - Feliz.Recharts: 5.1.0 (added)
+    - FParsec: 1.1.1 (added)
+    - FSharp.Control.Reactive: 6.1.2 (added)
+    - FSharp.Control.Websockets: 0.3.0 (added)
+    - FSharp.Core: 8.0.403 (added)
+    - FSharp.Data.SqlClient: 2.1.3 (added)
+    - FSharp.SystemTextJson: 1.4.36 (added)
+    - Fulma: 3.0.0 (added)
+    - Giraffe: 8.2.0 (added)
+    - Giraffe.ViewEngine: 1.4.0 (added)
+    - Microsoft.AspNetCore.Authentication.JwtBearer: 8.0.28 (added)
+    - Microsoft.AspNetCore.WebUtilities: 8.0.28 (added)
+    - Microsoft.Bcl.AsyncInterfaces: 10.0.9 (added)
+    - Microsoft.Bcl.Cryptography: 10.0.9 (added)
+    - Microsoft.Data.SqlClient: 7.0.2 (added)
+    - Microsoft.Data.SqlClient.Extensions.Abstractions: 7.0.2 (added)
+    - Microsoft.Data.SqlClient.Internal.Logging: 7.0.2 (added)
+    - Microsoft.Data.SqlClient.SNI.runtime: 6.0.2 (added)
+    - Microsoft.Extensions.Caching.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.Caching.Memory: 10.0.9 (added)
+    - Microsoft.Extensions.Configuration.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.DependencyInjection.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.Diagnostics.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.FileProviders.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.Hosting.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.Logging.Abstractions: 10.0.9 (added)
+    - Microsoft.Extensions.Options: 10.0.9 (added)
+    - Microsoft.Extensions.Primitives: 10.0.9 (added)
+    - Microsoft.Identity.Client: 4.85.2 (added)
+    - Microsoft.Identity.Client.Extensions.Msal: 4.85.2 (added)
+    - Microsoft.IdentityModel.Abstractions: 8.19.1 (added)
+    - Microsoft.IdentityModel.JsonWebTokens: 8.19.1 (added)
+    - Microsoft.IdentityModel.Logging: 8.19.1 (added)
+    - Microsoft.IdentityModel.Protocols: 8.19.1 (added)
+    - Microsoft.IdentityModel.Protocols.OpenIdConnect: 8.19.1 (added)
+    - Microsoft.IdentityModel.Tokens: 8.19.1 (added)
+    - Microsoft.IO.RecyclableMemoryStream: 3.0.1 (added)
+    - Microsoft.Net.Http.Headers: 8.0.28 (added)
+    - Microsoft.SqlServer.Server: 1.0.0 (added)
+    - Mono.Cecil: 0.11.6 (added)
+    - Newtonsoft.Json: 13.0.4 (added)
+    - NodaTime: 3.3.2 (added)
+    - runtime.native.System.Data.SqlClient.sni: 4.7.0 (added)
+    - runtime.win-arm64.runtime.native.System.Data.SqlClient.sni: 4.4.0 (added)
+    - runtime.win-x64.runtime.native.System.Data.SqlClient.sni: 4.4.0 (added)
+    - runtime.win-x86.runtime.native.System.Data.SqlClient.sni: 4.4.0 (added)
+    - Saturn: 0.17.0 (added)
+    - Simple.Migrations: 0.9.21 (added)
+    - System.ClientModel: 1.14.0 (added)
+    - System.Collections.Immutable: 10.0.9 (added)
+    - System.Configuration.ConfigurationManager: 10.0.9 (added)
+    - System.Data.SqlClient: 4.9.1 (added)
+    - System.Diagnostics.DiagnosticSource: 10.0.9 (added)
+    - System.Diagnostics.EventLog: 10.0.9 (added)
+    - System.Formats.Asn1: 10.0.9 (added)
+    - System.IdentityModel.Tokens.Jwt: 8.19.1 (added)
+    - System.IO.Hashing: 10.0.9 (added)
+    - System.IO.Pipelines: 10.0.9 (added)
+    - System.Memory.Data: 10.0.9 (added)
+    - System.Reactive: 6.1.0 (added)
+    - System.Security.Cryptography.Pkcs: 10.0.9 (added)
+    - System.Security.Cryptography.ProtectedData: 10.0.9 (added)
+    - System.Text.Encodings.Web: 10.0.9 (added)
+    - System.Text.Json: 10.0.9 (added)
+    - Thoth.Json: 10.4.1 (added)
+    - Thoth.Json.Giraffe: 6.0.0 (added)
+    - Thoth.Json.Net: 12.0.0 (added)
+Installing into projects:
+Created dependency graph (114 packages in total)
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.diagnostics.abstractions\10.0.9\microsoft.extensions.diagnostics.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.core\1.59.0\azure.core.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.core\1.59.0\lib\net10.0\Azure.Core.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.diagnostics.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Diagnostics.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.fileproviders.abstractions\10.0.9\microsoft.extensions.fileproviders.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.blobs\12.29.1\azure.storage.blobs.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.fileproviders.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.FileProviders.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.blobs\12.29.1\lib\net10.0\Azure.Storage.Blobs.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.hosting.abstractions\10.0.9\microsoft.extensions.hosting.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.hosting.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Hosting.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.common\12.28.0\azure.storage.common.nuspec', please tell the package authors
+Downloading Feliz.Recharts 5.1.0
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\azure.storage.common\12.28.0\lib\net10.0\Azure.Storage.Common.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.logging.abstractions\10.0.9\microsoft.extensions.logging.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\bcrypt.net-next\4.2.0\bcrypt.net-next.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.logging.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Logging.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\bcrypt.net-next\4.2.0\lib\net10.0\BCrypt-Net-Next.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.options\10.0.9\microsoft.extensions.options.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.options\10.0.9\lib\net10.0\Microsoft.Extensions.Options.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.primitives\10.0.9\microsoft.extensions.primitives.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.clientmodel\1.14.0\system.clientmodel.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.primitives\10.0.9\lib\net10.0\Microsoft.Extensions.Primitives.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.clientmodel\1.14.0\lib\net10.0\System.ClientModel.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.collections.immutable\10.0.9\system.collections.immutable.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.collections.immutable\10.0.9\lib\net10.0\System.Collections.Immutable.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.configuration.configurationmanager\10.0.9\system.configuration.configurationmanager.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.configuration.configurationmanager\10.0.9\lib\net10.0\System.Configuration.ConfigurationManager.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.diagnosticsource\10.0.9\system.diagnostics.diagnosticsource.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.abstractions\8.19.1\microsoft.identitymodel.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.abstractions\8.19.1\lib\net10.0\Microsoft.IdentityModel.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.diagnosticsource\10.0.9\lib\net10.0\System.Diagnostics.DiagnosticSource.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.eventlog\10.0.9\system.diagnostics.eventlog.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.jsonwebtokens\8.19.1\microsoft.identitymodel.jsonwebtokens.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.diagnostics.eventlog\10.0.9\lib\net10.0\System.Diagnostics.EventLog.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.jsonwebtokens\8.19.1\lib\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.logging\8.19.1\microsoft.identitymodel.logging.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.formats.asn1\10.0.9\system.formats.asn1.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.logging\8.19.1\lib\net10.0\Microsoft.IdentityModel.Logging.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.formats.asn1\10.0.9\lib\net10.0\System.Formats.Asn1.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.identitymodel.tokens.jwt\8.19.1\system.identitymodel.tokens.jwt.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols\8.19.1\microsoft.identitymodel.protocols.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.identitymodel.tokens.jwt\8.19.1\lib\net10.0\System.IdentityModel.Tokens.Jwt.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols\8.19.1\lib\net10.0\Microsoft.IdentityModel.Protocols.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.hashing\10.0.9\system.io.hashing.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols.openidconnect\8.19.1\microsoft.identitymodel.protocols.openidconnect.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.hashing\10.0.9\lib\net10.0\System.IO.Hashing.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.protocols.openidconnect\8.19.1\lib\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.pipelines\10.0.9\system.io.pipelines.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.io.pipelines\10.0.9\lib\net10.0\System.IO.Pipelines.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.tokens\8.19.1\microsoft.identitymodel.tokens.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.identitymodel.tokens\8.19.1\lib\net10.0\Microsoft.IdentityModel.Tokens.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.memory.data\10.0.9\system.memory.data.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.memory.data\10.0.9\lib\net10.0\System.Memory.Data.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.pkcs\10.0.9\system.security.cryptography.pkcs.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.pkcs\10.0.9\lib\net10.0\System.Security.Cryptography.Pkcs.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.protecteddata\10.0.9\system.security.cryptography.protecteddata.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.security.cryptography.protecteddata\10.0.9\lib\net10.0\System.Security.Cryptography.ProtectedData.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.encodings.web\10.0.9\system.text.encodings.web.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.encodings.web\10.0.9\lib\net10.0\System.Text.Encodings.Web.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.json\10.0.9\system.text.json.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\system.text.json\10.0.9\lib\net10.0\System.Text.Json.dll', please tell the package authors
+Download of Feliz.Recharts 5.1.0 done in 252 milliseconds. (10952 kbit/s, 0 MB)
+Could not detect any platforms from 'typeproviders' in 'C:\Users\asp\.nuget\packages\fsharp.data.sqlclient\2.1.3\lib\typeproviders\fsharp41\net462\cs\Microsoft.SqlServer.TransactSql.ScriptDom.resources.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.bcl.cryptography\10.0.9\microsoft.bcl.cryptography.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.bcl.cryptography\10.0.9\lib\net10.0\Microsoft.Bcl.Cryptography.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.abstractions\10.0.9\microsoft.extensions.caching.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Caching.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.memory\10.0.9\microsoft.extensions.caching.memory.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.caching.memory\10.0.9\lib\net10.0\Microsoft.Extensions.Caching.Memory.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.configuration.abstractions\10.0.9\microsoft.extensions.configuration.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.configuration.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.Configuration.Abstractions.dll', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\10.0.9\microsoft.extensions.dependencyinjection.abstractions.nuspec', please tell the package authors
+Could not detect any platforms from 'net10.0' in 'C:\Users\asp\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\10.0.9\lib\net10.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll', please tell the package authors
+ - Project Build.fsproj needs to be restored
+ - Project Migrations.fsproj needs to be restored
+ - Project Client.fsproj needs to be restored
+ - Project Domain.fsproj needs to be restored
+ - Project Infrastructure.Data.fsproj needs to be restored
+ - Project Server.fsproj needs to be restored
+ - Project Client.Tests.fsproj needs to be restored
+ - Project Server.Tests.fsproj needs to be restored
+ - Project Shared.Tests.fsproj needs to be restored
+Calling dotnet restore on TheCollection-SAFE.sln
+  Determining projects to restore...
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  The last full restore is still up to date. Nothing left to do.
+  The last full restore is still up to date. Nothing left to do.
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Total time taken: 0 milliseconds
+  Total time taken: 0 milliseconds
+  The last full restore is still up to date. Nothing left to do.
+  The last full restore is still up to date. Nothing left to do.
+  The last full restore is still up to date. Nothing left to do.
+  The last full restore is still up to date. Nothing left to do.
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Total time taken: 0 milliseconds
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Total time taken: 0 milliseconds
+  Total time taken: 0 milliseconds
+  The last full restore is still up to date. Nothing left to do.
+  Total time taken: 0 milliseconds
+  Total time taken: 0 milliseconds
+  The last full restore is still up to date. Nothing left to do.
+  The last full restore is still up to date. Nothing left to do.
+  Total time taken: 0 milliseconds
+  Total time taken: 0 milliseconds
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Paket version 9.0.2+a9b12aaeb8d8d5e47a415a3442b7920ed04e98e0
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\devops\build\Build.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\devops\Migrations\Migrations.fsproj
+  Starting restore process.
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\src\Server\Server.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Client\Client.Tests.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\src\Client\Client.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\src\Infrastructure.Data\Infrastructure.Data.fsproj
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\src\Domain\Domain.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Server\Server.Tests.fsproj
+  Restoring C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Shared\Shared.Tests.fsproj
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Starting restore process.
+  Total time taken: 0 milliseconds
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\src\Infrastructure.Data\Infrastructure.Data.fsproj (in 256 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\src\Shared\Shared.fsproj (in 251 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\src\Domain\Domain.fsproj (in 251 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Shared\Shared.Tests.fsproj (in 259 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\devops\Migrations\Migrations.fsproj (in 266 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\devops\build\Build.fsproj (in 251 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\src\Client\Client.fsproj (in 260 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\src\Server\Server.fsproj (in 287 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Server\Server.Tests.fsproj (in 287 ms).
+  Restored C:\Development\github\ProjectEon\TheCollection-SAFE\tests\Client\Client.Tests.fsproj (in 1,19 sec).
+Total time taken: 8 seconds
+Paket omitted 1032 warnings. You can see them in verbose mode.
+PAKET_DONE exit=0

@@ -2,8 +2,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <!-- SDK 10's implicit FSharp.Core is 11.0.100 (asm 11.0.0.0) and unifies over an
+         explicit lower PackageReference. Disable it so the pinned 8.0.403 below wins,
+         matching the paket-managed FSharp.Core ~> 8.0 the consumers use (fixes MSB3277). -->
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Shared.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Pin FSharp.Core to the paket-managed version the rest of the solution uses
+         (paket.dependencies: FSharp.Core ~> 8.0). Without this, this non-paket
+         project picks up the SDK 10 implicit FSharp.Core (asm 11.0.0.0), which
+         conflicts with the consumers' 8.0.0.0 -> warning MSB3277. -->
+    <PackageReference Include="FSharp.Core" Version="8.0.403" />
   </ItemGroup>
 </Project>

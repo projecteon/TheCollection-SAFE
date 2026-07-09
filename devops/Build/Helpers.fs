@@ -83,6 +83,17 @@ let npm =
 
     createProcess npmPath
 
+let npx =
+    let npxPath =
+        match ProcessUtils.tryFindFileOnPath "npx" with
+        | Some path -> path
+        | None ->
+            "npx was not found in path. Please install Node/npm and make sure it's available from your path. " +
+            "See https://safe-stack.github.io/docs/quickstart/#install-pre-requisites for more info"
+            |> failwith
+
+    createProcess npxPath
+
 let run proc arg dir =
     proc arg dir
     |> Proc.run
