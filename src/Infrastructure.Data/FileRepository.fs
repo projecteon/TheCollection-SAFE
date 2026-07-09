@@ -2,7 +2,7 @@ namespace Infrastructure.Data
 
 open FSharp.Control.Tasks.V2
 
-open FSharp.Data
+open FSharp.Data.SqlClient
 open DbContext
 open Domain.SharedTypes
 open Domain.Tea

@@ -3,7 +3,7 @@ namespace Infrastructure.Data
 open System
 open System.Threading.Tasks
 open FSharp.Control.Tasks.V2
-open FSharp.Data
+open FSharp.Data.SqlClient
 open NodaTime
 
 open Mapping

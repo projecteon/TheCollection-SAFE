@@ -2,11 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <DisableAutoSetFscCompilerPath>true</DisableAutoSetFscCompilerPath>
-    <DotnetFscToolPath>
-    </DotnetFscToolPath>
-    <DotnetFscCompilerPath>
-    </DotnetFscCompilerPath>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
@@ -27,6 +22,5 @@
     <ProjectReference Include="..\Domain\Domain.fsproj" />
     <ProjectReference Include="..\Shared\Shared.fsproj" />
   </ItemGroup>
-  <Import Project="..\..\fsc.props" />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

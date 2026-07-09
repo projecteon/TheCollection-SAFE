@@ -4,7 +4,7 @@ storage: none
 
 nuget FSharp.Core ~> 8.0
 nuget Fable.Remoting.Giraffe ~> 5.3
-nuget FSharp.Data.SqlClient
+nuget FSharp.Data.MicrosoftSqlClient
 nuget Microsoft.Data.SqlClient
 nuget NodaTime
 nuget Saturn
