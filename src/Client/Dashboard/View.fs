@@ -27,9 +27,6 @@ let renderPieChart data =
   | Some x -> x |> Array.ofList |> Array.truncate 10 |> Some |> PieChart.view
   | None -> None |> PieChart.view
 
-let lineChartHoverLegend dispatch key =
-  dispatch (ToggleCountByInsertedHoveredKey key)
-
 let ExpandCollapseIcon currentCount dispatch expandCmd collapseCmd =
   if currentCount = ReChartHelpers.DataCount.Ten then
     Icon.icon [ Icon.Props [ OnClick (fun _ -> dispatch expandCmd) ] ] [Fa.i [ Fa.Solid.ExpandArrowsAlt ] []]
@@ -96,7 +93,7 @@ let view (model:Model) dispatch =
                   ]
                 ]
                 Panel.Block.div [ Panel.Block.Props [ HTMLAttr.Id "period-chart" ] ] [
-                  PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
+                  PeriodLinehart.View model.countByInserted
                 ]
               ]
             ]

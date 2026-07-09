@@ -18,11 +18,12 @@ let private renderChart (data: 'a[]) =
     barChart.data data
     barChart.margin(top = 5, right = 20, bottom = 55, left = 0)
     barChart.children [
-      Recharts.xAxis [ xAxis.dataKey "description"; xAxis.interval 0; xAxis.angle (-45.0); xAxis.textAnchor.textAnchorEnd ]
-      Recharts.yAxis [ ]
-      Recharts.tooltip [ ]
-      Recharts.cartesianGrid [ cartesianGrid.strokeDasharray(3, 3) ]
+      Recharts.xAxis [ Interop.mkXAxisAttr "key" "xaxis"; xAxis.dataKey "description"; xAxis.interval 0; xAxis.angle (-45.0); xAxis.textAnchor.textAnchorEnd ]
+      Recharts.yAxis [ Interop.mkYAxisAttr "key" "yaxis" ]
+      Recharts.tooltip [ Interop.mkTooltipAttr "key" "tooltip" ]
+      Recharts.cartesianGrid [ Interop.mkCartesianGridAttr "key" "grid"; cartesianGrid.strokeDasharray(3, 3) ]
       Recharts.bar [
+        Interop.mkBarAttr "key" "bar"
         bar.dataKey "count"
         bar.stackId "a"
         bar.fill "#8884d8"

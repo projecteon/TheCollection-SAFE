@@ -34,7 +34,6 @@ type Model = {
   countByBagtypes: CountBy<string> list option
   countByCountryTLD: CountBy<string> list option
   countByInserted: CountBy<Moment> list option
-  countByInsertedHoveredKey: string option
   countCountryTLD: HighchartData array option
   displayedByBrands: ReChartHelpers.DataCount
   displayedBrands: ReChartHelpers.DataCount
@@ -55,4 +54,3 @@ type Msg =
 | CollapseByBrands
 | ExpandBrands
 | CollapseBrands
-| ToggleCountByInsertedHoveredKey of string option

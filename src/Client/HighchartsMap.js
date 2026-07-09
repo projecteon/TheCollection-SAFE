@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, memo } from "react";
 import Highcharts from "highcharts/highmaps";
 import worldMap from "@highcharts/map-collection/custom/world.topo.json";
 import HighchartsReact from "highcharts-react-official";
 
-export const HighchartPage = (props) => {
-  const options = {
+const HighchartPageInner = (props) => {
+  // Rebuild the Highcharts options (and thus reflow the map) only when the data
+  // changes, not on every parent re-render.
+  const options = useMemo(() => ({
     title: {
       text: ''
     },
@@ -59,9 +61,14 @@ export const HighchartPage = (props) => {
         }
       },
     ]
-  };
+  }), [props.data]);
 
-  //console.dir(options);
-  //console.dir(Highcharts);
   return (React.createElement(HighchartsReact, { highcharts: Highcharts, constructorType: "mapChart", options: options }));
 };
+
+// memo the inner component so it skips re-rendering when `data` is referentially
+// unchanged. The F# interop calls HighchartPage(props) directly (not via
+// createElement), so HighchartPage must stay a plain callable function that
+// mounts the memoized inner as a real React element for the memo/useMemo to take.
+const MemoHighchartPage = memo(HighchartPageInner);
+export const HighchartPage = (props) => React.createElement(MemoHighchartPage, props);

@@ -41,9 +41,10 @@ let private renderChart (data: 'a[]) =
   Recharts.pieChart [
     pieChart.margin(top = 15, right = 20, bottom = 5, left = 0)
     pieChart.children [
-      Recharts.tooltip [ ]
-      Recharts.legend [ ]
+      Recharts.tooltip [ Interop.mkTooltipAttr "key" "tooltip" ]
+      Recharts.legend [ Interop.mkLegendAttr "key" "legend" ]
       Recharts.pie [
+        Interop.mkPieAttr "key" "pie"
         pie.data data
         pie.dataKey "count"
         pie.nameKey "description"

@@ -98,7 +98,6 @@ let init =
       countByBagtypes = None
       countByCountryTLD = None
       countByInserted = None
-      countByInsertedHoveredKey = None
       countCountryTLD = None
       displayedByBrands = ReChartHelpers.DataCount.Ten
       displayedBrands = ReChartHelpers.DataCount.Ten
@@ -130,6 +129,5 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
   | CollapseByBrands -> {model with displayedByBrands = dataCountToggle model.displayedByBrands}, Cmd.none
   | ExpandBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
   | CollapseBrands -> {model with displayedBrands = dataCountToggle model.displayedBrands}, Cmd.ofMsg (GetCountByBrandsSuccess model.countByBrands.Value)
-  | ToggleCountByInsertedHoveredKey key -> {model with countByInsertedHoveredKey = key}, Cmd.none
 
 

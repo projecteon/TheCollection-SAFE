@@ -64,8 +64,17 @@ let private lineOpacity hoveredKey currentKey =
   | Some x -> 0.2
   | None -> 1.0
 
-let private handleMouseEnter callback evt =
-  callback evt?dataKey
+let private toKey (o: obj) : string option =
+  match o with
+  | null -> None
+  | v -> Some (unbox<string> v)
+
+// Recharts legend payload exposes the series id under `dataKey`; some versions
+// only populate `value`. Fall back so the highlight works either way.
+let private legendKey (e: obj) : string option =
+  match toKey e?dataKey with
+  | Some k -> Some k
+  | None -> toKey e?value
 
 let private createChartLines opacityKey (data: string seq) =
   data
@@ -75,10 +84,14 @@ let private createChartLines opacityKey (data: string seq) =
       // line/legend prop-modules are fully qualified: bare `line`/`legend` resolve
       // to the Fable.React <line>/<legend> elements once Fable.React is opened.
       Recharts.line [
+        Interop.mkLineAttr "key" x   // React list key; silences "unique key" warning
         Feliz.Recharts.line.dataKey x
         Feliz.Recharts.line.dot true
         Feliz.Recharts.line.stroke (ReChartHelpers.getColor ReChartHelpers.C3Colors i)
-        Feliz.Recharts.line.strokeOpacity (lineOpacity opacityKey x)
+        // Feliz.Recharts 5.1.0 maps line.strokeOpacity to the hyphenated
+        // "stroke-opacity", which Recharts' camelCase prop whitelist drops. Set the
+        // camelCase prop directly so the hover dim/highlight actually applies.
+        Interop.mkLineAttr "strokeOpacity" (lineOpacity opacityKey x)
       ])
   |> List.ofSeq
 
@@ -114,31 +127,36 @@ let private CustomTooltip (tooltipData: obj) =
   else
     nothing
 
-let private renderChart hoverLegend opacityKey data =
+let private renderChart hoveredKey setHoveredKey data =
   let chartData = transformToChartData data
-  let lineElements = chartData |> Seq.head |> objectKeys |> createChartLines opacityKey
+  let lineElements = chartData |> Seq.head |> objectKeys |> createChartLines hoveredKey
   Recharts.lineChart [
     lineChart.data (chartData |> Array.ofSeq)
     lineChart.margin(top = 5, right = 20, bottom = 55, left = 0)
     lineChart.children (
-      [ Recharts.xAxis [ xAxis.dataKey "period"; xAxis.interval 0; xAxis.angle (-45.0); xAxis.textAnchor.textAnchorEnd ]
-        Recharts.yAxis [ ]
-        Recharts.tooltip [ tooltip.content (fun props -> CustomTooltip (box props)) ]
+      [ Recharts.xAxis [ Interop.mkXAxisAttr "key" "xaxis"; xAxis.dataKey "period"; xAxis.interval 0; xAxis.angle (-45.0); xAxis.textAnchor.textAnchorEnd ]
+        Recharts.yAxis [ Interop.mkYAxisAttr "key" "yaxis" ]
+        Recharts.tooltip [ Interop.mkTooltipAttr "key" "tooltip"; tooltip.content (fun props -> CustomTooltip (box props)) ]
         Recharts.legend [
-          Feliz.Recharts.legend.onMouseEnter (fun e -> handleMouseEnter hoverLegend (box e))
-          Feliz.Recharts.legend.onMouseLeave (fun () -> hoverLegend None)
+          Interop.mkLegendAttr "key" "legend"
+          Feliz.Recharts.legend.onMouseEnter (fun e -> setHoveredKey (legendKey (box e)))
+          Feliz.Recharts.legend.onMouseLeave (fun () -> setHoveredKey None)
         ] ]
       @ lineElements)
   ]
 
-let private renderData data hoverLegend opacityKey =
+let private renderData hoveredKey setHoveredKey data =
   match data with
-  | Some x -> renderChart hoverLegend opacityKey x
+  | Some x -> renderChart hoveredKey setHoveredKey x
   | None -> div [ ClassName "pageloader is-white is-active"; Style [Position PositionOptions.Relative; MinWidth "100%"; MinHeight 320]] []
 
-let view (data: CountBy<Moment> list option) hoverLegend opacityKey =
+// Legend-hover highlight lives in component-local state so a purely-visual hover
+// never dispatches Elmish msgs / re-renders the rest of the dashboard.
+[<ReactComponent>]
+let View (data: CountBy<Moment> list option) =
+  let hoveredKey, setHoveredKey = React.useState(fun () -> (None: string option))
   Recharts.responsiveContainer [
     responsiveContainer.width (length.percent 100)
     responsiveContainer.height 320
-    responsiveContainer.chart (renderData data hoverLegend opacityKey)
+    responsiveContainer.chart (renderData hoveredKey setHoveredKey data)
   ]
