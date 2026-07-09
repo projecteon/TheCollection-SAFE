@@ -11,7 +11,7 @@ open Client.Dashboard.Types
 
 open Fulma
 
-type IHighchartsMap = 
+type IHighchartsMap =
   abstract HighchartPage: props: obj -> ReactElement;
 
 [<ImportAll("../HighchartsMap.js")>]
@@ -95,7 +95,7 @@ let view (model:Model) dispatch =
                     str "Inserts per month"
                   ]
                 ]
-                Panel.Block.div [ ] [
+                Panel.Block.div [ Panel.Block.Props [ HTMLAttr.Id "period-chart" ] ] [
                   PeriodLinehart.view model.countByInserted (lineChartHoverLegend dispatch) model.countByInsertedHoveredKey
                 ]
               ]

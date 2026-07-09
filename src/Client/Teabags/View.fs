@@ -39,7 +39,7 @@ let resultItem (userData: UserData option) (teabag: Teabag) dispatch =
       Card.image [] [
         renderImage teabag.imageid
       ]
-      Card.content [ Props [ Style [Position PositionOptions.Relative]]] [
+      Card.content [ Props [ Style [Position PositionOptions.Relative; PaddingBottom "0"]]] [
         yield Heading.p [ Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is4)] ] [ str teabag.brand.description ]
         yield Heading.p [ Heading.IsSubtitle; Heading.Modifiers [ Modifier.TextSize (Screen.All, TextSize.Is6)] ] [ str teabag.flavour ]
         yield Content.content [ ] [
@@ -77,7 +77,7 @@ let searchResult userData (model:Model) dispatch =
   |> List.map (fun teabag -> resultItem userData teabag dispatch)
   |> ofList
 
-  
+
 let CarrigeReturnKeyCode = "Enter"
 let onKeyDown dispatch (ev: Browser.Types.KeyboardEvent) =
   if ev.code = CarrigeReturnKeyCode then
