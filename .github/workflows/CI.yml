@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Install MS SQL local db
-      uses: potatoqualitee/mssqlsuite@v1.5.1
+      uses: potatoqualitee/mssqlsuite@v1.12
       with:
         install: localdb
         version: 2022
