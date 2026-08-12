@@ -2,9 +2,11 @@ source https://api.nuget.org/v3/index.json
 framework: net8.0
 storage: none
 
+source ./.nuget
+
 nuget FSharp.Core ~> 8.0
 nuget Fable.Remoting.Giraffe ~> 5.3
-nuget FSharp.Data.MicrosoftSqlClient
+nuget FSharp.Data.MicrosoftSqlClient == 2.9.100
 nuget Microsoft.Data.SqlClient
 nuget NodaTime
 nuget Saturn
